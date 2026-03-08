@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * Global error boundary — catches unhandled React errors and shows
- * a recovery UI with a retry button and navigation options.
+ * App-shell error boundary — catches errors within the `(app)` route
+ * group so the sidebar + header remain visible and the user can
+ * navigate away or retry.
  */
 
 import { useEffect } from "react";
@@ -15,10 +16,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { LinkButton } from "@/components/ui/linkButton";
-import { ShieldAlert, RefreshCw, Home, Bug } from "lucide-react";
-import { APP_NAME } from "@/lib/constants";
+import { ShieldAlert, RefreshCw, Home, Bug, ArrowLeft } from "lucide-react";
 
-export default function GlobalError({
+export default function AppError({
   error,
   reset,
 }: {
@@ -26,39 +26,31 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log error for debugging — a real app would send to Sentry etc.
-    console.error("[ErrorBoundary]", error);
+    console.error("[AppErrorBoundary]", error);
   }, [error]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4">
-      <Card className="w-full max-w-md text-center">
+    <div className="flex flex-1 items-center justify-center py-12">
+      <Card className="w-full max-w-lg text-center">
         <CardHeader className="items-center gap-2">
           <div className="rounded-full border border-destructive/30 bg-destructive/10 p-4">
-            <ShieldAlert className="h-10 w-10 text-destructive" />
+            <ShieldAlert className="h-8 w-8 text-destructive" />
           </div>
-          <CardTitle className="text-xl">Something went wrong</CardTitle>
+          <CardTitle>Page Error</CardTitle>
           <CardDescription className="max-w-sm">
-            {APP_NAME} encountered an unexpected error. You can try
-            again or return to the dashboard.
+            This page encountered an error. The rest of the application
+            is still working — you can retry or navigate elsewhere.
           </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {/* Error message */}
+          {/* Error detail */}
           <div className="rounded-lg border bg-muted/50 px-3 py-2 text-left text-sm">
             <div className="flex items-start gap-2">
               <Bug className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-              <div className="min-w-0">
-                <p className="font-mono text-xs break-all text-foreground/80">
-                  {error.message || "An unexpected error occurred."}
-                </p>
-                {error.digest && (
-                  <p className="mt-1 font-mono text-[10px] text-muted-foreground">
-                    Digest: {error.digest}
-                  </p>
-                )}
-              </div>
+              <p className="font-mono text-xs break-all text-foreground/80">
+                {error.message || "An unexpected error occurred."}
+              </p>
             </div>
           </div>
 
@@ -70,7 +62,11 @@ export default function GlobalError({
             </Button>
             <LinkButton href="/" variant="outline">
               <Home className="mr-2 h-4 w-4" />
-              Go to Dashboard
+              Dashboard
+            </LinkButton>
+            <LinkButton href="/analyze" variant="outline">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Analyse
             </LinkButton>
           </div>
         </CardContent>
