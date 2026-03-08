@@ -1,0 +1,144 @@
+/**
+ * Shared mock API responses for E2E tests.
+ *
+ * Fixtures match the backend `AnalysisResponse` schema consumed by the
+ * frontend:
+ *   { success, verdict, osint, features, analysisTime, analyzedAt, error }
+ */
+
+import type { Page } from "@playwright/test";
+
+/* ------------------------------------------------------------------ */
+/*  Response payloads                                                 */
+/* ------------------------------------------------------------------ */
+
+export const safeAnalysisResponse = {
+  success: true,
+  verdict: {
+    isPhishing: false,
+    confidenceScore: 0.12,
+    threatLevel: "safe",
+    reasons: ["No suspicious features detected"],
+    recommendation: "This content appears safe.",
+  },
+  osint: {
+    domain: "example.com",
+    domainAgeDays: 9125,
+    registrar: "MarkMonitor Inc.",
+    isPrivate: false,
+    hasValidDns: true,
+    inBlacklists: false,
+    reputationScore: 0.95,
+  },
+  features: {
+    urlFeatures: 0,
+    textFeatures: 1,
+    osintFeatures: 0,
+    totalRiskIndicators: 1,
+    detectedTactics: [],
+  },
+  analysisTime: 1.23,
+  analyzedAt: new Date().toISOString(),
+  error: null,
+};
+
+export const dangerousAnalysisResponse = {
+  success: true,
+  verdict: {
+    isPhishing: true,
+    confidenceScore: 0.87,
+    threatLevel: "dangerous",
+    reasons: [
+      "Suspicious URL structure detected",
+      "Domain registered recently",
+      "Credential harvesting language detected",
+    ],
+    recommendation: "Do not interact with this content.",
+  },
+  osint: {
+    domain: "examp1e-login.tk",
+    domainAgeDays: 12,
+    registrar: "NameCheap Inc.",
+    isPrivate: true,
+    hasValidDns: true,
+    inBlacklists: true,
+    reputationScore: 0.15,
+  },
+  features: {
+    urlFeatures: 5,
+    textFeatures: 3,
+    osintFeatures: 4,
+    totalRiskIndicators: 12,
+    detectedTactics: ["credential_request", "brand_impersonation", "urgency"],
+  },
+  analysisTime: 2.45,
+  analyzedAt: new Date().toISOString(),
+  error: null,
+};
+
+export const healthyResponse = {
+  status: "healthy",
+  version: "1.0.0",
+  timestamp: new Date().toISOString(),
+  services: {
+    nlp: true,
+    osint: true,
+    scorer: true,
+  },
+};
+
+/* ------------------------------------------------------------------ */
+/*  Route interception helpers                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Intercept all backend API calls and return deterministic responses.
+ *
+ * By default the analysis endpoints return `safeAnalysisResponse`.
+ * Pass `"dangerous"` for phishing results.
+ */
+export async function mockApi(
+  page: Page,
+  variant: "safe" | "dangerous" = "safe",
+) {
+  const analysisResponse =
+    variant === "dangerous" ? dangerousAnalysisResponse : safeAnalysisResponse;
+
+  /* Health / ping */
+  await page.route("**/api/health", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(healthyResponse) }),
+  );
+  await page.route("**/api/", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ message: "PhishGuard API" }) }),
+  );
+
+  /* Analysis endpoints */
+  await page.route("**/api/analyze", (route) => {
+    if (route.request().method() === "POST") {
+      return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(analysisResponse) });
+    }
+    return route.continue();
+  });
+  await page.route("**/api/analyze/url", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(analysisResponse) }),
+  );
+  await page.route("**/api/analyze/email", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(analysisResponse) }),
+  );
+}
+
+/**
+ * Mock all API routes to return server errors.
+ */
+export async function mockApiDown(page: Page) {
+  await page.route("**/api/**", (route) =>
+    route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ detail: "Internal Server Error" }) }),
+  );
+}
+
+/**
+ * Clear localStorage to start fresh.
+ */
+export async function clearStorage(page: Page) {
+  await page.evaluate(() => localStorage.clear());
+}
