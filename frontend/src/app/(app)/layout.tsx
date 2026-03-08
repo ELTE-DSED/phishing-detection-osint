@@ -7,6 +7,7 @@
 import { AppSidebar } from "@/components/layout/appSidebar";
 import { AppHeader } from "@/components/layout/appHeader";
 import { AppFooter } from "@/components/layout/appFooter";
+import { MobileNav } from "@/components/layout/mobileNav";
 import { ResultsProvider } from "@/lib/resultsContext";
 
 export default function AppShellLayout({
@@ -28,13 +29,16 @@ export default function AppShellLayout({
             id="main-content"
             className="flex-1 overflow-y-auto"
           >
-            <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-6xl px-4 py-6 pb-20 sm:px-6 md:pb-6 lg:px-8">
               {children}
             </div>
           </main>
 
           <AppFooter />
         </div>
+
+        {/* Bottom nav bar (mobile only) */}
+        <MobileNav />
       </div>
     </ResultsProvider>
   );

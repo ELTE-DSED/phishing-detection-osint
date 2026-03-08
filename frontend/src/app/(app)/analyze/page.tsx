@@ -14,8 +14,8 @@ export default function AnalyzePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Analyse Content</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Analyse Content</h1>
+        <p className="text-sm text-muted-foreground sm:text-base">
           Submit a URL, email, or text to detect phishing threats.
         </p>
       </div>

@@ -151,6 +151,7 @@
   [data-slot="sheet-content"],
   [aria-label="Application sidebar"],
   [aria-label="Application sidebar (collapsed)"],
+  [aria-label="Mobile navigation"],
   header,
   footer,
   [data-slot="toaster"] {

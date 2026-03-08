@@ -4,6 +4,7 @@
 export { AppSidebar, SidebarContent } from "./appSidebar";
 export { AppHeader } from "./appHeader";
 export { AppFooter } from "./appFooter";
+export { MobileNav } from "./mobileNav";
 export { ThemeProvider } from "./themeProvider";
 export { ThemeToggle } from "./themeToggle";
 export { SkipNav } from "./skipNav";

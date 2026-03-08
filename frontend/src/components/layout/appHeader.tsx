@@ -48,7 +48,7 @@ export function AppHeader() {
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden"
+        className="md:hidden min-h-[44px] min-w-[44px]"
         onClick={() => setMobileOpen(true)}
         aria-label="Open navigation menu"
       >

@@ -202,7 +202,7 @@ export default function HowItWorksPage() {
     <div className="space-y-10">
       {/* ── Page header ──────────────────────────────────────────── */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">How It Works</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">How It Works</h1>
         <p className="text-muted-foreground">
           Understand the three-layer phishing detection pipeline powering
           PhishGuard.
