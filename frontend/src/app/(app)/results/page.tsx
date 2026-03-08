@@ -8,6 +8,7 @@
  * link back to the Analyse page.
  */
 
+import dynamic from "next/dynamic";
 import { ArrowLeft, Search } from "lucide-react";
 import { LinkButton } from "@/components/ui/linkButton";
 import { Separator } from "@/components/ui/separator";
@@ -27,11 +28,6 @@ import {
   OsintCards,
   FeatureCards,
 } from "@/components/results";
-import {
-  ScoreBreakdown,
-  ThreatGauge,
-  ConfidenceBar,
-} from "@/components/charts";
 import { useResult } from "@/lib/resultsContext";
 import {
   Card,
@@ -40,6 +36,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+/* Dynamically import heavy chart components to reduce initial bundle */
+const ScoreBreakdown = dynamic(
+  () => import("@/components/charts/scoreBreakdown").then((m) => m.ScoreBreakdown),
+  { ssr: false },
+);
+const ThreatGauge = dynamic(
+  () => import("@/components/charts/threatGauge").then((m) => m.ThreatGauge),
+  { ssr: false },
+);
+const ConfidenceBar = dynamic(
+  () => import("@/components/charts/confidenceBar").then((m) => m.ConfidenceBar),
+  { ssr: false },
+);
 
 export default function ResultsPage() {
   const { result } = useResult();

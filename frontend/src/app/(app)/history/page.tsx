@@ -36,14 +36,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import dynamic from "next/dynamic";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { HistoryTable } from "@/components/history";
 import { useResult } from "@/lib/resultsContext";
+
+/* Dynamically import heavy table component to reduce initial bundle */
+const HistoryTable = dynamic(
+  () => import("@/components/history/historyTable").then((m) => m.HistoryTable),
+  { ssr: false },
+);
 import { PageTransition } from "@/components/ui/pageTransition";
 import { FadeIn } from "@/components/ui/animations";
 import {

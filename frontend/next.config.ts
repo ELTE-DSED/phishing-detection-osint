@@ -15,6 +15,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  /* ------------------------------------------------------------------ */
+  /*  Production optimisations                                          */
+  /* ------------------------------------------------------------------ */
+
+  /** Generate gzip-compressed assets alongside standard ones. */
+  compress: true,
+
+  /** React strict mode for catching subtle bugs. */
+  reactStrictMode: true,
+
+  /** Tree-shake server-only code from the client bundle. */
+  serverExternalPackages: [],
 };
 
 export default nextConfig;
