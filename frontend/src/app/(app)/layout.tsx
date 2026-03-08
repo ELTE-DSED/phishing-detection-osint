@@ -9,6 +9,7 @@ import { AppHeader } from "@/components/layout/appHeader";
 import { AppFooter } from "@/components/layout/appFooter";
 import { MobileNav } from "@/components/layout/mobileNav";
 import { ResultsProvider } from "@/lib/resultsContext";
+import { KeyboardShortcutsProvider } from "@/components/shortcuts";
 
 export default function AppShellLayout({
   children,
@@ -40,6 +41,9 @@ export default function AppShellLayout({
         {/* Bottom nav bar (mobile only) */}
         <MobileNav />
       </div>
+
+      {/* Global keyboard shortcuts + help dialog */}
+      <KeyboardShortcutsProvider />
     </ResultsProvider>
   );
 }
