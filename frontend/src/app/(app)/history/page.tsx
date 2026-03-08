@@ -55,6 +55,7 @@ import {
   exportToJson,
 } from "@/lib/storage/historyStore";
 import { LinkButton } from "@/components/ui/linkButton";
+import { showSuccess, showInfo } from "@/lib/toast";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -103,12 +104,14 @@ export default function HistoryPage() {
   const handleDelete = useCallback((entry: HistoryEntry) => {
     deleteEntry(entry.id);
     setEntries(getHistory());
+    showSuccess("Entry deleted");
   }, []);
 
   /** Clear all history entries. */
   const handleClearAll = useCallback(() => {
     clearHistory();
     setEntries([]);
+    showSuccess("History cleared", "All analysis records have been deleted.");
   }, []);
 
   /* ── Prevent hydration mismatch ────────────────────────────────── */
@@ -192,11 +195,11 @@ export default function HistoryPage() {
               Export
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={exportToCsv}>
+              <DropdownMenuItem onClick={() => { exportToCsv(); showInfo("Exported as CSV"); }}>
                 <FileSpreadsheet className="mr-2 h-4 w-4" />
                 Export as CSV
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={exportToJson}>
+              <DropdownMenuItem onClick={() => { exportToJson(); showInfo("Exported as JSON"); }}>
                 <FileJson className="mr-2 h-4 w-4" />
                 Export as JSON
               </DropdownMenuItem>

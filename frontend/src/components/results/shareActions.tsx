@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { AnalysisResponse } from "@/types";
+import { showSuccess } from "@/lib/toast";
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */
@@ -60,12 +61,14 @@ export function ShareActions({ result, content }: ShareActionsProps) {
   const copyText = useCallback(async () => {
     await navigator.clipboard.writeText(buildTextSummary(result, content));
     setCopiedText(true);
+    showSuccess("Summary copied to clipboard");
     setTimeout(() => setCopiedText(false), 2000);
   }, [result, content]);
 
   const copyJson = useCallback(async () => {
     await navigator.clipboard.writeText(JSON.stringify(result, null, 2));
     setCopiedJson(true);
+    showSuccess("JSON copied to clipboard");
     setTimeout(() => setCopiedJson(false), 2000);
   }, [result]);
 
