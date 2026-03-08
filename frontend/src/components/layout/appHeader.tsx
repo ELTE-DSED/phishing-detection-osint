@@ -6,7 +6,8 @@
  */
 
 import { useState } from "react";
-import { Menu, Shield, Circle } from "lucide-react";
+import { Menu, Circle } from "lucide-react";
+import { Logo } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -73,7 +74,7 @@ export function AppHeader() {
 
       {/* Mobile logo — visible below md */}
       <div className="flex items-center gap-2 md:hidden">
-        <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
+        <Logo className="h-5 w-5" />
         <span className="font-semibold">{APP_NAME}</span>
       </div>
 

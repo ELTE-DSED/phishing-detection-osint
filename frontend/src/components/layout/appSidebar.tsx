@@ -16,7 +16,6 @@ import {
   History,
   BookOpen,
   Settings,
-  Shield,
   type LucideIcon,
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -28,6 +27,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { APP_NAME, APP_VERSION } from "@/lib/constants";
+import { Logo } from "@/components/brand";
 
 /* ------------------------------------------------------------------ */
 /*  Navigation items (icons resolved statically)                      */
@@ -126,7 +126,7 @@ export function SidebarContent({ collapsed = false }: SidebarContentProps) {
           className="flex items-center gap-2 rounded-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={collapsed ? `${APP_NAME} — Go to dashboard` : undefined}
         >
-          <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
+          <Logo className="h-5 w-5" />
           {!collapsed && (
             <span className="text-base tracking-tight">{APP_NAME}</span>
           )}

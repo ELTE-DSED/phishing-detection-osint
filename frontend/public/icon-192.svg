@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <defs>
+    <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield -->
+  <path d="M96 10 L174 44 C174 44 174 120 96 182 C18 120 18 44 18 44 Z" fill="url(#sg)" stroke="#1e40af" stroke-width="3"/>
+  <!-- Magnifying glass circle -->
+  <circle cx="90" cy="86" r="30" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <!-- Handle -->
+  <line x1="112" y1="108" x2="136" y2="134" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <!-- Check mark -->
+  <path d="M75 86 L85.5 96.5 L105 75" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

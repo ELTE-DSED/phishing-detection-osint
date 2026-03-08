@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="white" stroke-width="1">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="0" y1="630" x2="1200" y2="0"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+  </g>
+  <!-- Shield logo -->
+  <g transform="translate(100, 140)">
+    <path d="M128 14 L230 60 C230 60 230 160 128 242 C26 160 26 60 26 60 Z" fill="url(#sg)" stroke="#60a5fa" stroke-width="3"/>
+    <circle cx="120" cy="115" r="40" fill="none" stroke="white" stroke-width="7" stroke-linecap="round"/>
+    <line x1="148" y1="145" x2="180" y2="180" stroke="white" stroke-width="7" stroke-linecap="round"/>
+    <path d="M100 115 L114 129 L140 100" fill="none" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- App name -->
+  <text x="400" y="250" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700" fill="white">PhishGuard</text>
+  <!-- Tagline -->
+  <text x="400" y="310" font-family="system-ui, -apple-system, sans-serif" font-size="28" fill="#94a3b8">OSINT-Enhanced Phishing Detection</text>
+  <!-- Feature pills -->
+  <g transform="translate(400, 350)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#1e3a5f"/>
+    <text x="70" y="24" font-family="system-ui, sans-serif" font-size="14" fill="#60a5fa" text-anchor="middle">URL Analysis</text>
+    <rect x="155" y="0" width="165" height="36" rx="18" fill="#1e3a5f"/>
+    <text x="237" y="24" font-family="system-ui, sans-serif" font-size="14" fill="#60a5fa" text-anchor="middle">Email Detection</text>
+    <rect x="335" y="0" width="145" height="36" rx="18" fill="#1e3a5f"/>
+    <text x="407" y="24" font-family="system-ui, sans-serif" font-size="14" fill="#60a5fa" text-anchor="middle">NLP Scoring</text>
+  </g>
+  <!-- Bottom bar -->
+  <rect x="0" y="590" width="1200" height="40" fill="#1e3a5f"/>
+  <text x="40" y="616" font-family="system-ui, sans-serif" font-size="14" fill="#94a3b8">BSc Thesis · ELTE Faculty of Informatics</text>
+  <text x="1160" y="616" font-family="system-ui, sans-serif" font-size="14" fill="#94a3b8" text-anchor="end">Ishaq Muhammad · 2026</text>
+</svg>

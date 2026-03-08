@@ -5,6 +5,7 @@
  */
 
 import { Shield, Search, Globe, ArrowRight, Zap } from "lucide-react";
+import { Logo } from "@/components/brand";
 import {
   Card,
   CardContent,
@@ -48,7 +49,7 @@ export default function DashboardPage() {
           <section className="flex flex-col items-center gap-4 text-center sm:items-start sm:text-left">
             <div className="flex items-center gap-3">
               <div className="rounded-full border bg-muted p-3">
-                <Shield className="h-8 w-8 text-primary" aria-hidden="true" />
+                <Logo className="h-8 w-8" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
