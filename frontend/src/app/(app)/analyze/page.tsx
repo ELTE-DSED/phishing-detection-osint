@@ -16,6 +16,7 @@ import {
   Send,
   X,
   Shield,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AnalysisProgress } from "@/components/analyze";
+import { LinkButton } from "@/components/ui/linkButton";
 import { useResult } from "@/lib/resultsContext";
 import { addEntry } from "@/lib/storage/historyStore";
 import { showError } from "@/lib/toast";
@@ -371,32 +373,54 @@ export default function AnalyzePage() {
 
         {/* Tip card */}
         {!isSubmitting && (
-          <FadeIn delay={0.1}>
-            <Card
-              className={cn(
-                "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30",
-              )}
-            >
-              <CardContent className="flex items-start gap-3 pt-4">
-                <AlertTriangle
-                  className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400"
-                  aria-hidden="true"
-                />
-                <div className="text-sm">
-                  <p className="font-medium text-amber-800 dark:text-amber-300">
-                    Tips for best results
-                  </p>
-                  <ul className="mt-1 list-inside list-disc text-amber-700 dark:text-amber-400/80">
-                    <li>Include the full URL with protocol (https://)</li>
-                    <li>For emails, paste the complete body text</li>
-                    <li>
-                      The system checks domain age, WHOIS, DNS, and blacklists
-                    </li>
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
+          <>
+            <FadeIn delay={0.1}>
+              <Card
+                className={cn(
+                  "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/30",
+                )}
+              >
+                <CardContent className="flex items-start gap-3 pt-4">
+                  <AlertTriangle
+                    className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400"
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <p className="font-medium text-amber-800 dark:text-amber-300">
+                      Tips for best results
+                    </p>
+                    <ul className="mt-1 list-inside list-disc text-amber-700 dark:text-amber-400/80">
+                      <li>Include the full URL with protocol (https://)</li>
+                      <li>For emails, paste the complete body text</li>
+                      <li>
+                        The system checks domain age, WHOIS, DNS, and blacklists
+                      </li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
+
+            {/* Batch link */}
+            <FadeIn delay={0.2}>
+              <Card className="border-dashed">
+                <CardContent className="flex items-center justify-between py-4">
+                  <div className="flex items-center gap-3">
+                    <Layers className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                    <div>
+                      <p className="text-sm font-medium">Need to analyse multiple URLs?</p>
+                      <p className="text-xs text-muted-foreground">
+                        Process up to 50 URLs at once with parallel analysis.
+                      </p>
+                    </div>
+                  </div>
+                  <LinkButton href="/analyze/batch" variant="outline" size="sm">
+                    Batch Mode
+                  </LinkButton>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          </>
         )}
       </div>
     </PageTransition>
