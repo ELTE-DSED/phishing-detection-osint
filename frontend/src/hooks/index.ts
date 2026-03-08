@@ -3,3 +3,4 @@
  */
 export { useAnalysis } from "./useAnalysis";
 export { useHealth } from "./useHealth";
+export { useCountUp } from "./useCountUp";
