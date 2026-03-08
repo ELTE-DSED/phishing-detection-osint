@@ -87,7 +87,7 @@ export function ShareActions({ result, content }: ShareActionsProps) {
           }
         >
           {copiedText ? (
-            <Check className="mr-1.5 h-3.5 w-3.5 text-green-500" />
+            <Check className="mr-1.5 h-3.5 w-3.5 text-green-500 dark:text-green-400" />
           ) : (
             <Copy className="mr-1.5 h-3.5 w-3.5" />
           )}
@@ -108,7 +108,7 @@ export function ShareActions({ result, content }: ShareActionsProps) {
           }
         >
           {copiedJson ? (
-            <Check className="mr-1.5 h-3.5 w-3.5 text-green-500" />
+            <Check className="mr-1.5 h-3.5 w-3.5 text-green-500 dark:text-green-400" />
           ) : (
             <FileJson className="mr-1.5 h-3.5 w-3.5" />
           )}

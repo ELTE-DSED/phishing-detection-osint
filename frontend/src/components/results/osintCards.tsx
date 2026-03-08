@@ -79,9 +79,9 @@ function domainAgeRisk(days: number | null): {
 
 /** Map a reputation score (0–1) to a colour class for the progress bar. */
 function reputationColor(score: number): string {
-  if (score >= 0.7) return "bg-green-500";
-  if (score >= 0.4) return "bg-amber-500";
-  return "bg-red-500";
+  if (score >= 0.7) return "bg-green-500 dark:bg-green-400";
+  if (score >= 0.4) return "bg-amber-500 dark:bg-amber-400";
+  return "bg-red-500 dark:bg-red-400";
 }
 
 /** Map a reputation score (0–1) to a label. */

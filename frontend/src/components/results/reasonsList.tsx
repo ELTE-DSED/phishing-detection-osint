@@ -35,23 +35,23 @@ interface ReasonIconMeta {
 const reasonPatterns: { pattern: RegExp; meta: ReasonIconMeta }[] = [
   {
     pattern: /urgent|urgency|immediate|act now|hurry/i,
-    meta: { icon: Zap, colorClass: "text-amber-500" },
+    meta: { icon: Zap, colorClass: "text-amber-500 dark:text-amber-400" },
   },
   {
     pattern: /brand|impersonat|spoof/i,
-    meta: { icon: Theater, colorClass: "text-purple-500" },
+    meta: { icon: Theater, colorClass: "text-purple-500 dark:text-purple-400" },
   },
   {
     pattern: /credential|password|login|account|verif/i,
-    meta: { icon: KeyRound, colorClass: "text-red-500" },
+    meta: { icon: KeyRound, colorClass: "text-red-500 dark:text-red-400" },
   },
   {
     pattern: /url|link|domain|redirect|suspicious.*tld/i,
-    meta: { icon: Link2, colorClass: "text-amber-600" },
+    meta: { icon: Link2, colorClass: "text-amber-600 dark:text-amber-400" },
   },
   {
     pattern: /osint|whois|dns|reputation|blacklist|age/i,
-    meta: { icon: Globe, colorClass: "text-blue-500" },
+    meta: { icon: Globe, colorClass: "text-blue-500 dark:text-blue-400" },
   },
 ];
 

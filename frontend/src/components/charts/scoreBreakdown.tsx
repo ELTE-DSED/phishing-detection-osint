@@ -13,6 +13,7 @@
  */
 
 import { useMemo } from "react";
+import { useTheme } from "next-themes";
 import {
   PieChart,
   Pie,
@@ -30,13 +31,19 @@ import { SCORING_WEIGHTS } from "@/lib/constants";
 import { useCountUp } from "@/hooks/useCountUp";
 
 /* ------------------------------------------------------------------ */
-/*  Colour palette — light + dark aware via CSS custom props fallback */
+/*  Colour palette — light + dark aware                               */
 /* ------------------------------------------------------------------ */
 
-const SEGMENT_COLORS = [
+const SEGMENT_COLORS_LIGHT = [
   { fill: "#3b82f6", label: "Text Analysis" },   // blue-500
   { fill: "#f59e0b", label: "URL Features" },     // amber-500
   { fill: "#22c55e", label: "OSINT Score" },       // green-500
+] as const;
+
+const SEGMENT_COLORS_DARK = [
+  { fill: "#60a5fa", label: "Text Analysis" },   // blue-400
+  { fill: "#fbbf24", label: "URL Features" },     // amber-400
+  { fill: "#4ade80", label: "OSINT Score" },       // green-400
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -79,6 +86,8 @@ interface ScoreBreakdownProps {
 
 export function ScoreBreakdown({ confidenceScore }: ScoreBreakdownProps) {
   const animatedScore = useCountUp(confidenceScore * 100, 1200);
+  const { resolvedTheme } = useTheme();
+  const segmentColors = resolvedTheme === "dark" ? SEGMENT_COLORS_DARK : SEGMENT_COLORS_LIGHT;
 
   const data = useMemo(
     () => [
@@ -124,8 +133,8 @@ export function ScoreBreakdown({ confidenceScore }: ScoreBreakdownProps) {
               >
                 {data.map((_, index) => (
                   <Cell
-                    key={SEGMENT_COLORS[index].label}
-                    fill={SEGMENT_COLORS[index].fill}
+                    key={segmentColors[index].label}
+                    fill={segmentColors[index].fill}
                   />
                 ))}
               </Pie>
@@ -136,7 +145,7 @@ export function ScoreBreakdown({ confidenceScore }: ScoreBreakdownProps) {
 
         {/* Legend */}
         <div className="mt-2 flex flex-wrap justify-center gap-4">
-          {SEGMENT_COLORS.map((seg, i) => (
+          {segmentColors.map((seg, i) => (
             <div key={seg.label} className="flex items-center gap-1.5">
               <span
                 className="inline-block h-3 w-3 rounded-full"

@@ -21,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useCountUp } from "@/hooks/useCountUp";
+import { useTheme } from "next-themes";
 import { THREAT_LEVEL_MAP } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import type { ThreatLevel } from "@/types";
@@ -57,14 +58,21 @@ function arcPath(startVal: number, endVal: number, r: number): string {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Zones                                                             */
+/*  Zones — light & dark palettes                                     */
 /* ------------------------------------------------------------------ */
 
-const ZONES: { start: number; end: number; color: string }[] = [
+const ZONES_LIGHT: { start: number; end: number; color: string }[] = [
   { start: 0,   end: 0.4, color: "#22c55e" }, // green-500
   { start: 0.4, end: 0.6, color: "#eab308" }, // yellow-500
   { start: 0.6, end: 0.8, color: "#f97316" }, // orange-500
   { start: 0.8, end: 1.0, color: "#ef4444" }, // red-500
+];
+
+const ZONES_DARK: { start: number; end: number; color: string }[] = [
+  { start: 0,   end: 0.4, color: "#4ade80" }, // green-400
+  { start: 0.4, end: 0.6, color: "#facc15" }, // yellow-400
+  { start: 0.6, end: 0.8, color: "#fb923c" }, // orange-400
+  { start: 0.8, end: 1.0, color: "#f87171" }, // red-400
 ];
 
 /* ------------------------------------------------------------------ */
@@ -89,6 +97,8 @@ interface ThreatGaugeProps {
 
 export function ThreatGauge({ score }: ThreatGaugeProps) {
   const animatedScore = useCountUp(score, 1200);
+  const { resolvedTheme } = useTheme();
+  const zones = resolvedTheme === "dark" ? ZONES_DARK : ZONES_LIGHT;
   const needleAngle = valueToAngle(animatedScore);
   const needleTip = polarToXy(needleAngle, RADIUS - STROKE_WIDTH / 2 - 4);
 
@@ -122,7 +132,7 @@ export function ThreatGauge({ score }: ThreatGaugeProps) {
             />
 
             {/* Colour zones */}
-            {ZONES.map((zone) => (
+            {zones.map((zone) => (
               <path
                 key={zone.start}
                 d={arcPath(zone.start, zone.end, RADIUS)}
