@@ -189,7 +189,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Globe className="h-5 w-5 text-muted-foreground" />
+                <Globe className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                 <CardTitle>API Configuration</CardTitle>
               </div>
               <CardDescription>
@@ -227,7 +227,7 @@ export default function SettingsPage() {
                   <p className="text-xs text-muted-foreground">
                     Default: {DEFAULT_SETTINGS.apiUrl}
                   </p>
-                  {renderConnectionBadge()}
+                  <span aria-live="polite">{renderConnectionBadge()}</span>
                 </div>
               </div>
             </CardContent>
@@ -239,7 +239,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Palette className="h-5 w-5 text-muted-foreground" />
+                <Palette className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                 <CardTitle>Display Preferences</CardTitle>
               </div>
               <CardDescription>
@@ -302,7 +302,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Database className="h-5 w-5 text-muted-foreground" />
+                <Database className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                 <CardTitle>History Management</CardTitle>
               </div>
               <CardDescription>
@@ -397,7 +397,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Info className="h-5 w-5 text-muted-foreground" />
+                <Info className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                 <CardTitle>About</CardTitle>
               </div>
               <CardDescription>

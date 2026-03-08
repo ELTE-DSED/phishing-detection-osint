@@ -416,6 +416,7 @@ export function HistoryTable({
         value={globalFilter}
         onChange={(e) => setGlobalFilter(e.target.value)}
         className="max-w-sm"
+        aria-label="Search analysis history"
       />
 
       {/* Threat-level filter */}
@@ -423,7 +424,7 @@ export function HistoryTable({
         defaultValue="all"
         onValueChange={handleThreatFilter}
       >
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-[160px]" aria-label="Filter by threat level">
           <SelectValue placeholder="Filter by level" />
         </SelectTrigger>
         <SelectContent>
@@ -457,7 +458,7 @@ export function HistoryTable({
               if (v) table.setPageSize(Number(v));
             }}
           >
-            <SelectTrigger className="w-[70px]" size="sm">
+            <SelectTrigger className="w-[70px]" size="sm" aria-label="Rows per page">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

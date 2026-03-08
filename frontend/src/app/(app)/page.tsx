@@ -48,7 +48,7 @@ export default function DashboardPage() {
           <section className="flex flex-col items-center gap-4 text-center sm:items-start sm:text-left">
             <div className="flex items-center gap-3">
               <div className="rounded-full border bg-muted p-3">
-                <Shield className="h-8 w-8 text-primary" />
+                <Shield className="h-8 w-8 text-primary" aria-hidden="true" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -60,12 +60,12 @@ export default function DashboardPage() {
 
             <div className="flex flex-wrap gap-3">
               <LinkButton href="/analyze" size="lg">
-                <Zap className="mr-2 h-4 w-4" />
+                <Zap className="mr-2 h-4 w-4" aria-hidden="true" />
                 Analyse Now
               </LinkButton>
               <LinkButton href="/how-it-works" variant="outline" size="lg">
                 How It Works
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </LinkButton>
             </div>
           </section>
@@ -80,7 +80,7 @@ export default function DashboardPage() {
                 <Card>
                   <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
                     <div className="rounded-lg bg-primary/10 p-2">
-                      <Icon className="h-5 w-5 text-primary" />
+                      <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
                     </div>
                     <CardTitle className="text-base">{title}</CardTitle>
                   </CardHeader>

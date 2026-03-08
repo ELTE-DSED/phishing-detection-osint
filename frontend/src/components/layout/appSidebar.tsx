@@ -82,7 +82,7 @@ function NavLink({ href, title, Icon, isActive, collapsed }: NavLinkProps) {
             />
           }
         >
-          <Icon className="h-4 w-4 shrink-0" />
+          <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
         </TooltipTrigger>
         <TooltipContent side="right">{title}</TooltipContent>
       </Tooltip>
@@ -95,7 +95,7 @@ function NavLink({ href, title, Icon, isActive, collapsed }: NavLinkProps) {
       className={linkClasses}
       aria-current={isActive ? "page" : undefined}
     >
-      <Icon className="h-4 w-4 shrink-0" />
+      <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
       <span>{title}</span>
     </Link>
   );
@@ -124,8 +124,9 @@ export function SidebarContent({ collapsed = false }: SidebarContentProps) {
         <Link
           href="/"
           className="flex items-center gap-2 rounded-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={collapsed ? `${APP_NAME} — Go to dashboard` : undefined}
         >
-          <Shield className="h-5 w-5 text-primary" />
+          <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
           {!collapsed && (
             <span className="text-base tracking-tight">{APP_NAME}</span>
           )}

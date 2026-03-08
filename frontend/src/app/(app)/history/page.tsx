@@ -147,7 +147,7 @@ export default function HistoryPage() {
         <Card>
           <CardHeader className="items-center text-center">
             <div className="rounded-full border bg-muted p-4">
-              <History className="h-8 w-8 text-muted-foreground" />
+              <History className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
             </div>
             <CardTitle>No Analyses Yet</CardTitle>
             <CardDescription>
@@ -157,7 +157,7 @@ export default function HistoryPage() {
           </CardHeader>
           <CardContent className="flex justify-center">
             <LinkButton href="/analyze">
-              <Search className="mr-2 h-4 w-4" />
+              <Search className="mr-2 h-4 w-4" aria-hidden="true" />
               Start Analysing
             </LinkButton>
           </CardContent>

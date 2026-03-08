@@ -15,6 +15,7 @@ import {
   Search,
   History,
   BookOpen,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { title: "Analyse", href: "/analyze", icon: Search },
   { title: "History", href: "/history", icon: History },
   { title: "Learn", href: "/how-it-works", icon: BookOpen },
+  { title: "Settings", href: "/settings", icon: Settings },
 ];
 
 export function MobileNav() {
@@ -58,7 +60,7 @@ export function MobileNav() {
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <Icon className={cn("h-5 w-5", isActive && "text-primary")} />
+              <Icon className={cn("h-5 w-5", isActive && "text-primary")} aria-hidden="true" />
               <span>{title}</span>
             </Link>
           );

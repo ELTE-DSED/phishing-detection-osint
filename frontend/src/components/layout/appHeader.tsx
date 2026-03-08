@@ -73,7 +73,7 @@ export function AppHeader() {
 
       {/* Mobile logo — visible below md */}
       <div className="flex items-center gap-2 md:hidden">
-        <Shield className="h-5 w-5 text-primary" />
+        <Shield className="h-5 w-5 text-primary" aria-hidden="true" />
         <span className="font-semibold">{APP_NAME}</span>
       </div>
 
@@ -83,13 +83,16 @@ export function AppHeader() {
       {/* Health indicator */}
       <div
         className="flex items-center gap-1.5 text-xs text-muted-foreground"
+        role="status"
         aria-label={statusLabel}
         title={statusLabel}
       >
         <Circle
           className={cn("h-2 w-2 fill-current", statusColor)}
+          aria-hidden="true"
         />
         <span className="hidden sm:inline">{statusLabel}</span>
+        <span className="sr-only sm:hidden">{statusLabel}</span>
       </div>
 
       {/* Theme toggle */}

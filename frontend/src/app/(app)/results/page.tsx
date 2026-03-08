@@ -60,7 +60,7 @@ export default function ResultsPage() {
         <Card>
           <CardHeader className="items-center text-center">
             <div className="rounded-full border bg-muted p-4">
-              <Search className="h-8 w-8 text-muted-foreground" />
+              <Search className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
             </div>
             <CardTitle>No Results Yet</CardTitle>
             <CardDescription>
@@ -70,7 +70,7 @@ export default function ResultsPage() {
           </CardHeader>
           <CardContent className="flex justify-center">
             <LinkButton href="/analyze">
-              <Search className="mr-2 h-4 w-4" />
+              <Search className="mr-2 h-4 w-4" aria-hidden="true" />
               Go to Analyse
             </LinkButton>
           </CardContent>
@@ -84,7 +84,7 @@ export default function ResultsPage() {
 
   return (
     <PageTransition>
-      <div className="space-y-6">
+      <div className="space-y-6" aria-live="polite" aria-atomic="false">
         {/* Page header */}
         <FadeIn>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
