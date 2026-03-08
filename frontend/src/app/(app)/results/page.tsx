@@ -19,6 +19,11 @@ import {
   OsintCards,
   FeatureCards,
 } from "@/components/results";
+import {
+  ScoreBreakdown,
+  ThreatGauge,
+  ConfidenceBar,
+} from "@/components/charts";
 import { useResult } from "@/lib/resultsContext";
 import {
   Card,
@@ -123,6 +128,24 @@ export default function ResultsPage() {
           Feature Extraction
         </h2>
         <FeatureCards features={response.features} />
+      </div>
+
+      {/* Score visualisation */}
+      <Separator />
+      <div>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight">
+          Score Visualisation
+        </h2>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <ScoreBreakdown
+            confidenceScore={response.verdict.confidenceScore}
+          />
+          <ThreatGauge score={response.verdict.confidenceScore} />
+          <ConfidenceBar
+            confidenceScore={response.verdict.confidenceScore}
+            threatLevel={response.verdict.threatLevel}
+          />
+        </div>
       </div>
     </div>
   );
