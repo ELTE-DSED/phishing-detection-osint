@@ -62,13 +62,31 @@ export const THREAT_LEVEL_MAP: Record<ThreatLevel, ThreatLevelMeta> = {
 } as const;
 
 /* ------------------------------------------------------------------ */
-/*  Scoring weights (mirrors backend/ml/scorer.py)                    */
+/*  Scoring weights (mirrors backend/api/orchestrator.py)             */
 /* ------------------------------------------------------------------ */
 
-export const SCORING_WEIGHTS = {
-  text: 0.4,
+/** For URL analysis: ML model is primary, NLP supplements. */
+export const URL_SCORING_WEIGHTS = {
+  ml: 0.85,
+  text: 0.15,
+} as const;
+
+/** For email/text analysis: NLP is primary, URL + OSINT supplement. */
+export const TEXT_SCORING_WEIGHTS = {
+  text: 0.55,
   url: 0.25,
-  osint: 0.35,
+  osint: 0.20,
+} as const;
+
+/** Model performance on the held-out test set (5,009 samples). */
+export const MODEL_METRICS = {
+  accuracy: 0.9645,
+  f1: 0.9639,
+  auc: 0.9941,
+  prAuc: 0.9948,
+  featureCount: 21,
+  trainSamples: 23_374,
+  testSamples: 5_009,
 } as const;
 
 /* ------------------------------------------------------------------ */

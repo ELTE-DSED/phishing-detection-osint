@@ -6,7 +6,9 @@ import {
   DEFAULT_API_URL,
   API_BASE_URL,
   THREAT_LEVEL_MAP,
-  SCORING_WEIGHTS,
+  URL_SCORING_WEIGHTS,
+  TEXT_SCORING_WEIGHTS,
+  MODEL_METRICS,
   NAV_ITEMS,
   APP_NAME,
   APP_VERSION,
@@ -50,22 +52,48 @@ describe("THREAT_LEVEL_MAP", () => {
   });
 });
 
-describe("SCORING_WEIGHTS", () => {
-  it("contains text, url, and osint weights", () => {
-    expect(SCORING_WEIGHTS.text).toBeDefined();
-    expect(SCORING_WEIGHTS.url).toBeDefined();
-    expect(SCORING_WEIGHTS.osint).toBeDefined();
+describe("URL_SCORING_WEIGHTS", () => {
+  it("contains ml and text weights", () => {
+    expect(URL_SCORING_WEIGHTS.ml).toBeDefined();
+    expect(URL_SCORING_WEIGHTS.text).toBeDefined();
   });
 
   it("weights sum to 1.0", () => {
-    const sum = SCORING_WEIGHTS.text + SCORING_WEIGHTS.url + SCORING_WEIGHTS.osint;
+    const sum = URL_SCORING_WEIGHTS.ml + URL_SCORING_WEIGHTS.text;
     expect(sum).toBeCloseTo(1.0);
   });
 
   it("has correct individual weights", () => {
-    expect(SCORING_WEIGHTS.text).toBe(0.4);
-    expect(SCORING_WEIGHTS.url).toBe(0.25);
-    expect(SCORING_WEIGHTS.osint).toBe(0.35);
+    expect(URL_SCORING_WEIGHTS.ml).toBe(0.85);
+    expect(URL_SCORING_WEIGHTS.text).toBe(0.15);
+  });
+});
+
+describe("TEXT_SCORING_WEIGHTS", () => {
+  it("contains text, url, and osint weights", () => {
+    expect(TEXT_SCORING_WEIGHTS.text).toBeDefined();
+    expect(TEXT_SCORING_WEIGHTS.url).toBeDefined();
+    expect(TEXT_SCORING_WEIGHTS.osint).toBeDefined();
+  });
+
+  it("weights sum to 1.0", () => {
+    const sum = TEXT_SCORING_WEIGHTS.text + TEXT_SCORING_WEIGHTS.url + TEXT_SCORING_WEIGHTS.osint;
+    expect(sum).toBeCloseTo(1.0);
+  });
+});
+
+describe("MODEL_METRICS", () => {
+  it("has accuracy above 0.9", () => {
+    expect(MODEL_METRICS.accuracy).toBeGreaterThan(0.9);
+  });
+
+  it("has featureCount of 21", () => {
+    expect(MODEL_METRICS.featureCount).toBe(21);
+  });
+
+  it("has training and test sample counts", () => {
+    expect(MODEL_METRICS.trainSamples).toBeGreaterThan(0);
+    expect(MODEL_METRICS.testSamples).toBeGreaterThan(0);
   });
 });
 

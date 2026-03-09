@@ -1,19 +1,21 @@
 /**
- * PipelineDiagram — visual component-based diagram of the 3-layer
+ * PipelineDiagram — visual component-based diagram of the ML-primary
  * phishing detection pipeline.
  *
- * Renders an interactive, responsive SVG-free diagram using pure
- * Tailwind + HTML for crisp rendering at any size and easy theming.
+ * Shows the four-stage architecture:
+ *   Input → Feature Extraction (3 layers) → XGBoost ML Model → Verdict
+ *
+ * Uses pure Tailwind + HTML for crisp rendering at any size and easy theming.
  */
 
 import {
   ArrowRight,
+  Brain,
   FileText,
   Globe,
   Link2,
   type LucideIcon,
   Search,
-  Shield,
   ShieldCheck,
 } from "lucide-react";
 
@@ -23,7 +25,7 @@ import {
 
 interface PipelineStep {
   label: string;
-  weight: string;
+  description: string;
   icon: LucideIcon;
   colour: string;
   bgColour: string;
@@ -34,7 +36,7 @@ interface PipelineStep {
 const PIPELINE_STEPS: PipelineStep[] = [
   {
     label: "Text Analysis",
-    weight: "40%",
+    description: "NLP supplement",
     icon: FileText,
     colour: "text-blue-600 dark:text-blue-400",
     bgColour: "bg-blue-50 dark:bg-blue-950",
@@ -50,7 +52,7 @@ const PIPELINE_STEPS: PipelineStep[] = [
   },
   {
     label: "URL Features",
-    weight: "25%",
+    description: "17 structural features",
     icon: Link2,
     colour: "text-amber-600 dark:text-amber-400",
     bgColour: "bg-amber-50 dark:bg-amber-950",
@@ -66,7 +68,7 @@ const PIPELINE_STEPS: PipelineStep[] = [
   },
   {
     label: "OSINT Enrichment",
-    weight: "35%",
+    description: "4 DNS/CDN features",
     icon: Globe,
     colour: "text-green-600 dark:text-green-400",
     bgColour: "bg-green-50 dark:bg-green-950",
@@ -89,7 +91,7 @@ const PIPELINE_STEPS: PipelineStep[] = [
 export function PipelineDiagram() {
   return (
     <div className="space-y-6">
-      {/* ── Flow: Input → Layers → Score → Verdict ──────────────── */}
+      {/* ── Flow: Input → Layers → ML Model → Verdict ──────────── */}
       <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
         {/* Input node */}
         <div className="flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 font-medium shadow-sm">
@@ -99,7 +101,7 @@ export function PipelineDiagram() {
 
         <ArrowRight className="hidden h-5 w-5 text-muted-foreground sm:block" />
 
-        {/* Analysis layers */}
+        {/* Feature extraction layers */}
         <div className="flex flex-wrap items-center gap-2">
           {PIPELINE_STEPS.map((step, idx) => {
             const Icon = step.icon;
@@ -113,9 +115,6 @@ export function PipelineDiagram() {
                 >
                   <Icon className={`h-4 w-4 ${step.colour}`} />
                   <span className={step.colour}>{step.label}</span>
-                  <span className="ml-1 rounded-md bg-background/60 px-1.5 py-0.5 text-xs tabular-nums">
-                    {step.weight}
-                  </span>
                 </div>
               </div>
             );
@@ -124,10 +123,13 @@ export function PipelineDiagram() {
 
         <ArrowRight className="hidden h-5 w-5 text-muted-foreground sm:block" />
 
-        {/* Score node */}
-        <div className="flex items-center gap-2 rounded-lg border bg-card px-4 py-2.5 font-medium shadow-sm">
-          <Shield className="h-4 w-4 text-muted-foreground" />
-          Score
+        {/* ML Model node */}
+        <div className="flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2.5 font-semibold shadow-sm dark:border-purple-800 dark:bg-purple-950">
+          <Brain className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+          <span className="text-purple-600 dark:text-purple-400">XGBoost</span>
+          <span className="ml-1 rounded-md bg-background/60 px-1.5 py-0.5 text-xs tabular-nums font-medium">
+            85%
+          </span>
         </div>
 
         <ArrowRight className="hidden h-5 w-5 text-muted-foreground sm:block" />
@@ -153,8 +155,8 @@ export function PipelineDiagram() {
                 <h3 className={`font-semibold ${step.colour}`}>
                   {step.label}
                 </h3>
-                <span className="ml-auto rounded-md bg-background/60 px-2 py-0.5 text-xs font-medium tabular-nums">
-                  Weight: {step.weight}
+                <span className="ml-auto rounded-md bg-background/60 px-2 py-0.5 text-xs font-medium">
+                  {step.description}
                 </span>
               </div>
               <ul className="space-y-1.5 text-sm text-foreground/80">

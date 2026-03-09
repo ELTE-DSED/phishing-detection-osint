@@ -1,12 +1,11 @@
 "use client";
 
 /**
- * ScoreBreakdown — donut chart showing the three scoring components.
+ * ScoreBreakdown — donut chart showing the ML-primary scoring architecture.
  *
  * Segments:
- *   • Text Analysis  (40%) — blue
- *   • URL Features   (25%) — orange
- *   • OSINT Score    (35%) — green
+ *   • ML Model (XGBoost)  (85%) — purple
+ *   • NLP Text Analysis    (15%) — blue
  *
  * The final phishing score is displayed in the centre of the donut.
  * Uses Recharts `PieChart` for rendering.
@@ -27,7 +26,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SCORING_WEIGHTS } from "@/lib/constants";
+import { URL_SCORING_WEIGHTS } from "@/lib/constants";
 import { useCountUp } from "@/hooks/useCountUp";
 
 /* ------------------------------------------------------------------ */
@@ -35,15 +34,13 @@ import { useCountUp } from "@/hooks/useCountUp";
 /* ------------------------------------------------------------------ */
 
 const SEGMENT_COLORS_LIGHT = [
-  { fill: "#3b82f6", label: "Text Analysis" },   // blue-500
-  { fill: "#f59e0b", label: "URL Features" },     // amber-500
-  { fill: "#22c55e", label: "OSINT Score" },       // green-500
+  { fill: "#a855f7", label: "ML Model" },         // purple-500
+  { fill: "#3b82f6", label: "NLP Analysis" },      // blue-500
 ] as const;
 
 const SEGMENT_COLORS_DARK = [
-  { fill: "#60a5fa", label: "Text Analysis" },   // blue-400
-  { fill: "#fbbf24", label: "URL Features" },     // amber-400
-  { fill: "#4ade80", label: "OSINT Score" },       // green-400
+  { fill: "#c084fc", label: "ML Model" },         // purple-400
+  { fill: "#60a5fa", label: "NLP Analysis" },      // blue-400
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -91,9 +88,8 @@ export function ScoreBreakdown({ confidenceScore }: ScoreBreakdownProps) {
 
   const data = useMemo(
     () => [
-      { name: "Text Analysis",  value: SCORING_WEIGHTS.text * 100 },
-      { name: "URL Features",   value: SCORING_WEIGHTS.url * 100 },
-      { name: "OSINT Score",    value: SCORING_WEIGHTS.osint * 100 },
+      { name: "ML Model",      value: URL_SCORING_WEIGHTS.ml * 100 },
+      { name: "NLP Analysis",  value: URL_SCORING_WEIGHTS.text * 100 },
     ],
     [],
   );
@@ -106,7 +102,7 @@ export function ScoreBreakdown({ confidenceScore }: ScoreBreakdownProps) {
       <CardContent>
         <div
           role="img"
-          aria-label={`Score breakdown donut chart. Final risk score: ${Math.round(confidenceScore * 100)} percent. Text analysis weight: ${SCORING_WEIGHTS.text * 100}%, URL features weight: ${SCORING_WEIGHTS.url * 100}%, OSINT score weight: ${SCORING_WEIGHTS.osint * 100}%.`}
+          aria-label={`Score breakdown donut chart. Final risk score: ${Math.round(confidenceScore * 100)} percent. ML model weight: ${URL_SCORING_WEIGHTS.ml * 100}%, NLP analysis weight: ${URL_SCORING_WEIGHTS.text * 100}%.`}
           className="relative"
         >
           {/* Centre label overlay */}

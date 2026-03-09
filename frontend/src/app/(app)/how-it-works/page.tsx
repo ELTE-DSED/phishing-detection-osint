@@ -34,7 +34,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SCORING_WEIGHTS, THREAT_LEVEL_MAP } from "@/lib/constants";
+import { THREAT_LEVEL_MAP, URL_SCORING_WEIGHTS, MODEL_METRICS } from "@/lib/constants";
 import { PipelineDiagram } from "@/components/methodology";
 import { AnimatedSection } from "@/components/ui/animatedSection";
 
@@ -158,25 +158,25 @@ const OSINT_ITEMS = [
 const THREAT_LEVEL_TABLE = [
   {
     level: "safe" as const,
-    range: "0.00 – 0.39",
+    range: "0.00 – 0.29",
     action: "No action needed. The content appears legitimate.",
     iconComponent: ShieldCheck,
   },
   {
     level: "suspicious" as const,
-    range: "0.40 – 0.59",
+    range: "0.30 – 0.49",
     action: "Exercise caution. Verify the sender and do not click unknown links.",
     iconComponent: ShieldAlert,
   },
   {
     level: "dangerous" as const,
-    range: "0.60 – 0.79",
+    range: "0.50 – 0.69",
     action: "Likely phishing. Do not interact. Report to your IT department.",
     iconComponent: ShieldX,
   },
   {
     level: "critical" as const,
-    range: "0.80 – 1.00",
+    range: "0.70 – 1.00",
     action: "Confirmed threat. Block the sender, report immediately, and change any exposed credentials.",
     iconComponent: AlertTriangle,
   },
@@ -218,10 +218,11 @@ export default function HowItWorksPage() {
           <h2 className="text-lg font-semibold">Architecture Overview</h2>
         </div>
         <p className="max-w-prose text-sm text-muted-foreground">
-          Every submission passes through three independent analysis layers.
-          Each layer produces a partial risk score, which is combined using
-          a weighted formula to produce a final confidence score and threat
-          level classification.
+          Every submission passes through three independent analysis layers,
+          then a trained <strong>XGBoost</strong> machine-learning model
+          combines URL structural features and OSINT signals to produce
+          a phishing probability.  NLP text analysis supplements the ML
+          score for email and free-text inputs.
         </p>
         <PipelineDiagram />
       </AnimatedSection>
@@ -235,9 +236,6 @@ export default function HowItWorksPage() {
         <div className="flex items-center gap-2">
           <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           <h2 className="text-lg font-semibold">Text Analysis</h2>
-          <Badge variant="secondary" className="ml-auto tabular-nums">
-            Weight: {SCORING_WEIGHTS.text * 100}%
-          </Badge>
         </div>
         <p className="max-w-prose text-sm text-muted-foreground">
           Natural Language Processing with spaCy analyses the textual content
@@ -275,9 +273,6 @@ export default function HowItWorksPage() {
         <div className="flex items-center gap-2">
           <Link2 className="h-5 w-5 text-amber-600 dark:text-amber-400" />
           <h2 className="text-lg font-semibold">URL Feature Analysis</h2>
-          <Badge variant="secondary" className="ml-auto tabular-nums">
-            Weight: {SCORING_WEIGHTS.url * 100}%
-          </Badge>
         </div>
         <p className="max-w-prose text-sm text-muted-foreground">
           URLs are decomposed into structural features and compared against
@@ -312,9 +307,6 @@ export default function HowItWorksPage() {
         <div className="flex items-center gap-2">
           <Globe className="h-5 w-5 text-green-600 dark:text-green-400" />
           <h2 className="text-lg font-semibold">OSINT Enrichment</h2>
-          <Badge variant="secondary" className="ml-auto tabular-nums">
-            Weight: {SCORING_WEIGHTS.osint * 100}%
-          </Badge>
         </div>
         <p className="max-w-prose text-sm text-muted-foreground">
           Open Source Intelligence queries external threat-intelligence
@@ -352,93 +344,100 @@ export default function HowItWorksPage() {
           <h2 className="text-lg font-semibold">Scoring Algorithm</h2>
         </div>
         <p className="max-w-prose text-sm text-muted-foreground">
-          The three partial scores are combined using a weighted linear
-          formula. Each weight was determined through empirical evaluation
-          against a labelled phishing dataset.
+          The system uses an XGBoost gradient-boosted decision tree as its
+          primary classifier. The model was trained on {MODEL_METRICS.trainSamples.toLocaleString()} labelled
+          samples and evaluated on a held-out test set of {MODEL_METRICS.testSamples.toLocaleString()} samples.
         </p>
 
-        {/* Formula card */}
+        {/* ML Model card */}
         <Card className="overflow-hidden">
           <CardHeader>
-            <CardTitle className="text-base">Weighted Score Formula</CardTitle>
+            <CardTitle className="text-base">XGBoost ML Model</CardTitle>
             <CardDescription>
-              The final confidence score is a value between 0 and 1.
+              {MODEL_METRICS.featureCount} features extracted per URL — 17 structural + 4 OSINT.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Visual formula */}
-            <div className="rounded-lg border bg-muted/50 p-4 font-mono text-sm">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold text-foreground">
-                  finalScore
-                </span>
-                <span className="text-muted-foreground">=</span>
-                <span className="text-blue-600 dark:text-blue-400">
-                  textScore × {SCORING_WEIGHTS.text}
-                </span>
-                <span className="text-muted-foreground">+</span>
-                <span className="text-amber-600 dark:text-amber-400">
-                  urlScore × {SCORING_WEIGHTS.url}
-                </span>
-                <span className="text-muted-foreground">+</span>
-                <span className="text-green-600 dark:text-green-400">
-                  osintScore × {SCORING_WEIGHTS.osint}
-                </span>
-              </div>
+            {/* Model metrics */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: "Accuracy", value: MODEL_METRICS.accuracy },
+                { label: "F1 Score", value: MODEL_METRICS.f1 },
+                { label: "AUC-ROC", value: MODEL_METRICS.auc },
+                { label: "PR-AUC", value: MODEL_METRICS.prAuc },
+              ].map(({ label, value }) => (
+                <div
+                  key={label}
+                  className="rounded-lg border bg-muted/50 p-3 text-center"
+                >
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                  <p className="text-xl font-bold tabular-nums text-foreground">
+                    {(value * 100).toFixed(1)}%
+                  </p>
+                </div>
+              ))}
             </div>
 
-            {/* Weight breakdown */}
+            {/* Architecture diagram */}
             <div className="space-y-3">
-              <p className="text-sm font-medium">Weight Distribution</p>
+              <p className="text-sm font-medium">URL Analysis Architecture</p>
+              <div className="rounded-lg border bg-muted/50 p-4 font-mono text-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-semibold text-foreground">
+                    finalScore
+                  </span>
+                  <span className="text-muted-foreground">=</span>
+                  <span className="text-purple-600 dark:text-purple-400">
+                    mlPrediction × {URL_SCORING_WEIGHTS.ml}
+                  </span>
+                  <span className="text-muted-foreground">+</span>
+                  <span className="text-blue-600 dark:text-blue-400">
+                    nlpScore × {URL_SCORING_WEIGHTS.text}
+                  </span>
+                </div>
+              </div>
+
+              {/* Weight bar */}
               <div className="flex h-6 overflow-hidden rounded-full">
                 <div
+                  className="flex items-center justify-center bg-purple-500 text-[10px] font-medium text-white"
+                  style={{ width: `${URL_SCORING_WEIGHTS.ml * 100}%` }}
+                >
+                  {URL_SCORING_WEIGHTS.ml * 100}%
+                </div>
+                <div
                   className="flex items-center justify-center bg-blue-500 text-[10px] font-medium text-white"
-                  style={{ width: `${SCORING_WEIGHTS.text * 100}%` }}
+                  style={{ width: `${URL_SCORING_WEIGHTS.text * 100}%` }}
                 >
-                  {SCORING_WEIGHTS.text * 100}%
-                </div>
-                <div
-                  className="flex items-center justify-center bg-amber-500 text-[10px] font-medium text-white"
-                  style={{ width: `${SCORING_WEIGHTS.url * 100}%` }}
-                >
-                  {SCORING_WEIGHTS.url * 100}%
-                </div>
-                <div
-                  className="flex items-center justify-center bg-green-500 text-[10px] font-medium text-white"
-                  style={{ width: `${SCORING_WEIGHTS.osint * 100}%` }}
-                >
-                  {SCORING_WEIGHTS.osint * 100}%
+                  {URL_SCORING_WEIGHTS.text * 100}%
                 </div>
               </div>
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-purple-500" />
+                  ML Model (XGBoost)
+                </span>
+                <span className="flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full bg-blue-500" />
-                  Text Analysis
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-amber-500" />
-                  URL Features
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-green-500" />
-                  OSINT
+                  NLP Text Analysis
                 </span>
               </div>
             </div>
 
-            {/* Why these weights */}
+            {/* Why ML-primary */}
             <div className="rounded-lg border bg-primary/5 p-4 text-sm text-muted-foreground space-y-2">
               <p className="font-medium text-foreground flex items-center gap-2">
                 <Brain className="h-4 w-4 text-primary" />
-                Why these weights?
+                Why ML-primary scoring?
               </p>
               <p>
-                <strong>Text analysis (40%)</strong> captures the widest range
-                of social-engineering signals. <strong>OSINT (35%)</strong>
-                provides objective, ground-truth data from external services.
-                <strong> URL features (25%)</strong> supplement the other layers
-                with structural indicators that are cheap to compute and hard
-                for attackers to circumvent.
+                The <strong>XGBoost model (85%)</strong> captures complex
+                non-linear patterns across 21 features — URL structure,
+                encoding, entropy, and OSINT signals — that simple heuristics
+                miss. <strong>NLP analysis (15%)</strong> supplements with
+                social-engineering cues from surrounding text. For email/text
+                inputs without a URL, the system falls back to a weighted
+                combination of NLP, URL, and OSINT scores.
               </p>
             </div>
           </CardContent>
