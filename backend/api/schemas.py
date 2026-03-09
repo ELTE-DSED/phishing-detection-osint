@@ -131,6 +131,14 @@ class EmailRequest(BaseModel):
 # Response Schemas
 # =============================================================================
 
+class ModelStatusResponse(BaseModel):
+    """ML model status metadata."""
+
+    loaded: bool = Field(..., description="Whether the XGBoost model is loaded")
+    featureCount: int = Field(default=0, description="Number of input features")
+    featureNames: list[str] = Field(default_factory=list, description="Ordered feature names")
+
+
 class VerdictResult(BaseModel):
     """
     Final verdict of the phishing analysis.

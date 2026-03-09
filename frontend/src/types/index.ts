@@ -10,6 +10,7 @@ export type {
   FeatureSummary,
   AnalysisResponse,
   HealthResponse,
+  ModelStatusResponse,
   AnalyzeRequest,
   AnalyzeUrlRequest,
   AnalyzeEmailRequest,

@@ -15,6 +15,7 @@ import type {
   AnalyzeEmailRequest,
   AnalysisResponse,
   HealthResponse,
+  ModelStatusResponse,
 } from "@/types";
 
 /* ------------------------------------------------------------------ */
@@ -111,6 +112,21 @@ export async function pingApi(
 ): Promise<{ message: string }> {
   return apiClient<{ message: string }>(
     "/api/",
+    { method: "GET" },
+    { timeoutMs: 5_000, ...options },
+  );
+}
+
+/**
+ * Retrieve the ML model's availability and metadata.
+ *
+ * `GET /api/model/status`
+ */
+export async function getModelStatus(
+  options?: RequestOptions,
+): Promise<ModelStatusResponse> {
+  return apiClient<ModelStatusResponse>(
+    "/api/model/status",
     { method: "GET" },
     { timeoutMs: 5_000, ...options },
   );

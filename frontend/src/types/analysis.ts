@@ -80,6 +80,17 @@ export interface HealthResponse {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Model status                                                      */
+/* ------------------------------------------------------------------ */
+
+/** Response from `GET /api/model/status`. */
+export interface ModelStatusResponse {
+  loaded: boolean;
+  featureCount: number;
+  featureNames: string[];
+}
+
+/* ------------------------------------------------------------------ */
 /*  Request payloads                                                  */
 /* ------------------------------------------------------------------ */
 

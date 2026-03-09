@@ -17,6 +17,7 @@ export {
   analyzeEmail,
   checkHealth,
   pingApi,
+  getModelStatus,
 } from "./endpoints";
 
 /* Low-level client (rarely needed directly) */

@@ -72,7 +72,7 @@ class TestSettingsDefaults:
     def test_defaultApiSettings(self):
         """Default API settings should be secure for development."""
         settings = Settings()
-        assert settings.corsOrigins == "http://localhost:3000"
+        assert settings.corsOrigins == "http://localhost:3000,https://localhost:3000"
         assert settings.corsMethods == "GET,POST,OPTIONS"
         assert settings.corsHeaders == "Content-Type,Authorization"
         assert settings.apiRateLimit == 100

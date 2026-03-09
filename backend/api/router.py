@@ -22,8 +22,11 @@ from .schemas import (
     AnalyzeRequest,
     EmailRequest,
     HealthResponse,
+    ModelStatusResponse,
     UrlRequest,
 )
+
+from backend.ml.predictor import PhishingPredictor
 
 # Create router
 router = APIRouter(prefix="/api", tags=["phishing-detection"])
@@ -67,10 +70,11 @@ async def healthCheck() -> HealthResponse:
         }
     """
     # Check if services are available
+    predictor = PhishingPredictor()
     services = {
         "osint": True,  # OSINT modules are always available (graceful degradation)
         "analyzer": True,  # NLP analyzer is always available
-        "ml": True,  # ML features are always available
+        "ml": predictor.isLoaded,  # True only when XGBoost model is loaded
     }
     
     # Determine overall status
@@ -82,6 +86,30 @@ async def healthCheck() -> HealthResponse:
         version="1.0.0",
         timestamp=datetime.now(),
         services=services
+    )
+
+
+# =============================================================================
+# Model Status Endpoint
+# =============================================================================
+
+@router.get(
+    "/model/status",
+    response_model=ModelStatusResponse,
+    summary="ML Model Status",
+    description="Return metadata about the loaded XGBoost phishing model",
+)
+async def modelStatus() -> ModelStatusResponse:
+    """
+    Return the ML model's availability and metadata.
+
+    Useful for the frontend's methodology page and health indicators.
+    """
+    predictor = PhishingPredictor()
+    return ModelStatusResponse(
+        loaded=predictor.isLoaded,
+        featureCount=predictor._featureCount if predictor.isLoaded else 0,
+        featureNames=predictor.featureNames,
     )
 
 

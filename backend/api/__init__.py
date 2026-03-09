@@ -20,6 +20,7 @@ from .schemas import (
     EmailRequest,
     FeatureSummary,
     HealthResponse,
+    ModelStatusResponse,
     OsintSummary,
     UrlRequest,
     VerdictResult,
