@@ -18,7 +18,7 @@ from typing import Optional
 from urllib.parse import urlparse
 
 from backend.analyzer import AnalysisResult, ContentType, NlpAnalyzer
-from backend.ml import FeatureSet, RiskScore, extractFeatures, scoreUrl
+from backend.ml import FeatureSet, PhishingPredictor, RiskScore, extractFeatures, scoreUrl
 from backend.osint import OsintData, lookupDns, lookupReputation, lookupWhois
 
 from .schemas import (
@@ -33,13 +33,15 @@ from .schemas import (
 # Scoring Constants
 # =============================================================================
 
-TEXT_ANALYSIS_WEIGHT = 0.40
-URL_SCORE_WEIGHT = 0.25
-OSINT_SCORE_WEIGHT = 0.35
-PHISHING_THRESHOLD = 0.6
-THREAT_SAFE_UPPER = 0.4
-THREAT_SUSPICIOUS_UPPER = 0.6
-THREAT_DANGEROUS_UPPER = 0.8
+ML_PRIMARY_WEIGHT = 0.85
+TEXT_SUPPLEMENT_WEIGHT = 0.15
+TEXT_PRIMARY_WEIGHT = 0.55
+URL_SECONDARY_WEIGHT = 0.25
+OSINT_SECONDARY_WEIGHT = 0.20
+PHISHING_THRESHOLD = 0.5
+THREAT_SAFE_UPPER = 0.3
+THREAT_SUSPICIOUS_UPPER = 0.5
+THREAT_DANGEROUS_UPPER = 0.7
 RECENT_DOMAIN_AGE_DAYS = 30
 
 
@@ -238,36 +240,41 @@ class AnalysisOrchestrator:
         """
         Combine all analysis results into final verdict.
         
-        Scoring weights:
-        - Text analysis: 40%
-        - URL score: 25%
-        - OSINT data: 35%
+        For URL content the XGBoost model (via urlScore.finalScore) is
+        the primary signal (85 %) since it already encodes both URL
+        structure and OSINT features.  Text analysis contributes a
+        supplementary 15 %.
+        
+        For email / text content, NLP analysis is primary (55 %) while
+        URL and OSINT scores are secondary (25 % + 20 %).
         """
-        # Start with text analysis score
-        combinedScore = textAnalysis.confidenceScore * TEXT_ANALYSIS_WEIGHT
-        
-        # Add URL score if available
-        if urlScore:
-            combinedScore += urlScore.finalScore * URL_SCORE_WEIGHT
+        if urlScore is not None:
+            # URL analysis: ML model is the primary signal.  OSINT
+            # features are already embedded in the model's prediction,
+            # so adding OSINT a second time would double-count.
+            combinedScore = (
+                urlScore.finalScore * ML_PRIMARY_WEIGHT
+                + textAnalysis.confidenceScore * TEXT_SUPPLEMENT_WEIGHT
+            )
         else:
-            # Use feature set indicators if no URL score
+            # Email / text analysis: NLP is primary, URL features
+            # and OSINT are supplementary.
             featureScore = min(featureSet.totalRiskIndicators / 10, 1.0)
-            combinedScore += featureScore * URL_SCORE_WEIGHT
-        
-        # Add OSINT score if available
-        if osintData and osintData.reputation:
-            # Reputation score is 0-1 where 1 is good, so we invert it
-            osintScore = 1.0 - osintData.reputation.aggregateScore
-            combinedScore += osintScore * OSINT_SCORE_WEIGHT
-        else:
-            # Use domain age and privacy as fallback
-            if osintData and osintData.whois:
-                osintScore = 0.0
+            osintScore = 0.0
+            if osintData and osintData.reputation:
+                osintScore = osintData.reputation.aggregateScore
+            elif osintData and osintData.whois:
                 if osintData.whois.domainAgeDays and osintData.whois.domainAgeDays < RECENT_DOMAIN_AGE_DAYS:
                     osintScore += 0.3
                 if osintData.whois.isPrivacyProtected:
                     osintScore += 0.2
-                combinedScore += osintScore
+            combinedScore = (
+                textAnalysis.confidenceScore * TEXT_PRIMARY_WEIGHT
+                + featureScore * URL_SECONDARY_WEIGHT
+                + osintScore * OSINT_SECONDARY_WEIGHT
+            )
+        
+        combinedScore = min(max(combinedScore, 0.0), 1.0)
         
         # Determine if phishing
         isPhishing = combinedScore >= PHISHING_THRESHOLD
@@ -284,10 +291,10 @@ class AnalysisOrchestrator:
         
         # Combine reasons from all sources
         reasons: list[str] = []
-        reasons.extend(textAnalysis.reasons[:5])  # Top 5 from text analysis
+        reasons.extend(textAnalysis.reasons[:5])
         
         if urlScore:
-            reasons.extend(urlScore.reasons[:3])  # Top 3 from URL
+            reasons.extend(urlScore.reasons[:3])
         
         if osintData:
             if osintData.whois and osintData.whois.domainAgeDays and osintData.whois.domainAgeDays < RECENT_DOMAIN_AGE_DAYS:
@@ -297,14 +304,23 @@ class AnalysisOrchestrator:
             if osintData.reputation and osintData.reputation.maliciousCount > 0:
                 reasons.append(f"Found in {osintData.reputation.maliciousCount} blacklists")
         
-        # Generate recommendation
+        # ML model confidence
+        predictor = PhishingPredictor()
+        mlDetails = (
+            f"ML model confidence: {urlScore.finalScore:.1%}"
+            if urlScore and predictor.isLoaded
+            else None
+        )
+        if mlDetails:
+            reasons.insert(0, mlDetails)
+        
         recommendation = self._generateRecommendation(threatLevel)
         
         return VerdictResult(
             isPhishing=isPhishing,
             confidenceScore=round(combinedScore, 3),
             threatLevel=threatLevel,
-            reasons=reasons[:10],  # Limit to 10 reasons
+            reasons=reasons[:10],
             recommendation=recommendation
         )
     

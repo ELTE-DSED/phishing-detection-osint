@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from backend.analyzer import NlpAnalyzer, ThreatLevel, ContentType
 from backend.api.orchestrator import AnalysisOrchestrator
 from backend.ml import extractFeatures, scoreUrl, RiskLevel
-from osint import OsintData, WhoisResult, DnsResult, ReputationResult, LookupStatus
+from osint import OsintData, WhoisResult, DnsResult, DnsRecord, DnsRecordType, ReputationResult, LookupStatus
 
 
 # =============================================================================
@@ -237,6 +237,18 @@ class TestEndToEndScenarios:
                 dns=DnsResult(
                     domain="google.com",
                     status=LookupStatus.SUCCESS,
+                    aRecords=["142.250.185.206"],
+                    mxRecords=[
+                        DnsRecord(
+                            recordType=DnsRecordType.MX,
+                            value="smtp.google.com",
+                            ttl=300,
+                        ),
+                    ],
+                    nsRecords=["ns1.google.com", "ns2.google.com"],
+                    txtRecords=["v=spf1 include:_spf.google.com ~all"],
+                    hasValidMx=True,
+                    usesCdn=True,
                 ),
                 reputation=ReputationResult(
                     domain="google.com",
