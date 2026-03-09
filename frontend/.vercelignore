@@ -1,0 +1,2 @@
+# Ignore E2E tests during Vercel deployment
+e2e/

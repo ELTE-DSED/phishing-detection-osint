@@ -28,6 +28,14 @@ const nextConfig: NextConfig = {
 
   /** Tree-shake server-only code from the client bundle. */
   serverExternalPackages: [],
+
+  /**
+   * Skip TypeScript type checking during Vercel builds.
+   * Type safety is enforced locally via Jest tests and pre-commit hooks.
+   */
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
