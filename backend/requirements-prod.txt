@@ -19,6 +19,7 @@ httpx==0.26.0
 
 # NLP & Machine Learning (runtime only)
 spacy==3.7.2
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 scikit-learn==1.4.0
 xgboost>=2.0.0
 numpy>=1.26.0
