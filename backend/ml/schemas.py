@@ -485,6 +485,46 @@ class FeatureSet(BaseModel):
         """
         return self.toVector()[17:]
 
+    def toModelVector(self) -> np.ndarray:
+        """
+        Convert features to the 21-element vector the trained model expects.
+
+        The model was trained on 17 URL features + 4 informative OSINT
+        features (hasValidMx, usesCdn, dnsRecordCount, hasValidDns).
+        Eight zero-variance OSINT columns were dropped during training.
+
+        Returns:
+            np.ndarray of shape (21,)
+        """
+        uf = self.urlFeatures
+        of = self.osintFeatures
+
+        values: list[float] = [
+            float(uf.urlLength),
+            float(uf.domainLength),
+            float(uf.subdomainCount),
+            float(uf.pathDepth),
+            float(uf.hasIpAddress),
+            float(uf.hasAtSymbol),
+            float(uf.hasDoubleSlash),
+            float(uf.hasDashInDomain),
+            float(uf.hasUnderscoreInDomain),
+            float(uf.isHttps),
+            float(uf.hasPortNumber),
+            float(uf.hasSuspiciousTld),
+            float(uf.hasEncodedChars),
+            float(uf.hasSuspiciousKeywords),
+            float(uf.digitRatio),
+            float(uf.specialCharCount),
+            float(uf.queryParamCount),
+            float(of.hasValidMx),
+            float(of.usesCdn),
+            float(of.dnsRecordCount),
+            float(of.hasValidDns),
+        ]
+
+        return np.array(values, dtype=np.float64)
+
 
 # =============================================================================
 # Scoring Models

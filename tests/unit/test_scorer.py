@@ -9,6 +9,7 @@ Course: BSc Thesis - ELTE Faculty of Informatics
 """
 
 import pytest
+from unittest.mock import patch
 
 from backend.ml.schemas import (
     FeatureSet,
@@ -39,8 +40,16 @@ from backend.ml.scorer import (
 
 @pytest.fixture
 def scorer() -> PhishingScorer:
-    """Create a phishing scorer instance."""
-    return PhishingScorer()
+    """Create a phishing scorer with the ML predictor disabled.
+    
+    Unit tests exercise the deterministic heuristic scoring logic.
+    Integration tests (test_ml_pipeline.py) cover the full ML path.
+    """
+    instance = PhishingScorer()
+    instance._predictor = type(
+        "_StubPredictor", (), {"isLoaded": False}
+    )()
+    return instance
 
 
 @pytest.fixture
@@ -689,8 +698,10 @@ class TestConvenienceFunctions:
         assert isinstance(score, float)
         assert 0 <= score <= 1
     
-    def test_isPhishingFunction(self) -> None:
+    @patch("backend.ml.scorer.PhishingPredictor")
+    def test_isPhishingFunction(self, mockPredictorCls) -> None:
         """isPhishing function works."""
+        mockPredictorCls.return_value.isLoaded = False
         # Safe URL
         assert isPhishing("https://google.com") is False
         
@@ -747,8 +758,13 @@ class TestReasonPrioritization:
 class TestScorerIntegration:
     """Integration tests for complete scoring flow."""
     
-    def test_endToEndSafeUrl(self, scorer: PhishingScorer) -> None:
-        """End-to-end test with safe URL."""
+    @patch("backend.ml.scorer.PhishingPredictor")
+    def test_endToEndSafeUrl(self, mockPredictorCls, scorer: PhishingScorer) -> None:
+        """End-to-end test with safe URL (heuristic fallback, no OSINT)."""
+        mockPredictor = mockPredictorCls.return_value
+        mockPredictor.isLoaded = False
+        scorer._predictor = mockPredictor
+
         result = scorer.score("https://www.google.com/search?q=test")
         
         assert result.riskLevel in (RiskLevel.SAFE, RiskLevel.LOW)

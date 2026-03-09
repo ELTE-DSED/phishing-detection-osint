@@ -98,6 +98,12 @@ from .urlAnalyzer import (
 )
 
 # =============================================================================
+# Predictor Export
+# =============================================================================
+
+from .predictor import PhishingPredictor
+
+# =============================================================================
 # Scorer Exports
 # =============================================================================
 
@@ -165,6 +171,7 @@ __all__ = [
     "LEGITIMATE_BRAND_DOMAINS",
     # --- Scorer ---
     "PhishingScorer",
+    "PhishingPredictor",
     "ScoringWeights",
     "RISK_THRESHOLDS",
     "scoreUrl",

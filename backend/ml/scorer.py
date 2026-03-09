@@ -2,31 +2,25 @@
 Phishing Risk Scorer Module
 ============================
 
-Combines features from URL analysis and OSINT data to produce
-a final phishing risk score with full explainability.
+Uses a trained XGBoost classifier for phishing probability prediction,
+combined with heuristic rule-based explainability to provide both
+accurate scoring and actionable reasons.
 
-The scorer uses a weighted combination approach based on research
-into phishing detection, with configurable weights for each component.
-
-Scoring Model:
-- URL Structural Score: 25% (from urlAnalyzer)
-- OSINT Score: 35% (domain age, reputation, DNS)
-- Feature-based Score: 40% (extracted features)
-
-Design Principles:
-- Explainable scoring with detailed component breakdown
-- Configurable weights for different use cases
-- Graceful degradation when data is incomplete
-- Clear risk level classification
+Scoring Architecture:
+- Primary score: XGBoost model prediction (probability 0.0 – 1.0)
+- Explainability: Heuristic analysis of URL, OSINT, and feature signals
+- Graceful fallback: Weighted heuristic scoring when no model is available
 
 Author: Ishaq Muhammad (PXPRGK)
 Course: BSc Thesis - ELTE Faculty of Informatics
 """
 
+import logging
 from dataclasses import dataclass
 from typing import Optional
 
 from .featureExtractor import FeatureExtractor
+from .predictor import PhishingPredictor
 from .schemas import (
     FeatureCategory,
     FeatureSet,
@@ -38,6 +32,8 @@ from .schemas import (
     UrlFeatures,
 )
 from .urlAnalyzer import UrlAnalyzer
+
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -416,7 +412,7 @@ class PhishingScorer:
         Initialize the phishing scorer.
         
         Args:
-            weights: Scoring weights (uses defaults if None)
+            weights: Scoring weights (fallback heuristic weights)
             featureExtractor: Feature extractor instance
             urlAnalyzer: URL analyzer instance
         """
@@ -429,6 +425,7 @@ class PhishingScorer:
         self._urlAnalyzer = (
             urlAnalyzer if urlAnalyzer is not None else UrlAnalyzer()
         )
+        self._predictor = PhishingPredictor()
     
     def score(
         self,
@@ -491,8 +488,10 @@ class PhishingScorer:
         """
         Core scoring logic shared by score() and scoreWithFeatures().
         
-        Combines URL structure, OSINT, and feature-based scores
-        into a final weighted risk assessment.
+        Uses the trained XGBoost model for the primary phishing probability.
+        Heuristic analysis is preserved for generating human-readable
+        explanation factors.  Falls back to weighted heuristic scoring
+        when no trained model is available.
         
         Args:
             features: Extracted feature set
@@ -501,17 +500,32 @@ class PhishingScorer:
         Returns:
             RiskScore: Complete risk assessment with component breakdown
         """
-        # Calculate component scores
+        # Collect heuristic factors for explainability (always)
         urlScore, urlFactors = calculateUrlStructureScore(
             features.urlFeatures,
             urlAnalysis,
         )
-        
         osintScore, osintFactors = calculateOsintScore(features.osintFeatures)
-        
         featureScore, featureFactors = calculateFeatureScore(features)
-        
-        # Create score components
+
+        # Primary score: ML model prediction
+        if self._predictor.isLoaded:
+            modelVector = features.toModelVector()
+            finalScore = self._predictor.predict(modelVector)
+            scoringMethod = "xgboost"
+        else:
+            # Fallback: weighted heuristic combination
+            logger.warning("No ML model loaded — using heuristic fallback scoring")
+            finalScore = (
+                urlScore * self._weights.urlStructure
+                + osintScore * self._weights.osintDerived
+                + featureScore * self._weights.featureBased
+            )
+            scoringMethod = "heuristic"
+
+        finalScore = min(max(finalScore, 0.0), 1.0)
+
+        # Create score components (for explainability breakdown)
         components = [
             ScoreComponent(
                 name="URL Structure",
@@ -536,17 +550,12 @@ class PhishingScorer:
             ),
         ]
         
-        # Calculate weighted final score
-        finalScore = sum(comp.weightedScore for comp in components)
-        finalScore = min(max(finalScore, 0.0), 1.0)
-        
-        # Determine risk level
         riskLevel = determineRiskLevel(finalScore)
-        
-        # Calculate confidence
         confidence = calculateConfidence(features, urlAnalysis)
+
+        if scoringMethod == "xgboost":
+            confidence = min(confidence + 0.2, 1.0)
         
-        # Compile all reasons (sorted by severity)
         allFactors = urlFactors + osintFactors + featureFactors
         reasons = self._prioritizeReasons(allFactors, riskLevel)
         
