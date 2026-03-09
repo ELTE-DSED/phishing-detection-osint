@@ -192,7 +192,7 @@ class Settings(BaseSettings):
     # =========================================================================
     
     corsOrigins: str = Field(
-        default="http://localhost:3000,https://localhost:3000",
+        default="*",
         description="Allowed CORS origins (comma-separated or * for all)"
     )
     
