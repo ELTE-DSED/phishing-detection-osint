@@ -38,6 +38,10 @@ from .schemas import (
     # Enumerations
     FeatureCategory,
     RiskLevel,
+    # Feature name constants
+    FEATURE_NAMES,
+    URL_FEATURE_NAMES,
+    OSINT_FEATURE_NAMES,
     # URL Features
     UrlFeatures,
     # OSINT Features
@@ -124,6 +128,10 @@ __all__ = [
     # --- Enumerations ---
     "FeatureCategory",
     "RiskLevel",
+    # --- Feature Name Constants ---
+    "FEATURE_NAMES",
+    "URL_FEATURE_NAMES",
+    "OSINT_FEATURE_NAMES",
     # --- Feature Models ---
     "UrlFeatures",
     "OsintFeatures",

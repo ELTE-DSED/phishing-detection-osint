@@ -20,7 +20,50 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
+import numpy as np
 from pydantic import BaseModel, Field, field_validator
+
+
+# =============================================================================
+# Canonical Feature Names (ORDER MATTERS — must match model input)
+# =============================================================================
+
+FEATURE_NAMES: list[str] = [
+    # URL structural features (17)
+    "urlLength",
+    "domainLength",
+    "subdomainCount",
+    "pathDepth",
+    "hasIpAddress",
+    "hasAtSymbol",
+    "hasDoubleSlash",
+    "hasDashInDomain",
+    "hasUnderscoreInDomain",
+    "isHttps",
+    "hasPortNumber",
+    "hasSuspiciousTld",
+    "hasEncodedChars",
+    "hasSuspiciousKeywords",
+    "digitRatio",
+    "specialCharCount",
+    "queryParamCount",
+    # OSINT-derived features (12)
+    "domainAgeDays",
+    "isNewlyRegistered",
+    "isYoungDomain",
+    "hasPrivacyProtection",
+    "hasValidMx",
+    "usesCdn",
+    "dnsRecordCount",
+    "hasValidDns",
+    "reputationScore",
+    "maliciousSourceCount",
+    "isKnownMalicious",
+    "hasValidWhois",
+]
+
+URL_FEATURE_NAMES: list[str] = FEATURE_NAMES[:17]
+OSINT_FEATURE_NAMES: list[str] = FEATURE_NAMES[17:]
 
 
 # =============================================================================
@@ -372,6 +415,75 @@ class FeatureSet(BaseModel):
     def hasCompleteData(self) -> bool:
         """Check if all data sources provided valid data."""
         return self.osintFeatures.dataCompleteness == 1.0
+
+    def toVector(self) -> np.ndarray:
+        """
+        Convert features to a numpy array in canonical order.
+
+        Returns a 1D float64 array of length 29 matching FEATURE_NAMES.
+        Boolean features are cast to 0.0/1.0.
+        None values (e.g., unknown domainAgeDays) become NaN, which
+        XGBoost handles natively as missing values.
+
+        Returns:
+            np.ndarray of shape (29,)
+        """
+        uf = self.urlFeatures
+        of = self.osintFeatures
+
+        values: list[float] = [
+            # URL structural (17)
+            float(uf.urlLength),
+            float(uf.domainLength),
+            float(uf.subdomainCount),
+            float(uf.pathDepth),
+            float(uf.hasIpAddress),
+            float(uf.hasAtSymbol),
+            float(uf.hasDoubleSlash),
+            float(uf.hasDashInDomain),
+            float(uf.hasUnderscoreInDomain),
+            float(uf.isHttps),
+            float(uf.hasPortNumber),
+            float(uf.hasSuspiciousTld),
+            float(uf.hasEncodedChars),
+            float(uf.hasSuspiciousKeywords),
+            float(uf.digitRatio),
+            float(uf.specialCharCount),
+            float(uf.queryParamCount),
+            # OSINT-derived (12)
+            float(of.domainAgeDays) if of.domainAgeDays is not None else float("nan"),
+            float(of.isNewlyRegistered),
+            float(of.isYoungDomain),
+            float(of.hasPrivacyProtection),
+            float(of.hasValidMx),
+            float(of.usesCdn),
+            float(of.dnsRecordCount),
+            float(of.hasValidDns),
+            float(of.reputationScore),
+            float(of.maliciousSourceCount),
+            float(of.isKnownMalicious),
+            float(of.hasValidWhois),
+        ]
+
+        return np.array(values, dtype=np.float64)
+
+    def toUrlVector(self) -> np.ndarray:
+        """
+        Convert only URL features to numpy array (for ablation study).
+
+        Returns:
+            np.ndarray of shape (17,)
+        """
+        return self.toVector()[:17]
+
+    def toOsintVector(self) -> np.ndarray:
+        """
+        Convert only OSINT features to numpy array (for ablation study).
+
+        Returns:
+            np.ndarray of shape (12,)
+        """
+        return self.toVector()[17:]
 
 
 # =============================================================================
