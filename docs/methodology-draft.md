@@ -80,7 +80,10 @@ confidence score and threat-level classification.
 | Data Tables | TanStack Table      | 8.21.3    | Headless, sortable, filterable tables      |
 | Backend     | FastAPI             | 0.109.0   | Async Python API, auto-generated OpenAPI   |
 | NLP         | spaCy               | 3.7.2     | Industrial-grade NLP, custom pipelines     |
-| ML          | scikit-learn        | 1.4.0     | Feature extraction and scoring utilities   |
+| ML          | XGBoost             | 3.2.0     | Gradient boosted trees, high accuracy      |
+| ML Explain  | SHAP                | 0.49.1    | TreeExplainer for feature importance       |
+| ML Tuning   | Optuna              | 4.7.0     | Bayesian hyperparameter optimization       |
+| ML Utils    | scikit-learn        | 1.4.0     | Feature extraction and scoring utilities   |
 | OSINT       | python-whois        | 0.8.0     | WHOIS domain registration data             |
 | DNS         | dnspython           | 2.5.0     | DNS record resolution and validation       |
 | HTTP        | aiohttp             | 3.9.1     | Async HTTP for external API calls          |
@@ -113,14 +116,14 @@ confidence score and threat-level classification.
 ### 2.3 Development Workflow
 
 - **Version Control:** Git with GitHub hosting, milestone-based issue tracking.
-- **Issue Tracking:** 57 issues across 4 milestones, each linked to commits.
+- **Issue Tracking:** 76 issues across 5 milestones, each linked to commits.
 - **Code Quality:** Two custom MCP servers:
   - `thesis-project-manager.py` — milestone tracking, issue management,
     git commit linkage
   - `thesis-code-quality.py` — dead code detection, syntax checking,
     function search, automated test execution
 - **Testing Pipeline:** pytest (backend, 593 tests), Jest (frontend unit,
-  128 tests), Playwright (E2E, 28 tests)
+  133 tests), Playwright (E2E, 28 tests)
 
 ---
 
@@ -186,36 +189,67 @@ From the raw OSINT data, the following features are derived:
 
 ---
 
-## 5. Scoring Algorithm
+## 5. Scoring Architecture
 
-### 5.1 Mathematical Formulation
+### 5.1 ML-Primary Approach
 
-The final confidence score is computed as a weighted linear combination:
+Rather than a simple weighted average of heuristic scores, the system uses a
+trained XGBoost classifier as the primary scoring engine. The model was trained
+on 23,374 labelled URLs with 21 features and optimized via Optuna (50 trials,
+5-fold cross-validation).
 
-$$S_{final} = w_{text} \cdot S_{text} + w_{url} \cdot S_{url} + w_{osint} \cdot S_{osint}$$
+### 5.2 Mathematical Formulation
+
+**URL Analysis (ML-primary):**
+
+$$S_{url} = w_{ml} \cdot P_{xgb}(\mathbf{x}) + w_{nlp} \cdot S_{text}$$
 
 Where:
+- $P_{xgb}(\mathbf{x}) \in [0, 1]$ — XGBoost phishing probability for feature vector $\mathbf{x}$
 - $S_{text} \in [0, 1]$ — NLP text analysis score
-- $S_{url} \in [0, 1]$ — URL structural feature score
-- $S_{osint} \in [0, 1]$ — OSINT enrichment score
-- $w_{text} = 0.40$, $w_{url} = 0.25$, $w_{osint} = 0.35$
+- $w_{ml} = 0.85$, $w_{nlp} = 0.15$
 
-### 5.2 Weight Justification
+**Text Analysis (NLP-primary, when no URL is present):**
 
-| Weight   | Value | Rationale                                                   |
-|----------|-------|-------------------------------------------------------------|
-| Text     | 40%   | Captures the widest range of social engineering signals      |
-| OSINT    | 35%   | Provides objective ground-truth from external sources        |
-| URL      | 25%   | Structural indicators cheap to compute, hard to circumvent   |
+$$S_{text} = w_{t} \cdot S_{nlp} + w_{u} \cdot S_{url} + w_{o} \cdot S_{osint}$$
 
-### 5.3 Threat-Level Classification
+Where:
+- $w_{t} = 0.55$, $w_{u} = 0.25$, $w_{o} = 0.20$
+
+### 5.3 Feature Vector
+
+The 21-dimensional feature vector $\mathbf{x}$ consists of:
+
+| # | Feature | Type | Source |
+|---|---------|------|--------|
+| 1–17 | URL structural features | int/float/bool | URL parser |
+| 18 | `hasValidMx` | bool | DNS (MX records) |
+| 19 | `usesCdn` | bool | DNS (CNAME/NS) |
+| 20 | `dnsRecordCount` | int | DNS (all types) |
+| 21 | `hasValidDns` | bool | DNS (A records) |
+
+### 5.4 Hyperparameters (Optuna-optimized)
+
+| Parameter | Value |
+|-----------|-------|
+| `max_depth` | 7 |
+| `learning_rate` | 0.177 |
+| `n_estimators` | 700 |
+| `subsample` | 0.945 |
+| `colsample_bytree` | 0.873 |
+| `min_child_weight` | 1 |
+| `gamma` | 0.198 |
+| `reg_alpha` | 0.0003 |
+| `reg_lambda` | 0.397 |
+
+### 5.5 Threat-Level Classification
 
 | Threat Level  | Score Range  | Description                                          |
 |---------------|--------------|------------------------------------------------------|
-| **Safe**       | 0.00 – 0.39 | No significant phishing indicators detected          |
-| **Suspicious** | 0.40 – 0.59 | Some indicators present; exercise caution             |
-| **Dangerous**  | 0.60 – 0.79 | Strong phishing indicators; avoid interaction         |
-| **Critical**   | 0.80 – 1.00 | Confirmed phishing threat; immediate action required  |
+| **Safe**       | 0.00 – 0.29 | No significant phishing indicators detected          |
+| **Suspicious** | 0.30 – 0.49 | Some indicators present; exercise caution             |
+| **Dangerous**  | 0.50 – 0.69 | Strong phishing indicators; avoid interaction         |
+| **Critical**   | 0.70 – 1.00 | Confirmed phishing threat; immediate action required  |
 
 ---
 
@@ -287,10 +321,10 @@ RootLayout
 
 | Test Layer         | Framework     | Test Count | Status    |
 |--------------------|---------------|------------|-----------|
-| Backend Unit       | pytest        | 593        | ✅ Passing |
-| Frontend Unit      | Jest + RTL    | 128        | ✅ Passing |
-| Frontend E2E       | Playwright    | 28         | ✅ Passing |
-| **Total**          |               | **749**    | ✅ All Pass|
+| Backend Unit       | pytest        | 593        | Passing |
+| Frontend Unit      | Jest + RTL    | 133        | Passing |
+| Frontend E2E       | Playwright    | 28         | Passing |
+| **Total**          |               | **754**    | All Pass|
 
 ### 7.2 Backend Test Breakdown
 
@@ -345,53 +379,74 @@ RootLayout
 
 | Metric                   | Count  |
 |--------------------------|--------|
-| Backend source files     | 20     |
-| Frontend source files    | ~50    |
+| Backend source files     | 30     |
+| Frontend source files    | 94     |
+| Backend lines of code    | 12,084 |
+| Frontend lines of code   | 10,078 |
+| Test code lines          | 9,700  |
 | Backend modules          | 4 (api, ml, osint, analyzer) |
 | Frontend routes          | 10     |
-| API endpoints            | 9      |
-| GitHub issues (closed)   | 54/57  |
-| Git commits              | 50+    |
+| API endpoints            | 11     |
+| GitHub issues (closed)   | 76     |
+| Git commits              | 85+    |
 
 ---
 
-## 8. Evaluation Plan (Milestone 4)
+## 8. ML Model Evaluation Results
 
-### 8.1 Accuracy Evaluation
+### 8.1 Model Performance
 
-The system will be evaluated against a labelled dataset of known phishing and
-legitimate URLs/emails:
+The XGBoost classifier was trained on 23,374 samples and evaluated on a
+held-out test set of 5,009 samples:
 
-1. **Dataset:** Curate 200+ samples (100 phishing, 100 legitimate) from:
-   - PhishTank verified phishing URLs
-   - Alexa Top 1000 for legitimate URLs
-   - Public phishing email corpuses
+| Metric | Train | Validation | Test |
+|--------|-------|------------|------|
+| Accuracy | 98.14% | 96.41% | **96.45%** |
+| Precision | 99.22% | 97.51% | **97.86%** |
+| Recall | 97.04% | 95.25% | **94.97%** |
+| F1-Score | 98.12% | 96.37% | **96.39%** |
+| ROC-AUC | 99.88% | 99.50% | **99.41%** |
 
-2. **Metrics:**
-   - Accuracy, Precision, Recall, F1-Score
-   - False positive rate (legitimate content flagged as phishing)
-   - False negative rate (phishing content missed)
+### 8.2 Dataset
 
-3. **Ablation Study:** Evaluate the contribution of each layer independently:
-   - Text-only scoring
-   - URL-only scoring
-   - OSINT-only scoring
-   - Combined scoring (full pipeline)
+- **Total feature-engineered URLs:** 150,391
+- **Training set:** 23,374 samples (70%)
+- **Validation set:** 5,009 samples (15%)
+- **Test set:** 5,009 samples (15%)
+- **Phishing sources:** PhishTank verified entries
+- **Legitimate sources:** Tranco Top Sites + synthetic path augmentation
 
-### 8.2 Performance Evaluation
+### 8.3 Hyperparameter Optimization
 
-- Response time distribution for single URL analysis
-- Throughput for batch analysis (50 URLs)
-- Memory consumption under load
-- External API latency impact (WHOIS, VirusTotal, AbuseIPDB)
+- **Framework:** Optuna (Bayesian optimization)
+- **Trials:** 50
+- **Cross-validation:** 5-fold stratified
+- **Best trial:** #43 (AUC = 0.9943)
+- **Training time:** 222.5 seconds
 
-### 8.3 Usability Evaluation
+### 8.4 OSINT Feature Contribution
 
-- Lighthouse accessibility score
-- Keyboard navigability audit
-- Mobile responsiveness on 3 viewport sizes
-- User comprehension of threat levels and recommendations
+4 OSINT features were included in the final model (out of 12 candidates):
+- `hasValidMx`, `usesCdn`, `dnsRecordCount`, `hasValidDns`
+- 8 features were dropped due to zero variance in the training data
+  (e.g., `domainAgeDays`, `reputationScore`, `isKnownMalicious`)
+
+### 8.5 Model Explainability
+
+SHAP (SHapley Additive exPlanations) TreeExplainer is used to provide
+per-prediction feature importance. The top contributing features are:
+- `urlLength`, `hasIpAddress`, `digitRatio`, `pathDepth`, `specialCharCount`
+
+### 8.6 Deployment Architecture
+
+| Service | Platform | Region |
+|---------|----------|--------|
+| Frontend | Vercel (Edge) | Auto |
+| Backend API | Render.com (Free tier) | Frankfurt |
+
+- **Live Frontend:** https://project-4soy4.vercel.app
+- **Live Backend:** https://phishguard-api-upl2.onrender.com
 
 ---
 
-*Draft prepared for Milestone 3 submission — March 2026*
+*Updated for Milestone 5 completion — March 2026*

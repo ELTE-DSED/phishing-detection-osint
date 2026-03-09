@@ -59,36 +59,38 @@ Publicly available information collected from open sources to enrich threat inte
 - Grammar/spelling errors
 - Sender name vs email mismatch
 
-#### URL-Based Features
-- URL length (phishing URLs tend to be longer)
-- Number of dots/subdomains
-- Presence of IP address in URL
-- Use of URL shorteners
-- HTTPS vs HTTP
-- Special characters (@, -, numbers)
+#### URL Structural Features (17 features)
+- `urlLength`, `domainLength` — length-based anomalies
+- `subdomainCount`, `pathDepth` — structural complexity
+- `hasIpAddress`, `hasAtSymbol`, `hasDoubleSlash` — redirect tricks
+- `hasDashInDomain`, `hasUnderscoreInDomain` — impersonation indicators
+- `isHttps`, `hasPortNumber` — protocol anomalies
+- `hasSuspiciousTld`, `hasEncodedChars` — evasion techniques
+- `hasSuspiciousKeywords` — keyword-based detection
+- `digitRatio`, `specialCharCount`, `queryParamCount` — statistical features
 
-#### OSINT-Based Features (Our Enhancement)
-- Domain age in days
-- Registrar reputation score
-- DNS record completeness
-- Blacklist presence
-- SSL validity
-- Historical WHOIS changes
+#### OSINT Features (4 features, collected in real-time)
+- `hasValidMx` — mail server configuration exists
+- `usesCdn` — domain uses CDN (Cloudflare, Akamai, etc.)
+- `dnsRecordCount` — number of DNS records
+- `hasValidDns` — domain resolves successfully
 
 ### ML Algorithms Comparison
 
 | Algorithm | Pros | Cons | Use Case |
 |-----------|------|------|----------|
-| **Random Forest** | High accuracy, handles mixed features | Less interpretable | Our primary model |
+| **Random Forest** | High accuracy, handles mixed features | Less interpretable | Baseline comparison |
 | **Logistic Regression** | Fast, interpretable | Limited for complex patterns | Baseline comparison |
 | **SVM** | Good for high-dimensional data | Slow training on large datasets | Alternative model |
-| **XGBoost** | State-of-the-art accuracy | Overfitting risk, complex tuning | Advanced comparison |
+| **XGBoost** | State-of-the-art accuracy, handles mixed features | Complex tuning | Our primary model |
 | **Neural Networks** | Can learn complex patterns | Needs large data, black-box | Future work |
 
 ### Our Approach
-1. **Baseline Model**: Text + URL features only (scikit-learn)
-2. **Enhanced Model**: Text + URL + OSINT features
-3. **Compare**: Accuracy, precision, recall, F1-score
+1. **Feature Engineering**: 21 features (17 URL structural + 4 OSINT)
+2. **Hyperparameter Optimization**: Optuna with 50 trials, 5-fold CV
+3. **Model Training**: XGBoost classifier on 23,374 samples
+4. **Evaluation**: Test set (5,009 samples) — 96.45% accuracy, 99.41% AUC-ROC
+5. **Explainability**: SHAP TreeExplainer for feature importance
 
 ---
 
@@ -111,12 +113,12 @@ Publicly available information collected from open sources to enrich threat inte
 | **OpenPhish** | Community-driven phishing feed | Real-time |
 
 ### Data Preprocessing Pipeline
-1. Clean and normalize URLs
-2. Extract domain from full URL
-3. Collect OSINT features (WHOIS, DNS)
-4. Extract text features if email content available
-5. Label: 1 (phishing) / 0 (legitimate)
-6. Split: 80% train, 20% test
+1. Collect phishing URLs from PhishTank (verified entries)
+2. Collect legitimate URLs from Tranco Top Sites + synthetic path augmentation
+3. Extract 21 features per URL (17 structural + 4 OSINT via DNS)
+4. Label: 1 (phishing) / 0 (legitimate)
+5. Split: 70% train (23,374), 15% validation (5,009), 15% test (5,009)
+6. Total feature-engineered samples: 150,391
 
 ---
 
@@ -178,19 +180,26 @@ Features are extracted at two levels:
 | reputationScore | Multi-source | >0.5 → suspicious |
 | inBlacklists | Reputation | True → known malicious |
 
-### Scoring Algorithm
+### Scoring Architecture
 
-Final risk score combines three weighted components:
+The system uses an **ML-primary scoring architecture**. For URL analysis, the
+trained XGBoost classifier provides the primary score:
+
 ```
-finalScore = (textAnalysisScore × 0.40) + (urlFeatureScore × 0.25) + (osintScore × 0.35)
+URL Analysis:  finalScore = mlPrediction × 0.85 + nlpScore × 0.15
+Text Analysis: finalScore = nlpScore × 0.55 + urlScore × 0.25 + osintScore × 0.20
 ```
+
+The ML model operates on a 21-feature vector (17 URL structural + 4 OSINT)
+and outputs a phishing probability. A threshold of 0.5 determines the
+binary classification.
 
 | Score Range | Threat Level | Action |
 |-------------|-------------|--------|
-| 0.0 – 0.4 | Safe | Proceed normally |
-| 0.4 – 0.6 | Suspicious | Verify source |
-| 0.6 – 0.8 | Dangerous | Do not interact |
-| 0.8 – 1.0 | Critical | Report immediately |
+| 0.00 – 0.29 | Safe | Proceed normally |
+| 0.30 – 0.49 | Suspicious | Verify source |
+| 0.50 – 0.69 | Dangerous | Do not interact |
+| 0.70 – 1.00 | Critical | Report immediately |
 
 ### Comparison: Rule-Based NLP vs ML Classification
 
@@ -243,27 +252,35 @@ The analyzer module uses an abstract base class (`BaseAnalyzer`), enabling easy 
 ## 6. Technology Stack
 
 ### Backend
-| Technology | Purpose | Why Chosen |
-|------------|---------|------------|
-| **Python 3.10+** | Core language | ML ecosystem, async support |
-| **FastAPI** | REST API framework | Fast, modern, async, auto-docs |
-| **scikit-learn** | ML models | Industry standard, easy to use |
-| **spaCy** | NLP processing | Fast, production-ready |
-| **python-whois** | WHOIS lookups | Simple API |
-| **dnspython** | DNS resolution | Comprehensive DNS library |
+| Technology | Version | Purpose |
+|------------|---------|----------|
+| **Python** | 3.10 | Core language — ML ecosystem, async support |
+| **FastAPI** | 0.109.0 | REST API — async, auto-docs, Pydantic validation |
+| **XGBoost** | 3.2.0 | ML classifier — gradient boosted trees |
+| **spaCy** | 3.7.2 | NLP — rule-based phishing indicator detection |
+| **SHAP** | 0.49.1 | Model explainability — TreeExplainer |
+| **Optuna** | 4.7.0 | Hyperparameter optimization — Bayesian search |
+| **scikit-learn** | 1.4.0 | ML utilities — metrics, preprocessing |
+| **python-whois** | 0.8.0 | WHOIS domain registration lookups |
+| **dnspython** | 2.5.0 | DNS record resolution and validation |
+| **Pydantic** | 2.5.3 | Data validation and settings management |
 
 ### Frontend
-| Technology | Purpose | Why Chosen |
-|------------|---------|------------|
-| **HTML/CSS/JS** | Web UI | Simple, no build step for MVP |
-| **React (future)** | Advanced UI | Component-based, scalable |
+| Technology | Version | Purpose |
+|------------|---------|----------|
+| **Next.js** | 16.1.6 | React framework — App Router, SSR, Turbopack |
+| **React** | 19.2.3 | UI library — server components, hooks |
+| **TypeScript** | 5.x | Type safety across entire frontend |
+| **Tailwind CSS** | 4.x | Utility-first styling with dark mode |
+| **shadcn/ui** | 4.x | Accessible component library (base-nova) |
+| **Recharts** | 2.x | SVG charts for score visualisation |
+| **Motion** | 12.35 | Page transitions and animations |
 
-### APIs
-| API | Purpose | Cost |
-|-----|---------|------|
-| **Google Safe Browsing** | URL reputation | Free (quota limits) |
-| **PhishTank** | Phishing database | Free (with attribution) |
-| **VirusTotal (optional)** | Multi-engine scan | Free tier available |
+### External APIs
+| API | Purpose | Usage |
+|-----|---------|-------|
+| **VirusTotal** | Multi-engine malware scan | Optional, free tier |
+| **AbuseIPDB** | IP abuse confidence score | Optional, free tier |
 
 ---
 
@@ -276,13 +293,15 @@ The analyzer module uses an abstract base class (`BaseAnalyzer`), enabling easy 
 - **F1-Score** - Harmonic mean of precision and recall
 - **ROC-AUC** - Model discrimination ability
 
-### Our Target
-| Metric | Target | Baseline (text-only) | Enhanced (OSINT) |
-|--------|--------|---------------------|------------------|
-| Accuracy | >95% | ~92% | ~96% (expected) |
-| Precision | >90% | ~88% | ~94% (expected) |
-| Recall | >95% | ~90% | ~96% (expected) |
-| F1-Score | >93% | ~89% | ~95% (expected) |
+### Achieved Results (XGBoost on Test Set — 5,009 samples)
+| Metric | Target | Achieved |
+|--------|--------|----------|
+| Accuracy | >95% | **96.45%** |
+| Precision | >90% | **97.86%** |
+| Recall | >95% | **94.97%** |
+| F1-Score | >93% | **96.39%** |
+| ROC-AUC | >95% | **99.41%** |
+| PR-AUC | >95% | **99.48%** |
 
 ---
 
@@ -322,4 +341,4 @@ The analyzer module uses an abstract base class (`BaseAnalyzer`), enabling easy 
 ---
 
 *Research compiled for BSc Thesis: Phishing Detection Using OSINT-Enhanced Features*
-*ELTE Faculty of Informatics - Updated February 2026*
+*ELTE Faculty of Informatics — Updated March 2026*

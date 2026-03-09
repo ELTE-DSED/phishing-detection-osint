@@ -2,6 +2,12 @@
 
 BSc Thesis Project — Faculty of Informatics, Eötvös Loránd University (ELTE)
 
+## Live Demo
+
+- **Frontend:** https://project-4soy4.vercel.app
+- **Backend API:** https://phishguard-api-upl2.onrender.com
+- **API Docs:** https://phishguard-api-upl2.onrender.com/docs
+
 ## 📋 Overview
 
 PhishGuard is a full-stack phishing detection system that combines a
@@ -23,7 +29,7 @@ the final score, supplemented by NLP text analysis at 15%.
 - **Batch analysis** — Process up to 50 URLs in parallel
 - **Interactive visualisations** — Score charts, threat gauges, confidence bars
 - **Full-featured UI** — Dark/light theme, keyboard shortcuts, responsive design
-- **749+ automated tests** — Backend (593), frontend unit (133), E2E (28)
+- **754 automated tests** — Backend (593), frontend unit (133), E2E (28)
 
 ## 🛠️ Tech Stack
 
@@ -63,7 +69,7 @@ the final score, supplemented by NLP text analysis at 15%.
 │   │   ├── lib/          # API client, stores, utilities
 │   │   └── types/        # TypeScript type definitions
 │   ├── e2e/              # Playwright E2E tests (28 tests)
-│   ├── __tests__/        # Jest unit tests (128 tests)
+│   ├── __tests__/        # Jest unit tests (133 tests)
 │   └── public/           # Static assets (logo, favicon, PWA icons)
 ├── tests/                # Backend tests (593 tests)
 │   ├── unit/             # Unit tests for all modules
@@ -182,7 +188,7 @@ python -m pytest tests/integration/ -v
 python -m pytest tests/ --cov=backend --cov-report=html
 ```
 
-### Frontend Unit Tests (128 tests)
+### Frontend Unit Tests (133 tests)
 
 ```bash
 cd frontend
@@ -210,9 +216,9 @@ npm run test:e2e:ui
 | Layer        | Framework   | Tests | Command                          |
 |--------------|-------------|-------|----------------------------------|
 | Backend      | pytest      | 593   | `python -m pytest tests/`        |
-| Frontend Unit| Jest        | 128   | `cd frontend && npm test`        |
+| Frontend Unit| Jest        | 133   | `cd frontend && npm test`        |
 | Frontend E2E | Playwright  | 28    | `cd frontend && npm run test:e2e`|
-| **Total**    |             | **749** |                                |
+| **Total**    |             | **754** |                                |
 
 ## 🏗️ Architecture
 
@@ -278,7 +284,7 @@ The backend deploys automatically from the `main` branch using the
 | Milestone 1      | December 20, 2025 | ✅ Complete    |
 | Milestone 2      | February 20, 2026 | ✅ Complete    |
 | Milestone 3      | March 25, 2026    | ✅ Complete    |
-| Milestone 4      | April 15, 2026    | 🟡 In Progress |
+| Milestone 4      | April 15, 2026    | 🟡 Upcoming    |
 | Final Submission | May 1, 2026       | ⚪ Not Started |
 
 ## 📚 Documentation

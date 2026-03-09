@@ -45,10 +45,10 @@
 
 | # | Feature | Count | Status |
 |---|---------|-------|--------|
-| #46 | Frontend unit tests (Jest + React Testing Library) | 128 | ✅ |
+| #46 | Frontend unit tests (Jest + React Testing Library) | 133 | ✅ |
 | #47 | Frontend E2E tests (Playwright, Chromium) | 28 | ✅ |
 | — | Backend tests (pytest, maintained from M2) | 593 | ✅ |
-| | **Total tests** | **749** | ✅ |
+| | **Total tests** | **754** | ✅ |
 
 ### Documentation (Issues #55, #56)
 
@@ -70,13 +70,13 @@
 
 ### Backend Stack
 - **FastAPI 0.109** + **Python 3.10** + **spaCy 3.7** + **scikit-learn 1.4**
-- **20 source files** across 4 modules (api, ml, osint, analyzer)
-- **9 API endpoints** including history CRUD
+- **30 source files** across 4 modules (api, ml, osint, analyzer)
+- **11 API endpoints** including history CRUD and model status
 - **593 passing tests** with full module coverage
 
 ### Testing Stack
 - **pytest 8.0** — 593 backend tests (unit + integration)
-- **Jest 30.2** + **@testing-library/react 16.3** — 128 frontend unit tests
+- **Jest 30.2** + **@testing-library/react 16.3** — 133 frontend unit tests
 - **Playwright 1.58** — 28 E2E tests (Chromium)
 
 ---

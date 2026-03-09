@@ -8,15 +8,16 @@
 
 ## Overview
 
-The Phishing Detection API provides RESTful endpoints for analysing URLs and email content for phishing indicators. It combines three detection layers:
+The Phishing Detection API provides RESTful endpoints for analysing URLs and email content for phishing indicators. It uses an ML-primary scoring architecture:
 
-| Layer | Purpose | Weight |
-|-------|---------|--------|
-| **NLP / Text Analysis** | Detect urgency, credential requests, impersonation | 40 % |
-| **OSINT** | WHOIS age, DNS records, reputation blacklists | 35 % |
-| **ML / URL Features** | Suspicious TLD, subdomain depth, special characters | 25 % |
+| Layer | Purpose | Role |
+|-------|---------|------|
+| **XGBoost ML Model** | 21-feature phishing classifier (96.45% accuracy) | Primary scorer (85%) |
+| **NLP / Text Analysis** | Detect urgency, credential requests, impersonation | Supplement (15%) |
+| **OSINT Enrichment** | WHOIS, DNS records, reputation checks | Feature provider |
 
-**Base URL:** `http://localhost:8000`
+**Base URL (local):** `http://localhost:8000`
+**Base URL (production):** `https://phishguard-api-upl2.onrender.com`
 
 **Interactive docs:**
 - Swagger UI → `GET /docs`
@@ -175,7 +176,34 @@ curl http://localhost:8000/api/health
 
 ---
 
-### 5. `GET /api/`
+### 5. `GET /api/model/status`
+
+Returns ML model status and feature information.
+
+```bash
+curl http://localhost:8000/api/model/status
+```
+
+#### Response `200 OK`
+
+```json
+{
+  "loaded": true,
+  "featureCount": 21,
+  "featureNames": [
+    "urlLength", "domainLength", "subdomainCount", "pathDepth",
+    "hasIpAddress", "hasAtSymbol", "hasDoubleSlash", "hasDashInDomain",
+    "hasUnderscoreInDomain", "isHttps", "hasPortNumber", "hasSuspiciousTld",
+    "hasEncodedChars", "hasSuspiciousKeywords", "digitRatio",
+    "specialCharCount", "queryParamCount", "hasValidMx", "usesCdn",
+    "dnsRecordCount", "hasValidDns"
+  ]
+}
+```
+
+---
+
+### 6. `GET /api/`
 
 API root — returns metadata and endpoint listing.
 

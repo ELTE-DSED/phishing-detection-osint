@@ -79,10 +79,10 @@ The system is fully operational with all services (OSINT, NLP Analyzer, ML) heal
 | Layer | Framework | Tests | Status |
 |-------|-----------|-------|--------|
 | Backend Unit Tests | pytest | 593 | ✅ All passing |
-| Frontend Unit Tests | Jest | 128 | ✅ All passing |
+| Frontend Unit Tests | Jest | 133 | ✅ All passing |
 | E2E Tests | Playwright | 28 | ✅ All passing |
 | Integration Tests | Custom script | 8 | ✅ All passing |
-| **Total** | | **757** | **✅ All passing** |
+| **Total** | | **762** | **✅ All passing** |
 
 ---
 
