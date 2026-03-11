@@ -373,7 +373,8 @@ class UrlAnalyzer:
         # Normalize and parse URL
         normalizedUrl = url.strip()
         if not normalizedUrl.startswith(("http://", "https://")):
-            normalizedUrl = "http://" + normalizedUrl
+            # Default to https:// for bare domains (safer assumption)
+            normalizedUrl = "https://" + normalizedUrl
         
         try:
             parsed = urlparse(normalizedUrl)

@@ -164,8 +164,14 @@ class AnalysisOrchestrator:
         """Auto-detect content type from content."""
         contentLower = content.lower().strip()
         
-        # Check if it's a URL
+        # Check if it's a URL (with protocol or www prefix)
         if contentLower.startswith(("http://", "https://", "www.")):
+            return "url"
+        
+        # Check if it looks like a bare domain (e.g., "google.com", "example.co.uk")
+        # Pattern: alphanumeric with optional hyphens, followed by a TLD
+        bareDomainPattern = r'^[a-z0-9]([a-z0-9\-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9\-]*[a-z0-9])?)*\.[a-z]{2,}(/.*)?$'
+        if re.match(bareDomainPattern, contentLower):
             return "url"
         
         # Check if it has email headers
@@ -178,10 +184,19 @@ class AnalysisOrchestrator:
     def _extractDomain(self, content: str) -> Optional[str]:
         """Extract domain from URL or email content."""
         try:
-            # Try parsing as URL
-            if content.startswith(("http://", "https://", "www.")):
-                parsed = urlparse(content if "://" in content else f"http://{content}")
+            contentStripped = content.strip()
+            
+            # Try parsing as URL (with protocol or www prefix)
+            if contentStripped.startswith(("http://", "https://", "www.")):
+                parsed = urlparse(contentStripped if "://" in contentStripped else f"http://{contentStripped}")
                 return parsed.netloc.lower().replace("www.", "")
+            
+            # Check if it looks like a bare domain (e.g., "google.com")
+            bareDomainPattern = r'^([a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(/.*)?$'
+            if re.match(bareDomainPattern, contentStripped):
+                # Extract just the domain part (before any path)
+                domain = contentStripped.split("/")[0].lower()
+                return domain
             
             # Try extracting from email content
             # Look for URLs in content

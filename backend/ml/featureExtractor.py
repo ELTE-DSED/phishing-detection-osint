@@ -131,8 +131,11 @@ def extractUrlFeatures(url: str) -> UrlFeatures:
     
     # Normalize and parse URL
     normalizedUrl = url.strip()
-    if not normalizedUrl.startswith(("http://", "https://")):
-        normalizedUrl = "http://" + normalizedUrl
+    originalHadProtocol = normalizedUrl.startswith(("http://", "https://"))
+    
+    if not originalHadProtocol:
+        # Default to https:// for bare domains (safer assumption for legitimate sites)
+        normalizedUrl = "https://" + normalizedUrl
     
     try:
         parsed = urlparse(normalizedUrl)
@@ -596,7 +599,8 @@ class FeatureExtractor:
         
         normalizedUrl = url.strip()
         if not normalizedUrl.startswith(("http://", "https://")):
-            normalizedUrl = "http://" + normalizedUrl
+            # Default to https:// for bare domains
+            normalizedUrl = "https://" + normalizedUrl
         
         try:
             parsed = urlparse(normalizedUrl)

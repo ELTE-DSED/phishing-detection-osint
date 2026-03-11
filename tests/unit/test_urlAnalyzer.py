@@ -63,11 +63,11 @@ class TestUrlAnalyzerBasics:
         assert result.structuralScore < 0.2  # Should be low risk
     
     def test_analyzeUrlWithoutScheme(self, urlAnalyzer: UrlAnalyzer) -> None:
-        """URL without scheme is normalized."""
+        """URL without scheme is normalized to https (safer default)."""
         result = urlAnalyzer.analyze("example.com")
         
         assert result.domain == "example.com"
-        assert result.scheme == "http"  # Default
+        assert result.scheme == "https"  # Default to https for bare domains
     
     def test_analyzeHttpVsHttps(self, urlAnalyzer: UrlAnalyzer) -> None:
         """HTTP URLs have higher score than HTTPS."""
