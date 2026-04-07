@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant U as User
+    participant F as Next.js Frontend
+    participant API as FastAPI Orchestrator
+    participant NLP as spaCy NLP Analyzer
+    participant ML as XGBoost ML Model
+    participant O as OSINT APIs
+
+    U->>F: Submit URL / Email / Text
+    F->>API: POST /api/analyze
+    
+    par Analysis Pipeline
+        API->>NLP: Analyze linguistic intent
+        NLP-->>API: NLP Score (15% Weight)
+    and
+        API->>O: Fetch WHOIS, DNS records
+        O-->>API: OSINT Features
+        API->>ML: Extract URL features & OSINT data
+        ML-->>API: ML Score (85% Weight) & SHAP values
+    end
+    
+    API->>API: Calculate Final Threat Score
+    API-->>F: Return comprehensive JSON report
+    F-->>U: Display interactive charts & Threat Level

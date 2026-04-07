@@ -1,0 +1,32 @@
+classDiagram
+    class Orchestrator {
+        +analyze_url(url: str)
+        +analyze_email(email_data: dict)
+        +analyze_text(text: str)
+        -calculate_final_score()
+    }
+    class NLPAnalyzer {
+        -nlp_model
+        +analyze(text: str) dict
+        -extract_intentions()
+    }
+    class XGBoostModel {
+        -model
+        -explainer
+        +predict_proba(features) float
+        +get_shap_values(features) dict
+    }
+    class FeatureExtractor {
+        +extract_url_features(url) dict
+        +extract_osint_features(domain) dict
+    }
+    class OSINTManager {
+        +get_whois(domain)
+        +get_dns(domain)
+        +check_reputation(ip)
+    }
+
+    Orchestrator --> NLPAnalyzer
+    Orchestrator --> XGBoostModel
+    Orchestrator --> FeatureExtractor
+    FeatureExtractor --> OSINTManager

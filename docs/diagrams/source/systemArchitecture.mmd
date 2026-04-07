@@ -1,0 +1,17 @@
+graph TD
+    User([User]) -->|Inputs URL, Email, or Text| Frontend[Next.js Frontend]
+    Frontend -->|POST /api/analyze| API[FastAPI Orchestrator]
+    API --> NLP[NLP Analyzer<br/>spaCy]
+    API --> ML_Pipe[ML Feature Pipeline]
+    ML_Pipe --> URL_Features[17 URL Features]
+    ML_Pipe --> OSINT[OSINT Enrichment<br/>4 Features]
+    OSINT -.-> WHOIS[(WHOIS/DNS)]
+    OSINT -.-> VT[(VirusTotal)]
+    OSINT -.-> AbuseIPDB[(AbuseIPDB)]
+    URL_Features --> XGBoost[XGBoost Classifier]
+    OSINT --> XGBoost
+    XGBoost -->|85% Score Weight| Scorer[Final Scoring Engine]
+    NLP -->|15% Score Weight| Scorer
+    Scorer --> History[(Local Storage<br/>History)]
+    Scorer --> API
+    API -->|JSON Report & SHAP explanations| Frontend
