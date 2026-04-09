@@ -58,11 +58,11 @@ For each of the 12 chapters, we will execute the following 5 substeps:
 - [x] **Sub-step 5.5:** Commit the changes for this step to version control.
 
 ### Step 6: Chapter 6 - NLP Analysis
-- [ ] **Sub-step 6.1:** Review NLP code (spaCy pipeline, indicator matchers, text scoring logic).
-- [ ] **Sub-step 6.2:** Read and align current Chapter 6 documentation against the codebase.
-- [ ] **Sub-step 6.3:** Identify missing elements in code or docs for Chapter 6. Fix if necessary.
-- [ ] **Sub-step 6.4:** Finalize, review, complete Step 6, and prepare for Step 7.
-- [ ] **Sub-step 6.5:** Commit the changes for this step to version control.
+- [x] **Sub-step 6.1:** Review NLP code (spaCy pipeline, indicator matchers, text scoring logic).
+- [x] **Sub-step 6.2:** Read and align current Chapter 6 documentation against the codebase.
+- [x] **Sub-step 6.3:** Identify missing elements in code or docs for Chapter 6. Fix if necessary.
+- [x] **Sub-step 6.4:** Finalize, review, complete Step 6, and prepare for Step 7.
+- [x] **Sub-step 6.5:** Commit the changes for this step to version control.
 
 ### Step 7: Chapter 7 - Scoring and Classification
 - [ ] **Sub-step 7.1:** Review the Scorer module (weighting logic for URL vs Text, threat level thresholds).
