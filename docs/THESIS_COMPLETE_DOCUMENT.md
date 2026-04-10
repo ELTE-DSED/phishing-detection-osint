@@ -815,7 +815,37 @@ We use VirusTotal and AbuseIPDB APIs with graceful degradation: if APIs fail or 
 
 ### 2.4.5 OSINT Integration Workflow
 
-**[FIGURE 2-2: OSINT Data Collection and Feature Engineering Pipeline]**
+```mermaid
+graph LR
+    classDef raw fill:#e2e8f0,stroke:#64748b,stroke-width:2px;
+    classDef extract fill:#bae6fd,stroke:#0284c7,stroke-width:2px;
+    classDef model fill:#fbcfe8,stroke:#db2777,stroke-width:2px;
+    classDef result fill:#bbf7d0,stroke:#16a34a,stroke-width:2px;
+
+    RawData[Raw User Input]:::raw --> URL[URL String]:::raw
+    RawData --> Text[Email/Subject Text]:::raw
+    
+    URL --> StructFeat[17 Structural Extractors]:::extract
+    URL --> OSINTFeat[4 Dynamic OSINT Extractors]:::extract
+    Text --> NLP[spaCy Intent Classifier]:::extract
+    
+    StructFeat --> Combine[21-D Feature Vector]:::extract
+    OSINTFeat --> Combine
+    
+    Combine --> XGB[XGBoost Classifier]:::model
+    XGB --> SHAP[TreeExplainer]:::model
+    
+    XGB --> ThreatScore(Base ML Score):::result
+    SHAP --> Explanations(SHAP Feature Importance):::result
+    NLP --> TextScore(Contextual Score):::result
+    
+    ThreatScore --> WeightedSum((85/15 Aggregate)):::result
+    TextScore --> WeightedSum
+    WeightedSum --> Final[Final Verdict & Threat Level]:::result
+
+```
+*Figure 2.2: OSINT Data Collection and Feature Engineering Pipeline*
+
 *Description: Flowchart showing: Input URL → Domain Extraction → Parallel branches: (1) WHOIS Lookup → Parse registration date, registrar, privacy → Domain age score; (2) DNS Resolution → Query A, MX, NS, CNAME → DNS validity features; (3) Reputation APIs → VirusTotal, AbuseIPDB → Reputation score → All branches merge → Feature Vector (21 dimensions) → XGBoost Classifier.*
 
 ---
@@ -953,19 +983,69 @@ This separation of concerns ensures that computationally expensive operations—
 
 The operational lifecycle of a threat analysis request within the PhishGuard architecture follows a deterministic, multi-stage pipeline. The data flow is designed to dynamically adapt based on the modality of the input (URL, email, or unstructured text).
 
-**[FIGURE 3-1: High-Level System Data Flow]**
-*Description: A sequence diagram illustrating the lifecycle of an analysis request.*
-*How to create:*
-1. Use a diagramming tool (e.g., draw.io or Lucidchart).
-2. Create a sequence diagram illustrating the following flow:
-   - **User Input:** The user submits text/URL via the Next.js Frontend.
-   - **API Request:** The Frontend issues an HTTP POST request to the FastAPI `/api/analyze` endpoint.
-   - **Router/Orchestrator:** The backend `orchestrator.py` receives the payload and determines the input modality.
-   - **Parallel Processing:** For a URL, the Orchestrator concurrently triggers the `featureExtractor.py` (for lexical analysis) and the OSINT modules (`dnsChecker.py`, `whoisLookup.py`, `reputationChecker.py`).
-   - **Inference:** The extracted features are aggregated and passed to the XGBoost Model.
-   - **Response Generation:** The backend synthesizes a JSON response containing the threat score and OSINT findings.
-   - **Visualization:** The Next.js Frontend parses the JSON and dynamically renders the results.
-3. Export the diagram as a high-resolution PNG (300 DPI) and insert it here.
+```mermaid
+graph TD
+    classDef frontend fill:#3b82f6,stroke:#1e3a8a,stroke-width:2px,color:#fff;
+    classDef backend fill:#10b981,stroke:#064e3b,stroke-width:2px,color:#fff;
+    classDef ml fill:#8b5cf6,stroke:#4c1d95,stroke-width:2px,color:#fff;
+    classDef external fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
+
+    subgraph "Presentation Layer (Vercel)"
+        NextJS[Next.js 16 App Router]:::frontend
+        Tailwind[Tailwind CSS v4]:::frontend
+        Shadcn[shadcn/ui]:::frontend
+        NextJS -.-> Tailwind
+        NextJS -.-> Shadcn
+    end
+
+    subgraph "Application Layer (Render.com)"
+        FastAPI[FastAPI Python Server]:::backend
+        Orchestrator[Asynchronous Task Orchestrator]:::backend
+        History[In-Memory / SQLite Store]:::backend
+        
+        FastAPI --> Orchestrator
+        FastAPI --> History
+    end
+
+    subgraph "Intelligence & Processing"
+        NLP[spaCy Text Analyzer]:::ml
+        FeatExtract[17 URL Structural Extractors]:::ml
+        ML_Model[XGBoost Classifier]:::ml
+        SHAP[SHAP Explainer]:::ml
+        
+        Orchestrator -->|Weight 15%| NLP
+        Orchestrator --> FeatExtract
+        FeatExtract --> ML_Model
+        NLP --> Scorer[Final Scoring Engine]
+        ML_Model -->|Weight 85%| Scorer
+        ML_Model --> SHAP
+        SHAP --> Scorer
+    end
+
+    subgraph "OSINT Layer (Async Gatherers)"
+        WHOIS[python-whois]:::external
+        DNS[dnspython]:::external
+        VT[VirusTotal API]:::external
+        AbuseIPDB[AbuseIPDB API]:::external
+        
+        Orchestrator -->|Timeout 15s| WHOIS
+        Orchestrator --> DNS
+        Orchestrator --> VT
+        Orchestrator --> AbuseIPDB
+    end
+
+    %% Connections
+    User([End User]) -->|HTTP/HTTPS| NextJS
+    NextJS <-->|REST API JSON| FastAPI
+    WHOIS -->|4 Dynamic Features| ML_Model
+    DNS -->|4 Dynamic Features| ML_Model
+    VT -.->|Reputation| Scorer
+    AbuseIPDB -.->|Reputation| Scorer
+    Scorer --> FastAPI
+
+```
+*Figure 3.1: High-Level System Data Flow separating the Next.js Presentation layer, FastAPI Application Orchestrator, ML Pipeline, and Async OSINT.*
+
 
 ### 3.2.1 Input Modality Detection
 
@@ -977,6 +1057,65 @@ Upon receiving a payload from the client via the `/api/analyze` endpoint, the ba
 This dynamic, "auto" detection allows the user to paste any suspicious content into a single, unified input field without needing to manually specify the content type, significantly reducing user friction. Once the modality is determined, the `_extractDomain` method leverages `urllib.parse` and custom regex to isolate the base domain, which is a prerequisite for subsequent OSINT lookups.
 
 ### 3.2.2 Asynchronous OSINT Orchestration
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant Browser as Next.js Frontend
+    participant API as FastAPI (Orchestrator)
+    participant ML_Pipe as ML Extractor (URL)
+    participant NLP_Pipe as NLP Analyzer (Text)
+    participant OSINT as OSINT Orchestrator
+    participant DB as SQLite / Memory Store
+    
+    User->>Browser: Submit URL for Analysis
+    Browser->>API: POST /api/analyze/url {url: "http://..."}
+    
+    activate API
+    API->>API: Detect Modality (URL)
+    
+    par Parallel Execution
+        API->>ML_Pipe: Extract Structural Features (17)
+        activate ML_Pipe
+        ML_Pipe-->>API: URL Features Return
+        deactivate ML_Pipe
+        
+        API->>NLP_Pipe: Extract Text Intent (spaCy)
+        activate NLP_Pipe
+        NLP_Pipe-->>API: Intent Score (15% Weight)
+        deactivate NLP_Pipe
+        
+        API->>OSINT: Fetch WHOIS, DNS, Reputation
+        activate OSINT
+        Note over OSINT: Enforce strict 15.0s Timeout
+        OSINT->>OSINT: Async aiohttp requests
+        OSINT-->>API: OSINT Features (4) & Context
+        deactivate OSINT
+    end
+    
+    API->>API: Combine 21 Features
+    API->>ML_Pipe: XGBoost.predict_proba(features)
+    activate ML_Pipe
+    ML_Pipe-->>API: Threat Probability (85% Weight)
+    deactivate ML_Pipe
+    
+    API->>API: Synthesize Final Score & Threat Level
+    API->>API: Generate SHAP Explanations
+    
+    API->>DB: Store Analysis History
+    activate DB
+    DB-->>API: UUID Confirmation
+    deactivate DB
+    
+    API-->>Browser: Return AnalysisReport (JSON)
+    deactivate API
+    
+    Browser-->>User: Render Gauge, Metrics & SHAP
+
+```
+*Figure 3.2: Sequence Diagram illustrating parallel execution of Structural Features, NLP Analysis, and the strict 15.0s OSINT timeout.*
+
 
 The integration of real-time OSINT constitutes the primary bottleneck in the analysis pipeline. Querying global DNS servers, establishing WHOIS connections, and communicating with third-party threat intelligence APIs introduce unavoidable network latency. 
 
@@ -1022,6 +1161,98 @@ The module utilizes a standard Python `collections.deque` structured as a First-
 Because FastAPI operates on a single primary event loop, concurrent asynchronous mutations to this deque are fundamentally thread-safe without requiring complex locking mechanisms (like `asyncio.Lock`). This design allows users to review their recent analysis history via paginated API calls instantly, without the latency, scaling, or configuration overhead of a persistent database connection.
 
 ### 3.3.3 Pydantic Schema Contracts
+
+```mermaid
+classDiagram
+    class AnalysisRequest {
+        <<Pydantic>>
+        +str text
+        +str url
+        +str email_content
+        +str type "url" | "text" | "email"
+    }
+
+    class AnalysisReport {
+        <<Pydantic>>
+        +UUID id
+        +datetime timestamp
+        +str threat_level "safe" | "suspicious" | "dangerous" | "critical"
+        +float score 0.0-1.0
+        +FeatureSet features
+        +OSINTData osint
+        +List~str~ reasons
+        +dict shap_values
+    }
+
+    class FeatureSet {
+        <<Pydantic>>
+        +int url_length
+        +int nb_dots
+        +int nb_hyphens
+        +int nb_at
+        +int nb_qm
+        +int nb_and
+        +int nb_or
+        +int nb_eq
+        +int nb_underscore
+        +int nb_tilde
+        +int nb_percent
+        +int nb_slash
+        +int nb_star
+        +int nb_colon
+        +int nb_comma
+        +int nb_semicolumn
+        +int nb_dollar
+        +int nb_space
+        +int nb_www
+        +int nb_com
+        +int nb_dslash
+        +int http_in_path
+        +int https_token
+        +float ratio_digits_url
+        +float ratio_digits_host
+        +int punycode
+        +int port
+        +int tld_in_path
+        +int tld_in_subdomain
+        +int abnormal_subdomain
+        +int nb_subdomains
+        +int prefix_suffix
+        +int random_domain
+        +int shortening_service
+        +int path_extension
+        +int domain_age_days
+        +int domain_registration_length
+        +int domain_age_in_days
+        +int ip_address
+    }
+
+    class OSINTData {
+        <<Pydantic>>
+        +dict whois
+        +dict dns_records
+        +dict virustotal
+        +dict abuseipdb
+        +bool is_malicious
+    }
+
+    class HistoryEntry {
+        <<Model>>
+        +UUID id
+        +datetime created_at
+        +str input_data
+        +float score
+        +str threat_level
+    }
+
+    AnalysisReport "1" *-- "1" FeatureSet : contains
+    AnalysisReport "1" *-- "1" OSINTData : incorporates
+    AnalysisRequest ..> AnalysisReport : triggers
+    HistoryEntry ..> AnalysisReport : stores
+
+```
+*Figure 3.3: UML Class Diagram defining the strict Pydantic data contracts enforcing backend type safety.*
+
 
 To guarantee structural integrity between the Next.js frontend and the FastAPI backend, PhishGuard utilizes Pydantic models to define strict data contracts. Every incoming request and outgoing response is automatically validated, serialized, and documented via OpenAPI.
 
@@ -1354,6 +1585,33 @@ To prevent alert fatigue and ensure the user interface remains uncluttered, the 
 # Chapter 8: Implementation
 
 ## 8.1 System Architecture and Overview
+
+```mermaid
+journey
+    title PhishGuard User Journey: Detecting a Threat
+    section 1. Initial Interaction
+      User visits PhishGuard Homepage: 5: User
+      User selects Input Modality (URL/Email/Text): 5: User
+      User pastes content and clicks 'Analyze': 5: User
+    section 2. Processing (System Feedback)
+      UI displays loading spinner & status text: 4: System
+      Frontend sends POST request to FastAPI: 5: System
+      Backend orchestrates parallel NLP & ML analysis: 5: System
+      Backend OSINT gathering (max 15s timeout): 4: System
+      Backend returns detailed JSON Report: 5: System
+    section 3. Analysis & Interpretation
+      UI renders the Risk Score Gauge (0-100%): 5: User, System
+      User reads the human-friendly "Reasoning": 5: User
+      User expands "Feature Details" (SHAP): 4: User
+      User expands "OSINT Intelligence": 4: User
+    section 4. History & Follow-up
+      User navigates to History Dashboard: 4: User
+      User reviews past scans & threat levels: 4: User
+      User clears history or exports report: 3: User
+
+```
+*Figure 8.1: The End-to-End User Journey, illustrating the transition from input submission to reviewing Explainable AI (SHAP) metrics.*
+
 
 The implementation of the PhishGuard application is divided into a loosely coupled, service-oriented architecture comprising a high-performance backend application programming interface (API) and a modern, responsive frontend client. The design heavily emphasizes asynchronous execution to mitigate the inherent latency of external network calls, threat intelligence lookups, and machine learning inference. This division of concerns ensures scalability, maintainability, and clear boundaries between data processing and user presentation.
 
