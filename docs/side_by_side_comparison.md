@@ -93,11 +93,11 @@ For each of the 12 chapters, we will execute the following 5 substeps:
 - [x] **Sub-step 10.5:** Commit the changes for this step to version control.
 
 ### Step 11: Chapter 11 - Discussion
-- [ ] **Sub-step 11.1:** Review limitations and architectural trade-offs based on the actual codebase.
-- [ ] **Sub-step 11.2:** Read and align current Chapter 11 documentation against the codebase.
-- [ ] **Sub-step 11.3:** Identify missing elements in code or docs for Chapter 11. Fix if necessary.
-- [ ] **Sub-step 11.4:** Finalize, review, complete Step 11, and prepare for Step 12.
-- [ ] **Sub-step 11.5:** Commit the changes for this step to version control.
+- [x] **Sub-step 11.1:** Review limitations and architectural trade-offs based on the actual codebase.
+- [x] **Sub-step 11.2:** Read and align current Chapter 11 documentation against the codebase.
+- [x] **Sub-step 11.3:** Identify missing elements in code or docs for Chapter 11. Fix if necessary.
+- [x] **Sub-step 11.4:** Finalize, review, complete Step 11, and prepare for Step 12.
+- [x] **Sub-step 11.5:** Commit the changes for this step to version control.
 
 ### Step 12: Chapter 12 - Conclusion and Future Work
 - [ ] **Sub-step 12.1:** Review final project state to ensure conclusion claims are accurate.
