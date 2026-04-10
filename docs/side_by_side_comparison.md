@@ -100,8 +100,8 @@ For each of the 12 chapters, we will execute the following 5 substeps:
 - [x] **Sub-step 11.5:** Commit the changes for this step to version control.
 
 ### Step 12: Chapter 12 - Conclusion and Future Work
-- [ ] **Sub-step 12.1:** Review final project state to ensure conclusion claims are accurate.
-- [ ] **Sub-step 12.2:** Read and align current Chapter 12 documentation against the codebase.
-- [ ] **Sub-step 12.3:** Identify missing elements in code or docs for Chapter 12. Fix if necessary.
-- [ ] **Sub-step 12.4:** Finalize, review, complete Step 12, and conclude the documentation process.
-- [ ] **Sub-step 12.5:** Commit the changes for this step to version control.
+- [x] **Sub-step 12.1:** Review final project state to ensure conclusion claims are accurate.
+- [x] **Sub-step 12.2:** Read and align current Chapter 12 documentation against the codebase.
+- [x] **Sub-step 12.3:** Identify missing elements in code or docs for Chapter 12. Fix if necessary.
+- [x] **Sub-step 12.4:** Finalize, review, complete Step 12, and conclude the documentation process.
+- [x] **Sub-step 12.5:** Commit the changes for this step to version control.
