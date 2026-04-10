@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://www.elte.hu/media/7b/03/5a528646b6c2317180bfd094191d6eb661cbfa1742de8db4314c463f25c7/elte-logo-cimer-1200.jpg" alt="ELTE Logo" width="300"/>
+    <img src="assets/elte-logo.jpg" alt="ELTE Logo" width="300"/>
     <br><br>
     <h3>Eötvös Loránd University</h3>
     <h4>Faculty of Informatics</h4>
