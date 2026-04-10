@@ -1639,6 +1639,8 @@ The orchestrator aggregates the results from the `OsintData`, `NlpAnalyzer`, and
 
 The user interface for the PhishGuard platform is implemented as a modern web application utilizing Next.js 16 utilizing the App Router architecture. The frontend application relies on React 19 for component-based UI rendering and state management.
 
+**[FIGURE 8-1: PhishGuard Web Application Dashboard]**
+
 ### 8.3.1 Component Architecture and Styling
 
 The frontend employs a rigorous component-driven design methodology. The visual aesthetic and layout are strictly managed using Tailwind CSS v4, a utility-first CSS framework that allows for rapid styling directly within the component markup. 
@@ -1650,6 +1652,8 @@ For complex, interactive UI elements, the project leverages the `shadcn` UI libr
 To effectively communicate the complex risk metrics and threat intelligence data returned by the backend API, the frontend incorporates the `recharts` library for data visualization. This library facilitates the creation of responsive, interactive charts that illustrate risk scores, temporal data (such as domain age), and historical analysis trends.
 
 User experience is further enhanced through subtle animations implemented using the `motion` (Framer Motion) library. These animations provide visual feedback during asynchronous state transitions, such as when waiting for the backend API to complete a comprehensive URL analysis. Iconography is provided by `lucide-react`, ensuring a modern and lightweight visual presentation.
+
+**[FIGURE 8-2: Threat Analysis Results Dashboard]**
 
 ## 8.4 Deployment and Infrastructure
 
