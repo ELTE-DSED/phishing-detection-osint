@@ -86,11 +86,11 @@ For each of the 12 chapters, we will execute the following 5 substeps:
 - [x] **Sub-step 9.5:** Commit the changes for this step to version control.
 
 ### Step 10: Chapter 10 - Results and Evaluation
-- [ ] **Sub-step 10.1:** Review evaluation scripts and recorded results (accuracy, AUC, ablation study data, SHAP output).
-- [ ] **Sub-step 10.2:** Read and align current Chapter 10 documentation against the codebase.
-- [ ] **Sub-step 10.3:** Identify missing elements in code or docs for Chapter 10. Fix if necessary.
-- [ ] **Sub-step 10.4:** Finalize, review, complete Step 10, and prepare for Step 11.
-- [ ] **Sub-step 10.5:** Commit the changes for this step to version control.
+- [x] **Sub-step 10.1:** Review evaluation scripts and recorded results (accuracy, AUC, ablation study data, SHAP output).
+- [x] **Sub-step 10.2:** Read and align current Chapter 10 documentation against the codebase.
+- [x] **Sub-step 10.3:** Identify missing elements in code or docs for Chapter 10. Fix if necessary.
+- [x] **Sub-step 10.4:** Finalize, review, complete Step 10, and prepare for Step 11.
+- [x] **Sub-step 10.5:** Commit the changes for this step to version control.
 
 ### Step 11: Chapter 11 - Discussion
 - [ ] **Sub-step 11.1:** Review limitations and architectural trade-offs based on the actual codebase.

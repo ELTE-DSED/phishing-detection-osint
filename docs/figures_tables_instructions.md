@@ -115,3 +115,48 @@ Let me know when you're ready, and I'll proceed to **Chapter 3: System Design an
 
 **Caption:**
 "Figure 9-1: The multi-tiered Quality Assurance architecture of the PhishGuard platform, illustrating the strict separation between backend execution (`pytest` and mocked dependencies) and frontend UI automation (Jest and Playwright), underpinned by rigorous static type checking."
+
+---
+
+### FIGURE 10-1: SHAP Feature Importance (Bar Plot)
+
+**How to create:**
+1. Locate the pre-generated `shap_bar.png` within the `data/evaluation/` directory.
+2. If the file is unavailable, execute `python -m backend.ml.training.shapAnalysis` to generate it.
+3. Ensure the graph explicitly lists the top features by mean |SHAP| value (e.g., `isHttps`, `hasValidDns`, `specialCharCount`, `pathDepth`).
+
+**Caption:**
+"Figure 10-1: SHAP feature importance plot illustrating the mean absolute impact of each feature on the model output. The global analysis indicates that `isHttps` and the OSINT-derived `hasValidDns` are the most influential discriminators in the dataset."
+
+---
+
+### TABLE 10-1: Confusion Matrix on Held-Out Test Set
+
+**How to create:**
+1. Create a 2x2 table representing the classification results on the 5,009 test samples.
+2. Columns: Predicted Legitimate, Predicted Phishing.
+3. Rows: Actual Legitimate, Actual Phishing.
+4. Data:
+   - True Negatives (Actual Legitimate, Predicted Legitimate): 2,453
+   - False Positives (Actual Legitimate, Predicted Phishing): 52
+   - False Negatives (Actual Phishing, Predicted Legitimate): 126
+   - True Positives (Actual Phishing, Predicted Phishing): 2,378
+
+**Caption:**
+"Table 10-1: Confusion matrix illustrating the model's classification performance on the 5,009 sample test set. The high true positive and true negative rates underscore the model's accuracy, while the low false positive rate (52) highlights its precision."
+
+---
+
+### TABLE 10-2: OSINT Ablation Study Results
+
+**How to create:**
+1. Create a 4-column table comparing the feature subsets.
+2. Columns: Metric, Full Model (21 Features), URL Features Only (17 Features), Difference ($\Delta$).
+3. Rows (Data from `ablation_report.json`):
+   - Accuracy: 98.40%, 98.93%, -0.53%
+   - Precision: 99.13%, 99.78%, -0.65%
+   - Recall: 97.65%, 98.08%, -0.43%
+   - F1-Score: 98.39%, 98.92%, -0.53%
+
+**Caption:**
+"Table 10-2: Comparative performance metrics between the full PhishGuard model (URL + OSINT features) and the baseline model utilizing only structural URL features. While OSINT features contribute significantly to heuristic explainability, the baseline structural model achieved nominally higher standalone metrics within this specific dataset."

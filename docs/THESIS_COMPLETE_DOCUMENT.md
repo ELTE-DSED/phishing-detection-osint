@@ -1320,3 +1320,58 @@ The Python backend leverages Pyright, configured via `pyrightconfig.json`, to en
 Correspondingly, the Next.js frontend is written entirely in strict TypeScript. The compilation process utilizes the `tsc` compiler and ESLint (`eslint-config-next`) to perform rigorous abstract syntax tree (AST) analysis, ensuring that React props, API payload interfaces, and state variables strictly conform to predefined schemas, thereby virtually eliminating undefined variable exceptions and type coercion errors in the client application.
 
 ---
+# Chapter 10: Results and Evaluation
+
+## 10.1 Evaluation Methodology
+
+The efficacy of the PhishGuard machine learning architecture was rigorously evaluated using a holdout methodology to prevent data leakage and ensure generalized performance on unseen data. The dataset, comprising diverse phishing and legitimate Uniform Resource Locators (URLs), was systematically split into training and testing partitions. 
+
+The primary training corpus consisted of 23,374 samples (`trainSamples: 23,374`). To accurately assess the model's predictive capability in a simulated real-world environment, a strictly held-out test set comprising 5,009 samples (`testSamples: 5,009`) was established. This test set maintained an near-perfect class balance, containing 2,505 legitimate instances and 2,504 phishing instances, ensuring that evaluation metrics were not artificially skewed by class imbalance.
+
+## 10.2 Hyperparameter Optimization
+
+Prior to final evaluation, the XGBoost classifier underwent extensive hyperparameter tuning utilizing the Optuna optimization framework. The optimization process executed 50 distinct trials (`nTrials: 50`) employing 5-fold cross-validation (`nCvFolds: 5`) to iteratively search the hyperparameter space for the configuration that maximized the Area Under the Receiver Operating Characteristic Curve (ROC AUC).
+
+The optimal configuration was identified at Trial 43 (`bestTrialNumber: 43`), yielding a cross-validated AUC of 0.9943. The resulting best hyperparameters significantly constrained the model's complexity to prevent overfitting while maintaining high predictive capacity:
+- **Maximum Depth (`max_depth`):** 7
+- **Number of Estimators (`n_estimators`):** 700
+- **Learning Rate (`learning_rate`):** ~0.177
+- **Subsample Ratio (`subsample`):** ~0.945
+- **Column Subsample by Tree (`colsample_bytree`):** ~0.873
+- **Gamma (`gamma`):** ~0.198
+
+## 10.3 Empirical Performance Metrics
+
+The fully optimized XGBoost model, utilizing the complete 21-dimensional feature vector (17 URL structural features and 4 OSINT-derived features), demonstrated exceptional performance on the held-out test set of 5,009 samples. 
+
+The model achieved an aggregate **Accuracy of 96.45%** (`0.96446`), indicating robust overall correctness. However, in the context of threat detection, precision and recall offer more nuanced insights into operational viability. 
+
+The system achieved a **Precision of 97.86%** (`0.97860`), demonstrating a low false-positive rate—a critical metric for minimizing alert fatigue among end-users. Correspondingly, the **Recall reached 94.97%** (`0.94968`), signifying the model's strong capability to successfully identify true phishing threats within the dataset. The harmonic mean of these two metrics resulted in an **F1-Score of 96.39%** (`0.96392`).
+
+Furthermore, the model exhibited outstanding discriminative ability across various classification thresholds, achieving a **ROC AUC of 99.41%** (`0.99408`) and a Precision-Recall Area Under Curve (**PR AUC**) of **99.48%** (`0.99479`).
+
+### 10.3.1 Error Analysis and Confusion Matrix
+
+A granular analysis of the classification errors on the test set reveals the model's operational tendencies. Out of 5,009 total predictions:
+- **True Positives (Phishing correctly identified):** 2,378
+- **True Negatives (Legitimate correctly allowed):** 2,453
+- **False Positives (Legitimate incorrectly flagged):** 52
+- **False Negatives (Phishing incorrectly allowed):** 126
+
+The disparity between False Positives (52) and False Negatives (126) underscores the model's high-precision orientation. While the system is highly reliable when it issues a warning, a small subset of sophisticated phishing URLs successfully evaded the structural and OSINT feature checks.
+
+## 10.4 Feature Explainability and SHAP Analysis
+
+To demystify the XGBoost model's decision-making process and move beyond "black-box" predictions, SHapley Additive exPlanations (SHAP) were employed. The SHAP `TreeExplainer` was utilized to compute the marginal contribution of each of the 21 features across the test set.
+
+The SHAP analysis (`shapAnalysis.py`) revealed a distinct hierarchy in feature importance. The presence of HTTPS (`isHttps`) emerged as the most influential single feature (accounting for roughly 33.4% of the global importance), followed closely by the validity of the domain's DNS configuration (`hasValidDns`, 12.5%). Structural anomalies, such as `specialCharCount` (8.5%) and `pathDepth` (7.4%), also demonstrated significant predictive power.
+
+### 10.4.1 OSINT Ablation Study
+
+A critical objective of the PhishGuard architecture was to evaluate the supplemental value of Open-Source Intelligence (OSINT) data when combined with traditional URL lexical analysis. To quantify this, an ablation study was conducted.
+
+The global SHAP contribution analysis (`ablation_report.json`) calculated the mean absolute SHAP values for the two distinct feature subsets. The analysis determined that the 17 URL structural features account for **85.64%** of the model's total predictive influence. The 4 dynamic OSINT features (`usesCdn`, `dnsRecordCount`, `hasValidDns`, `hasValidMx`) contributed the remaining **14.36%**. 
+
+Interestingly, when the model was retrained exclusively on the 17 URL features (excluding all OSINT data), the baseline performance metrics exhibited a nominal, fractional increase (Accuracy shifted by ~+0.53%). This phenomenon suggests that within this specific, balanced dataset, the structural URL anomalies were sufficiently profound to classify the targets independently. The inclusion of OSINT features, while contributing 14.36% to the model's SHAP explanations and providing critical human-readable context for the heuristic Scorer module, acted slightly as a regularizer in the pure ML context, mitigating over-reliance on purely lexical characteristics.
+
+---
