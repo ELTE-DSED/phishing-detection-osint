@@ -405,7 +405,7 @@ Phishing attacks can be classified along multiple dimensions based on attack vec
 | **Search Engine Phishing** | Fake websites optimized to appear in search results for common queries | Fake "Amazon login" page ranking in Google for "amazon sign in" | Broad (search engine users) |
 | **Man-in-the-Middle (MITM) Phishing** | Intercepting communications between victim and legitimate site | Fake WiFi hotspot capturing login credentials | Narrow (public WiFi users) |
 
-**[FIGURE 2-1: Phishing Attack Taxonomy Diagram]**
+![Figure 2.1: Phishing Attack Taxonomy](assets/texomony.png)
 
 ---
 
@@ -1358,7 +1358,7 @@ A cornerstone objective of the PhishGuard architecture is resolving the "black-b
 
 The `shapAnalysis.py` module integrates the `shap.TreeExplainer`, which utilizes cooperative game theory to calculate the exact marginal contribution of every single feature to the final prediction. Because XGBoost 3.x utilizes a bracketed format for its `base_score` (e.g., `[5E-1]`), a custom monkey-patch (`_patchShapXgboostCompat`) was engineered to ensure seamless compatibility with the SHAP explainer.
 
-**[FIGURE 4-1: SHAP Feature Importance (Beeswarm Plot)]**
+![Figure 4.1: SHAP Feature Importance (Beeswarm Plot)](assets/shap_plot.png)
 *How to create:*
 1. Run the `backend/ml/training/shapAnalysis.py` script.
 2. The script will automatically generate the beeswarm plot using `matplotlib` and `seaborn`.
@@ -1635,7 +1635,7 @@ The orchestrator aggregates the results from the `OsintData`, `NlpAnalyzer`, and
 
 The user interface for the PhishGuard platform is implemented as a modern web application utilizing Next.js 16 utilizing the App Router architecture. The frontend application relies on React 19 for component-based UI rendering and state management.
 
-**[FIGURE 8-1: PhishGuard Web Application Dashboard]**
+![Figure 8.1: The PhishGuard Next.js Web Application Dashboard](assets/dashboard.png)
 
 ### 8.3.1 Component Architecture and Styling
 
@@ -1649,7 +1649,7 @@ To effectively communicate the complex risk metrics and threat intelligence data
 
 User experience is further enhanced through subtle animations implemented using the `motion` (Framer Motion) library. These animations provide visual feedback during asynchronous state transitions, such as when waiting for the backend API to complete a comprehensive URL analysis. Iconography is provided by `lucide-react`, ensuring a modern and lightweight visual presentation.
 
-**[FIGURE 8-2: Threat Analysis Results Dashboard]**
+![Figure 8.2: Threat Analysis Results showing the interactive threat gauge](assets/result.png)
 
 ## 8.4 Deployment and Infrastructure
 
