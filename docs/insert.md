@@ -1,74 +1,68 @@
 # 📖 PhishGuard Thesis: Where to Insert Your Diagrams
 
-This is your master guide for replacing all the placeholder texts (like `[FIGURE X-X]`) in your final thesis document (`docs/THESIS_COMPLETE_DOCUMENT.md`) with the beautiful, highly-accurate diagrams and screenshots we just created.
-
-By following this guide, you will have a perfectly formatted, academically rigorous thesis ready for presentation!
+This is your master guide to replacing **every single placeholder** in your final thesis document (`docs/THESIS_COMPLETE_DOCUMENT.md`). If you follow this checklist, there will be **zero leftovers** and you will not be embarrassed.
 
 ---
 
-## 🛠️ How to Insert the Mermaid Diagrams
+## 🔍 The Exact 4 Placeholders to Replace
 
-The diagrams we created are written in **Mermaid.js**. Most modern markdown editors (like GitHub, VS Code, Notion) and modern LaTeX setups natively support Mermaid. 
+I scanned your entire thesis document. There are exactly four `[FIGURE...]` placeholders. Here is exactly how to replace each one:
 
-To insert them into your `THESIS_COMPLETE_DOCUMENT.md`, you just need to copy the code from the files in `docs/diagrams/mermaid/` and paste them inside a markdown code block like this:
+### 1. Phishing Attack Taxonomy
+- **Find this in document:** `**[FIGURE 2-1: Phishing Attack Taxonomy Diagram]**` (Around Line 408)
+- **What to do:** Delete this text. You should paste a screenshot or image of a tree diagram showing phishing types (Email, SMS, Spear Phishing). Put the image in your `assets` folder and use this code:
+  `![Figure 2.1: Phishing Attack Taxonomy](assets/taxonomy.png)`
 
-```markdown
-\```mermaid
-(paste the code here)
-\```
-```
+### 2. OSINT Data Collection Pipeline
+- **Find this in document:** `**[FIGURE 2-2: OSINT Data Collection and Feature Engineering Pipeline]**` (Around Line 818)
+- **What to do:** Delete this text and paste the Mermaid code from `docs/diagrams/mermaid/ml-pipeline.mmd`:
+  ```mermaid
+  (paste the code from ml-pipeline.mmd here)
+  ```
 
----
+### 3. High-Level System Data Flow
+- **Find this in document:** `**[FIGURE 3-1: High-Level System Data Flow]**` (Around Line 956)
+- **What to do:** Delete this text and the 3 bullet points below it. Paste the Mermaid code from `docs/diagrams/mermaid/system-architecture.mmd`:
+  ```mermaid
+  (paste the code from system-architecture.mmd here)
+  ```
 
-## 📍 Exact Insertion Points in Your Thesis
-
-### 1. System Architecture (High-Level Data Flow)
-- **Where to put it:** Chapter 3, under section **3.2 High-Level Data Flow** (Around line 956, replace the text `[FIGURE 3-1: High-Level System Data Flow]`)
-- **What to insert:** Use the code from `docs/diagrams/mermaid/system-architecture.mmd`.
-- **Caption:** *Figure 3.1: High-Level Architecture separating the Next.js Presentation layer, FastAPI Application Orchestrator, ML Pipeline, and Async OSINT Integrations.*
-
-### 2. The Sequence Diagram (Request Lifecycle)
-- **Where to put it:** Chapter 3, under section **3.2.2 Asynchronous OSINT Orchestration** (This is a great place to show the parallel 15.0s timeouts).
-- **What to insert:** Use the code from `docs/diagrams/mermaid/sequence-diagram.mmd`.
-- **Caption:** *Figure 3.2: Sequence Diagram illustrating parallel execution of Structural Features, NLP Analysis, and the strict 15.0s OSINT timeout.*
-
-### 3. Machine Learning Pipeline
-- **Where to put it:** Chapter 4, right at the beginning of **Chapter 4: Feature Engineering and ML Model** (Around line 1065).
-- **What to insert:** Use the code from `docs/diagrams/mermaid/ml-pipeline.mmd`.
-- **Caption:** *Figure 4.1: The ML Pipeline mapping the extraction of 17 structural and 4 OSINT features, synthesized through XGBoost and weighted against NLP context.*
-
-### 4. Class Diagram (Data Models)
-- **Where to put it:** Chapter 3, under section **3.3.3 Pydantic Schema Contracts**.
-- **What to insert:** Use the code from `docs/diagrams/mermaid/class-diagram.mmd`.
-- **Caption:** *Figure 3.3: UML Class Diagram defining the strict Pydantic data contracts (AnalysisRequest, AnalysisReport, FeatureSet) enforcing backend type safety.*
-
-### 5. User Journey Diagram
-- **Where to put it:** Chapter 6, under the introduction to **Chapter 6: User Interface and Experience**.
-- **What to insert:** Use the code from `docs/diagrams/mermaid/user-journey.mmd`.
-- **Caption:** *Figure 6.1: The End-to-End User Journey, illustrating the transition from input submission to reviewing Explainable AI (SHAP) metrics.*
+### 4. SHAP Feature Importance Plot
+- **Find this in document:** `**[FIGURE 4-1: SHAP Feature Importance (Beeswarm Plot)]**` (Around Line 1133)
+- **What to do:** Delete this text. You need to take a screenshot of the actual SHAP graph your Python backend generates. Save it to the `assets` folder and use this code:
+  `![Figure 4.1: SHAP Feature Importance (Beeswarm Plot)](assets/shap_plot.png)`
 
 ---
 
-## 📸 Recommended UI Screenshots to Take Manually
+## ➕ Where to add the extra diagrams (For maximum grades)
 
-Because I am an AI, I cannot take photos of your screen. To make your thesis look incredible, you should take the following screenshots from your running application and insert them as standard images (`![Caption](path/to/image.png)`).
+To make your thesis look even better, add the remaining 3 Mermaid diagrams we created in the following places:
 
-1. **The Dashboard/Input Screen:** Take a clean screenshot of your homepage in Dark Mode.
-   - **Insert at:** Chapter 6 (User Interface).
-2. **The Threat Gauge & Results:** Paste a known phishing URL (e.g., `http://secure-login-paypal-update.com`) and take a screenshot of the big circular threat gauge showing "Dangerous" or "Critical".
-   - **Insert at:** Chapter 7 (Scoring and Classification) or Chapter 6.
-3. **SHAP Explanations:** On the results page, expand the "Feature Details" or "Why did we give this score?" section and screenshot the human-readable explanations.
-   - **Insert at:** Chapter 10 (Results and Explainability). This is **CRUCIAL** for proving your Explainable AI claims!
-4. **The History Table:** Take a screenshot of the History dashboard showing a mix of safe and malicious recent scans.
-   - **Insert at:** Chapter 3 (Under 3.3.2 Ephemeral History Store).
+1. **The Sequence Diagram (Request Lifecycle)**
+   - **Where:** Chapter 3, under section **3.2.2 Asynchronous OSINT Orchestration**
+   - **How:** Paste the code from `sequence-diagram.mmd` inside a \`\`\`mermaid block.
+
+2. **Class Diagram (Data Models)**
+   - **Where:** Chapter 3, under section **3.3.3 Pydantic Schema Contracts**
+   - **How:** Paste the code from `class-diagram.mmd` inside a \`\`\`mermaid block.
+
+3. **User Journey Diagram**
+   - **Where:** Chapter 6, under the introduction to **Chapter 6: User Interface and Experience**
+   - **How:** Paste the code from `user-journey.mmd` inside a \`\`\`mermaid block.
 
 ---
 
-## 🧹 Final Presentation Checklist
+## 📸 How to Insert Images vs. Diagrams (Your Question Answered)
 
-- [ ] Copy the 5 Mermaid codes into `THESIS_COMPLETE_DOCUMENT.md`.
-- [ ] Take the 4 UI screenshots mentioned above and paste them in.
-- [ ] Search the thesis document for the word `[FIGURE` and make sure you've replaced all of my placeholders.
-- [ ] Export to PDF (Use VS Code's "Markdown PDF" extension, or whatever LaTeX/PDF tool your university prefers).
+**1. For the Mermaid Diagrams (`.mmd` files we just made):**
+You **DO NOT** use links or the assets folder! You literally copy the text code from the file and paste it directly into your thesis document inside a code block, like this:
+\`\`\`mermaid
+graph TD
+  A --> B
+\`\`\`
+When you convert the `.md` file to a `.pdf`, the PDF converter reads that text and draws the diagram for you automatically!
 
-You are 100% ready to present. Good luck!
+**2. For Screenshots and Photos (PNGs/JPGs):**
+You **MUST** save the image file into your `docs/assets/` folder. Then, you write this in your markdown:
+`![Description of Image](assets/my_screenshot.png)`
+**Yes**, the image file MUST be inside the `assets` folder on your computer at the exact moment you click "Convert to PDF". If the asset file is missing, the PDF will just show a broken link.
