@@ -1,0 +1,58 @@
+graph TD
+    classDef frontend fill:#3b82f6,stroke:#1e3a8a,stroke-width:2px,color:#fff;
+    classDef backend fill:#10b981,stroke:#064e3b,stroke-width:2px,color:#fff;
+    classDef ml fill:#8b5cf6,stroke:#4c1d95,stroke-width:2px,color:#fff;
+    classDef external fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
+
+    subgraph "Presentation Layer (Vercel)"
+        NextJS[Next.js 16 App Router]:::frontend
+        Tailwind[Tailwind CSS v4]:::frontend
+        Shadcn[shadcn/ui]:::frontend
+        NextJS -.-> Tailwind
+        NextJS -.-> Shadcn
+    end
+
+    subgraph "Application Layer (Render.com)"
+        FastAPI[FastAPI Python Server]:::backend
+        Orchestrator[Asynchronous Task Orchestrator]:::backend
+        History[In-Memory / SQLite Store]:::backend
+        
+        FastAPI --> Orchestrator
+        FastAPI --> History
+    end
+
+    subgraph "Intelligence & Processing"
+        NLP[spaCy Text Analyzer]:::ml
+        FeatExtract[17 URL Structural Extractors]:::ml
+        ML_Model[XGBoost Classifier]:::ml
+        SHAP[SHAP Explainer]:::ml
+        
+        Orchestrator -->|Weight 15%| NLP
+        Orchestrator --> FeatExtract
+        FeatExtract --> ML_Model
+        NLP --> Scorer[Final Scoring Engine]
+        ML_Model -->|Weight 85%| Scorer
+        ML_Model --> SHAP
+        SHAP --> Scorer
+    end
+
+    subgraph "OSINT Layer (Async Gatherers)"
+        WHOIS[python-whois]:::external
+        DNS[dnspython]:::external
+        VT[VirusTotal API]:::external
+        AbuseIPDB[AbuseIPDB API]:::external
+        
+        Orchestrator -->|Timeout 15s| WHOIS
+        Orchestrator --> DNS
+        Orchestrator --> VT
+        Orchestrator --> AbuseIPDB
+    end
+
+    %% Connections
+    User([End User]) -->|HTTP/HTTPS| NextJS
+    NextJS <-->|REST API JSON| FastAPI
+    WHOIS -->|4 Dynamic Features| ML_Model
+    DNS -->|4 Dynamic Features| ML_Model
+    VT -.->|Reputation| Scorer
+    AbuseIPDB -.->|Reputation| Scorer
+    Scorer --> FastAPI

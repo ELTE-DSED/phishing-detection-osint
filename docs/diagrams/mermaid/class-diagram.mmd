@@ -1,0 +1,86 @@
+classDiagram
+    class AnalysisRequest {
+        <<Pydantic>>
+        +str text
+        +str url
+        +str email_content
+        +str type "url" | "text" | "email"
+    }
+
+    class AnalysisReport {
+        <<Pydantic>>
+        +UUID id
+        +datetime timestamp
+        +str threat_level "safe" | "suspicious" | "dangerous" | "critical"
+        +float score 0.0-1.0
+        +FeatureSet features
+        +OSINTData osint
+        +List~str~ reasons
+        +dict shap_values
+    }
+
+    class FeatureSet {
+        <<Pydantic>>
+        +int url_length
+        +int nb_dots
+        +int nb_hyphens
+        +int nb_at
+        +int nb_qm
+        +int nb_and
+        +int nb_or
+        +int nb_eq
+        +int nb_underscore
+        +int nb_tilde
+        +int nb_percent
+        +int nb_slash
+        +int nb_star
+        +int nb_colon
+        +int nb_comma
+        +int nb_semicolumn
+        +int nb_dollar
+        +int nb_space
+        +int nb_www
+        +int nb_com
+        +int nb_dslash
+        +int http_in_path
+        +int https_token
+        +float ratio_digits_url
+        +float ratio_digits_host
+        +int punycode
+        +int port
+        +int tld_in_path
+        +int tld_in_subdomain
+        +int abnormal_subdomain
+        +int nb_subdomains
+        +int prefix_suffix
+        +int random_domain
+        +int shortening_service
+        +int path_extension
+        +int domain_age_days
+        +int domain_registration_length
+        +int domain_age_in_days
+        +int ip_address
+    }
+
+    class OSINTData {
+        <<Pydantic>>
+        +dict whois
+        +dict dns_records
+        +dict virustotal
+        +dict abuseipdb
+        +bool is_malicious
+    }
+
+    class HistoryEntry {
+        <<Model>>
+        +UUID id
+        +datetime created_at
+        +str input_data
+        +float score
+        +str threat_level
+    }
+
+    AnalysisReport "1" *-- "1" FeatureSet : contains
+    AnalysisReport "1" *-- "1" OSINTData : incorporates
+    AnalysisRequest ..> AnalysisReport : triggers
+    HistoryEntry ..> AnalysisReport : stores

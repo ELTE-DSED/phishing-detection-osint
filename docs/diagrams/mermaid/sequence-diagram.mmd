@@ -1,0 +1,53 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant Browser as Next.js Frontend
+    participant API as FastAPI (Orchestrator)
+    participant ML_Pipe as ML Extractor (URL)
+    participant NLP_Pipe as NLP Analyzer (Text)
+    participant OSINT as OSINT Orchestrator
+    participant DB as SQLite / Memory Store
+    
+    User->>Browser: Submit URL for Analysis
+    Browser->>API: POST /api/analyze/url {url: "http://..."}
+    
+    activate API
+    API->>API: Detect Modality (URL)
+    
+    par Parallel Execution
+        API->>ML_Pipe: Extract Structural Features (17)
+        activate ML_Pipe
+        ML_Pipe-->>API: URL Features Return
+        deactivate ML_Pipe
+        
+        API->>NLP_Pipe: Extract Text Intent (spaCy)
+        activate NLP_Pipe
+        NLP_Pipe-->>API: Intent Score (15% Weight)
+        deactivate NLP_Pipe
+        
+        API->>OSINT: Fetch WHOIS, DNS, Reputation
+        activate OSINT
+        Note over OSINT: Enforce strict 15.0s Timeout
+        OSINT->>OSINT: Async aiohttp requests
+        OSINT-->>API: OSINT Features (4) & Context
+        deactivate OSINT
+    end
+    
+    API->>API: Combine 21 Features
+    API->>ML_Pipe: XGBoost.predict_proba(features)
+    activate ML_Pipe
+    ML_Pipe-->>API: Threat Probability (85% Weight)
+    deactivate ML_Pipe
+    
+    API->>API: Synthesize Final Score & Threat Level
+    API->>API: Generate SHAP Explanations
+    
+    API->>DB: Store Analysis History
+    activate DB
+    DB-->>API: UUID Confirmation
+    deactivate DB
+    
+    API-->>Browser: Return AnalysisReport (JSON)
+    deactivate API
+    
+    Browser-->>User: Render Gauge, Metrics & SHAP
