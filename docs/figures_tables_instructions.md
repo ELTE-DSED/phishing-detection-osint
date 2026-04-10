@@ -66,3 +66,28 @@ Already provided in the text. Use symbols (✅ Yes, ❌ No, ⚠️ Limited) for 
 
 **Next Chapter:**
 Let me know when you're ready, and I'll proceed to **Chapter 3: System Design and Architecture** (8-10 pages).
+
+---
+
+### FIGURE 8-1: Asynchronous Analysis Orchestrator Pipeline
+
+**How to create:**
+1. Use a sequence diagram tool (e.g., Mermaid.js, draw.io, or PlantUML).
+2. Define the following actors/components:
+   - Client (Frontend)
+   - Orchestrator (`backend/api/orchestrator.py`)
+   - NLP Module
+   - OSINT Gatherer (`asyncio.gather` block)
+   - ML Predictor (`XGBoost`)
+3. Create the following flow:
+   - **Client** sends `POST /analyze` to **Orchestrator**.
+   - **Orchestrator** concurrently dispatches tasks:
+     - `asyncio.create_task` to **NLP Module**.
+     - `asyncio.wait_for(asyncio.gather(...), timeout=15.0)` to **OSINT Gatherer** (which further splits into WHOIS, DNS, and Reputation).
+   - Show the 15-second timeout boundary enforcing a strict SLA.
+   - Once OSINT returns, **Orchestrator** passes `OsintData` and URL to **ML Predictor**.
+   - **Orchestrator** awaits all results, applies `_combineVerdict` weighting logic, and returns the final `AnalysisResponse` to the **Client**.
+4. Export as a high-resolution PNG or SVG.
+
+**Caption:**
+"Figure 8-1: Sequence diagram illustrating the asynchronous execution pipeline within the Analysis Orchestrator. The diagram highlights the concurrent execution of NLP and OSINT gathering tasks, bounded by a strict 15.0-second global timeout to ensure API responsiveness."

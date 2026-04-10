@@ -72,11 +72,11 @@ For each of the 12 chapters, we will execute the following 5 substeps:
 - [x] **Sub-step 7.5:** Commit the changes for this step to version control.
 
 ### Step 8: Chapter 8 - Implementation
-- [ ] **Sub-step 8.1:** Review implementation details (tech stack, frontend routes, backend endpoints, deployment configs).
-- [ ] **Sub-step 8.2:** Read and align current Chapter 8 documentation against the codebase.
-- [ ] **Sub-step 8.3:** Identify missing elements in code or docs for Chapter 8. Fix if necessary.
-- [ ] **Sub-step 8.4:** Finalize, review, complete Step 8, and prepare for Step 9.
-- [ ] **Sub-step 8.5:** Commit the changes for this step to version control.
+- [x] **Sub-step 8.1:** Review implementation details (tech stack, frontend routes, backend endpoints, deployment configs).
+- [x] **Sub-step 8.2:** Read and align current Chapter 8 documentation against the codebase.
+- [x] **Sub-step 8.3:** Identify missing elements in code or docs for Chapter 8. Fix if necessary.
+- [x] **Sub-step 8.4:** Finalize, review, complete Step 8, and prepare for Step 9.
+- [x] **Sub-step 8.5:** Commit the changes for this step to version control.
 
 ### Step 9: Chapter 9 - Testing and Quality Assurance
 - [ ] **Sub-step 9.1:** Review testing suites (pytest, Jest, Playwright) and exact test counts.
