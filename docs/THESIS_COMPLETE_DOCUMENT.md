@@ -406,7 +406,6 @@ Phishing attacks can be classified along multiple dimensions based on attack vec
 | **Man-in-the-Middle (MITM) Phishing** | Intercepting communications between victim and legitimate site | Fake WiFi hotspot capturing login credentials | Narrow (public WiFi users) |
 
 **[FIGURE 2-1: Phishing Attack Taxonomy Diagram]**
-*Description: A hierarchical tree diagram showing phishing attack classification. Root node: "Phishing Attacks". Second level branches: "Attack Vector" (Email, SMS, Voice, Social Media, Web), "Targeting Strategy" (Mass, Spear, Whaling), "Technical Method" (URL Spoofing, Clone, MITM, Malware). Use different colors for each category.*
 
 ---
 
@@ -846,7 +845,6 @@ graph LR
 ```
 *Figure 2.2: OSINT Data Collection and Feature Engineering Pipeline*
 
-*Description: Flowchart showing: Input URL → Domain Extraction → Parallel branches: (1) WHOIS Lookup → Parse registration date, registrar, privacy → Domain age score; (2) DNS Resolution → Query A, MX, NS, CNAME → DNS validity features; (3) Reputation APIs → VirusTotal, AbuseIPDB → Reputation score → All branches merge → Feature Vector (21 dimensions) → XGBoost Classifier.*
 
 ---
 
@@ -964,7 +962,6 @@ The next chapter (Chapter 3) presents the system design and architecture of Phis
 
 
 
-*Word Count: ~4,200 words (approximately 10-12 pages in standard thesis format)*
 # Chapter 3: System Design and Architecture
 
 ## 3.1 Architectural Overview
@@ -1362,7 +1359,6 @@ A cornerstone objective of the PhishGuard architecture is resolving the "black-b
 The `shapAnalysis.py` module integrates the `shap.TreeExplainer`, which utilizes cooperative game theory to calculate the exact marginal contribution of every single feature to the final prediction. Because XGBoost 3.x utilizes a bracketed format for its `base_score` (e.g., `[5E-1]`), a custom monkey-patch (`_patchShapXgboostCompat`) was engineered to ensure seamless compatibility with the SHAP explainer.
 
 **[FIGURE 4-1: SHAP Feature Importance (Beeswarm Plot)]**
-*Description: A plot displaying the global impact distribution of the 21 features.*
 *How to create:*
 1. Run the `backend/ml/training/shapAnalysis.py` script.
 2. The script will automatically generate the beeswarm plot using `matplotlib` and `seaborn`.
