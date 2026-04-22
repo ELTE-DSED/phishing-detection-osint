@@ -11,7 +11,7 @@ Phishing is a form of cybercrime in which attackers impersonate
 legitimate entities to fraudulently obtain sensitive information from
 unsuspecting victims. The term ``phishing'' is derived from the analogy
 of ``fishing'' for victims using deceptive ``bait'' (fake emails,
-websites, or messages) {[}1{]}. Unlike traditional hacking techniques
+websites, or messages) \cite{hong2012}. Unlike traditional hacking techniques
 that exploit technical vulnerabilities in software or networks, phishing
 exploits the human element---the tendency to trust familiar brands,
 authority figures, and urgent requests.
@@ -163,7 +163,7 @@ immediate action on a ``confidential'' document (urgency + curiosity).
 \subsection{Evolution and Trends}\label{evolution-and-trends}
 
 Phishing attacks have evolved significantly since the first documented
-case in the mid-1990s (targeting AOL users) {[}2{]}:
+case in the mid-1990s (targeting AOL users) \cite{jakobsson2006}:
 
 \textbf{1990s-2000s: Early Email Phishing} - Mass spam campaigns with
 obvious grammatical errors - Generic greetings (``Dear Customer'') - Low
@@ -171,7 +171,7 @@ sophistication, high volume
 
 \textbf{2000s-2010s: Professionalization} - Phishing kits democratize
 attacks - Improved visual mimicry of brands - Introduction of HTTPS on
-phishing sites (70\% of phishing sites now use HTTPS {[}3{]})
+phishing sites (70\% of phishing sites now use HTTPS \cite{phishlabs2023})
 
 \textbf{2010s-2020s: Targeted and Multi-Vector} - Rise of spear phishing
 and business email compromise (BEC) - Mobile phishing (smishing)
@@ -205,16 +205,16 @@ checked against the blacklist; a match triggers a warning or block.
 \item
   \textbf{Google Safe Browsing:} Protects over 4 billion devices by
   sharing threat intelligence with browsers (Chrome, Firefox, Safari)
-  {[}4{]}.
+  \cite{google_safe_browsing}.
 \item
   \textbf{PhishTank:} Community-driven database with over 8 million
-  verified phishing URLs submitted by volunteers {[}5{]}.
+  verified phishing URLs submitted by volunteers \cite{phishtank}.
 \item
   \textbf{OpenPhish:} Automated phishing detection service providing
-  real-time feeds {[}6{]}.
+  real-time feeds \cite{openphish}.
 \item
   \textbf{APWG eCrime Exchange (eCX):} Industry consortium sharing
-  phishing data among financial institutions {[}7{]}.
+  phishing data among financial institutions \cite{apwg_ecx}.
 \end{itemize}
 
 \textbf{Advantages:} - High precision (few false positives) when
@@ -224,7 +224,7 @@ lookup) - Well-integrated into browsers and email clients
 \textbf{Limitations:} - \textbf{Zero-Hour Vulnerability:} Cannot detect
 new phishing sites until reported, verified, and added to blacklist
 (delay of hours to days) - \textbf{Short-Lived Phishing Sites:} 50\% of
-phishing URLs remain active for \textless12 hours {[}8{]}, often
+phishing URLs remain active for \textless12 hours \cite{ramesh2015_ch4}, often
 disappearing before blacklisting - \textbf{Evasion Techniques:}
 Attackers use URL shorteners, redirects, or dynamic URL generation to
 bypass blacklists - \textbf{Scalability:} Millions of new phishing URLs
@@ -386,21 +386,21 @@ phishing detection:
 Study & Year & Algorithm & Features & Dataset Size & Accuracy & AUC-ROC & Notes \\
 \midrule
 
-Mohammad et al.~{[}9{]} & 2014 & Neural Network & 15 URL features &
+Mohammad et al.~\cite{mohammad2014} & 2014 & Neural Network & 15 URL features &
 14,000 URLs & 91.2\% & N/A & Self-structuring ANN \\
-Sahingoz et al.~{[}10{]} & 2019 & Random Forest & 37 URL features &
+Sahingoz et al.~\cite{sahingoz2019} & 2019 & Random Forest & 37 URL features &
 73,575 URLs & 97.98\% & N/A & NLP + URL features \\
-Chiew et al.~{[}11{]} & 2019 & Hybrid Ensemble & 48 features & 14,000
+Chiew et al.~\cite{chiew2019} & 2019 & Hybrid Ensemble & 48 features & 14,000
 URLs & 98.11\% & 99.26\% & Combined content + URL \\
-Rao \& Pais {[}12{]} & 2019 & Random Forest & 19 URL features & 11,055
+Rao \& Pais \cite{rao2019} & 2019 & Random Forest & 19 URL features & 11,055
 URLs & 96.76\% & 98.40\% & Feature selection via chi-square \\
-Yang et al.~{[}13{]} & 2019 & LightGBM & 24 URL features & 50,000 URLs &
+Yang et al.~\cite{yang2019} & 2019 & LightGBM & 24 URL features & 50,000 URLs &
 97.30\% & 99.10\% & Gradient boosting \\
-Somesha et al.~{[}14{]} & 2020 & XGBoost & 30 hybrid features & 11,430
+Somesha et al.~\cite{somesha2020} & 2020 & XGBoost & 30 hybrid features & 11,430
 URLs & 96.68\% & N/A & URL + content + third-party \\
-Buber et al.~{[}15{]} & 2021 & Deep Neural Net & 111 features & 88,647
+Buber et al.~\cite{buber2021} & 2021 & Deep Neural Net & 111 features & 88,647
 URLs & 97.16\% & 99.43\% & Exhaustive feature set \\
-Korkmaz et al.~{[}16{]} & 2022 & XGBoost & 20 URL features & 20,000 URLs
+Korkmaz et al.~\cite{korkmaz2022} & 2022 & XGBoost & 20 URL features & 20,000 URLs
 & 98.40\% & 99.70\% & Reduced feature set \\
 \textbf{This Work (PhishGuard)} & \textbf{2026} & \textbf{XGBoost} &
 \textbf{21 features (17 URL + 4 OSINT)} & \textbf{150,391 URLs} &
@@ -430,16 +430,16 @@ particularly for content and visual analysis:
 
 \textbf{Text-Based Deep Learning:} - \textbf{Recurrent Neural Networks
 (RNNs/LSTMs):} Process email text or URL character sequences to detect
-patterns {[}17{]}. - \textbf{Convolutional Neural Networks (CNNs):}
-Applied to URL strings treated as 1D sequences {[}18{]}. -
+patterns \cite{aljofey2020}. - \textbf{Convolutional Neural Networks (CNNs):}
+Applied to URL strings treated as 1D sequences \cite{li2019}. -
 \textbf{Transformers (BERT, GPT):} Fine-tuned on phishing email corpora
-for semantic understanding {[}19{]}.
+for semantic understanding \cite{hiransha2022}.
 
 \textbf{Visual Deep Learning:} - \textbf{CNNs for Screenshot
 Classification:} Train CNNs on rendered page screenshots to detect
-visual brand impersonation {[}20{]}. - \textbf{Siamese Networks:} Learn
+visual brand impersonation \cite{jain2018}. - \textbf{Siamese Networks:} Learn
 visual similarity between suspicious pages and known legitimate brand
-pages {[}21{]}.
+pages \cite{dhamija2006}.
 
 \textbf{Advantages:} - Automatic feature learning (no manual feature
 engineering) - High capacity for complex pattern recognition -
@@ -469,9 +469,9 @@ This undermines user trust and hinders security education.
 \textbf{1. Feature Importance (Global Explanations):} - \textbf{Gini
 Importance (Random Forest):} Measures feature contribution to tree
 splits. - \textbf{SHAP (SHapley Additive exPlanations):} Game-theoretic
-approach assigning each feature a contribution score {[}22{]}. -
+approach assigning each feature a contribution score \cite{lundberg2017}. -
 \textbf{LIME (Local Interpretable Model-Agnostic Explanations):}
-Approximates black-box model locally with interpretable model {[}23{]}.
+Approximates black-box model locally with interpretable model \cite{ribeiro2016}.
 
 \textbf{2. Decision Visualization (Instance-Level Explanations):} -
 \textbf{SHAP Waterfall Plots:} Show how each feature pushes prediction
@@ -542,7 +542,7 @@ IP changes, identifies fast-flux networks & Passive DNS databases
 Data}\label{whois-domain-registration-data}
 
 WHOIS is a query/response protocol providing information about domain
-name registrations (RFC 3912) {[}24{]}.
+name registrations (RFC 3912) \cite{daigle2004}.
 
 \textbf{Relevant WHOIS Data Points:}
 
@@ -818,83 +818,4 @@ production deployment, multi-modal input, and large-scale training
 The next chapters presents the system design and architecture
 of PhishGuard, detailing the frontend, backend, and data flow that
 realize these contributions.
-
-\textbf{References:}
-
-{[}1{]} J. Hong, ``The State of Phishing Attacks,'' \emph{Communications
-of the ACM}, vol.~55, no. 1, pp.~74-81, 2012.
-
-{[}2{]} M. Jakobsson and S. Myers, \emph{Phishing and Countermeasures:
-Understanding the Increasing Problem of Electronic Identity Theft}.
-Wiley, 2006.
-
-{[}3{]} PhishLabs, ``2023 Phishing Trends and Intelligence Report,''
-https://www.phishlabs.com/
-
-{[}4{]} Google Safe Browsing, https://safebrowsing.google.com/
-
-{[}5{]} PhishTank, https://phishtank.org/
-
-{[}6{]} OpenPhish, https://openphish.com/
-
-{[}7{]} APWG, ``eCrime Exchange (eCX),'' https://apwg.org/ecx/
-
-{[}8{]} G. Ramesh et al., ``Phishing URL Detection: A Machine Learning
-and Web Mining-based Approach,'' \emph{Int. J. Computer Applications},
-vol.~123, no. 13, 2015.
-
-{[}9{]} R. M. Mohammad et al., ``Predicting phishing websites based on
-self-structuring neural network,'' \emph{Neural Computing and
-Applications}, vol.~25, pp.~443-458, 2014.
-
-{[}10{]} O. K. Sahingoz et al., ``Machine learning based phishing
-detection from URLs,'' \emph{Expert Systems with Applications},
-vol.~117, pp.~345-357, 2019.
-
-{[}11{]} K. L. Chiew et al., ``A new hybrid ensemble feature selection
-framework for machine learning-based phishing detection system,''
-\emph{Information Sciences}, vol.~484, pp.~153-166, 2019.
-
-{[}12{]} R. S. Rao and A. R. Pais, ``Detection of phishing websites
-using an efficient feature-based machine learning framework,''
-\emph{Neural Computing and Applications}, vol.~31, pp.~3851-3873, 2019.
-
-{[}13{]} P. Yang et al., ``MTD: A Multi-Task Deep Learning Framework to
-Predict Drug-Target Interactions,'' in \emph{Proc. IJCAI}, 2019.
-
-{[}14{]} M. Somesha et al., ``Classification of Phishing Websites using
-XGBoost and Deep Neural Networks,'' in \emph{Proc. ICCIDS}, 2020.
-
-{[}15{]} E. Buber et al., ``Detecting phishing attacks from URL by using
-NLP techniques,'' in \emph{Proc. IDAP}, 2021.
-
-{[}16{]} M. Korkmaz et al., ``Phishing web sites detection using hybrid
-model based on deep belief network and autoencoder,'' \emph{Multimedia
-Tools and Applications}, vol.~81, pp.~24159-24178, 2022.
-
-{[}17{]} A. S. Aljofey et al., ``An effective phishing detection model
-based on character level convolutional neural network from URL,''
-\emph{Electronics}, vol.~9, no. 9, 2020.
-
-{[}18{]} Y. Li et al., ``A convolutional neural network-based approach
-for phishing website detection,'' in \emph{Proc. Trustcom}, 2019.
-
-{[}19{]} A. Hiransha et al., ``PhishDef: URL-Based Phishing Detection
-Using BERT,'' in \emph{Proc. ICTCS}, 2022.
-
-{[}20{]} A. K. Jain and B. B. Gupta, ``Towards detection of phishing
-websites on client-side using machine learning based approach,''
-\emph{Telecommunication Systems}, vol.~68, pp.~687-700, 2018.
-
-{[}21{]} R. Dhamija et al., ``Why phishing works,'' in \emph{Proc. CHI},
-2006.
-
-{[}22{]} S. M. Lundberg and S.-I. Lee, ``A unified approach to
-interpreting model predictions,'' in \emph{Proc. NeurIPS}, 2017.
-
-{[}23{]} M. T. Ribeiro et al., ``\,`Why should I trust you?': Explaining
-the predictions of any classifier,'' in \emph{Proc. KDD}, 2016.
-
-{[}24{]} L. Daigle, ``WHOIS Protocol Specification,'' RFC 3912, 2004.
-https://www.rfc-editor.org/rfc/rfc3912
 
