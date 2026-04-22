@@ -16,5 +16,708 @@
   {}
 \endgroup
 
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{apwg2023}{report}{}
+      \name{author}{1}{}{%
+        {{hash=6acaac86bed4af4b5c8df3cedadbcdaa}{%
+           family={{Anti-Phishing Working Group (APWG)}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{6acaac86bed4af4b5c8df3cedadbcdaa}
+      \strng{fullhash}{6acaac86bed4af4b5c8df3cedadbcdaa}
+      \strng{bibnamehash}{6acaac86bed4af4b5c8df3cedadbcdaa}
+      \strng{authorbibnamehash}{6acaac86bed4af4b5c8df3cedadbcdaa}
+      \strng{authornamehash}{6acaac86bed4af4b5c8df3cedadbcdaa}
+      \strng{authorfullhash}{6acaac86bed4af4b5c8df3cedadbcdaa}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Phishing Activity Trends Report, Q4 2023}
+      \field{type}{techreport}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://apwg.org/trendsreports/
+      \endverb
+      \verb{url}
+      \verb https://apwg.org/trendsreports/
+      \endverb
+    \endentry
+    \entry{fbi2022}{report}{}
+      \name{author}{1}{}{%
+        {{hash=5c7a994158739262c63c077543eb2cea}{%
+           family={{Federal Bureau of Investigation (FBI)}},
+           familyi={F\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Internet Crime Complaint Center (IC3)}%
+      }
+      \strng{namehash}{5c7a994158739262c63c077543eb2cea}
+      \strng{fullhash}{5c7a994158739262c63c077543eb2cea}
+      \strng{bibnamehash}{5c7a994158739262c63c077543eb2cea}
+      \strng{authorbibnamehash}{5c7a994158739262c63c077543eb2cea}
+      \strng{authornamehash}{5c7a994158739262c63c077543eb2cea}
+      \strng{authorfullhash}{5c7a994158739262c63c077543eb2cea}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Internet Crime Report 2022}
+      \field{type}{techreport}
+      \field{year}{2023}
+    \endentry
+    \entry{ramesh2015}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=356237a9d92f343b7336e7f5cef37d96}{%
+           family={Ramesh},
+           familyi={R\bibinitperiod},
+           given={G},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{fullhash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{bibnamehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{authorbibnamehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{authornamehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{authorfullhash}{822d50c8385100f38df2ddef9b00262c}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Computer Applications}
+      \field{number}{13}
+      \field{title}{Phishing URL Detection: A Machine Learning and Web Mining-based Approach}
+      \field{volume}{123}
+      \field{year}{2015}
+      \field{pages}{46\bibrangedash 50}
+      \range{pages}{5}
+    \endentry
+    \entry{webroot2023}{report}{}
+      \name{author}{1}{}{%
+        {{hash=4bf4b03c042b12be3ae68b18d83a95a1}{%
+           family={{Webroot}},
+           familyi={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{4bf4b03c042b12be3ae68b18d83a95a1}
+      \strng{fullhash}{4bf4b03c042b12be3ae68b18d83a95a1}
+      \strng{bibnamehash}{4bf4b03c042b12be3ae68b18d83a95a1}
+      \strng{authorbibnamehash}{4bf4b03c042b12be3ae68b18d83a95a1}
+      \strng{authornamehash}{4bf4b03c042b12be3ae68b18d83a95a1}
+      \strng{authorfullhash}{4bf4b03c042b12be3ae68b18d83a95a1}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{2023 Webroot BrightCloud Threat Report}
+      \field{type}{techreport}
+      \field{year}{2023}
+    \endentry
+    \entry{hong2012}{article}{}
+      \name{author}{1}{}{%
+        {{hash=4d9d44918fd3389c5579c8a660aeff77}{%
+           family={Hong},
+           familyi={H\bibinitperiod},
+           given={J},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{4d9d44918fd3389c5579c8a660aeff77}
+      \strng{fullhash}{4d9d44918fd3389c5579c8a660aeff77}
+      \strng{bibnamehash}{4d9d44918fd3389c5579c8a660aeff77}
+      \strng{authorbibnamehash}{4d9d44918fd3389c5579c8a660aeff77}
+      \strng{authornamehash}{4d9d44918fd3389c5579c8a660aeff77}
+      \strng{authorfullhash}{4d9d44918fd3389c5579c8a660aeff77}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Communications of the ACM}
+      \field{number}{1}
+      \field{title}{The State of Phishing Attacks}
+      \field{volume}{55}
+      \field{year}{2012}
+      \field{pages}{74\bibrangedash 81}
+      \range{pages}{8}
+    \endentry
+    \entry{jakobsson2006}{book}{}
+      \name{author}{2}{}{%
+        {{hash=db34fb1358fd1b18737e314b333b38fa}{%
+           family={Jakobsson},
+           familyi={J\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=63f525e0aae1e484a514832ab225f932}{%
+           family={Myers},
+           familyi={M\bibinitperiod},
+           given={S},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley}%
+      }
+      \strng{namehash}{d5fac89a3c3cc035b22b96fbe948467b}
+      \strng{fullhash}{d5fac89a3c3cc035b22b96fbe948467b}
+      \strng{bibnamehash}{d5fac89a3c3cc035b22b96fbe948467b}
+      \strng{authorbibnamehash}{d5fac89a3c3cc035b22b96fbe948467b}
+      \strng{authornamehash}{d5fac89a3c3cc035b22b96fbe948467b}
+      \strng{authorfullhash}{d5fac89a3c3cc035b22b96fbe948467b}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Phishing and Countermeasures: Understanding the Increasing Problem of Electronic Identity Theft}
+      \field{year}{2006}
+    \endentry
+    \entry{phishlabs2023}{report}{}
+      \name{author}{1}{}{%
+        {{hash=9fadb826caa2498c126b995e795a2b6b}{%
+           family={{PhishLabs}},
+           familyi={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{9fadb826caa2498c126b995e795a2b6b}
+      \strng{fullhash}{9fadb826caa2498c126b995e795a2b6b}
+      \strng{bibnamehash}{9fadb826caa2498c126b995e795a2b6b}
+      \strng{authorbibnamehash}{9fadb826caa2498c126b995e795a2b6b}
+      \strng{authornamehash}{9fadb826caa2498c126b995e795a2b6b}
+      \strng{authorfullhash}{9fadb826caa2498c126b995e795a2b6b}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{2023 Phishing Trends and Intelligence Report}
+      \field{type}{techreport}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://www.phishlabs.com/
+      \endverb
+      \verb{url}
+      \verb https://www.phishlabs.com/
+      \endverb
+    \endentry
+    \entry{google_safe_browsing}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=8b36e9207c24c76e6719268e49201d94}{%
+           family={{Google}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{8b36e9207c24c76e6719268e49201d94}
+      \strng{fullhash}{8b36e9207c24c76e6719268e49201d94}
+      \strng{bibnamehash}{8b36e9207c24c76e6719268e49201d94}
+      \strng{authorbibnamehash}{8b36e9207c24c76e6719268e49201d94}
+      \strng{authornamehash}{8b36e9207c24c76e6719268e49201d94}
+      \strng{authorfullhash}{8b36e9207c24c76e6719268e49201d94}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Google Safe Browsing}
+      \verb{urlraw}
+      \verb https://safebrowsing.google.com/
+      \endverb
+      \verb{url}
+      \verb https://safebrowsing.google.com/
+      \endverb
+    \endentry
+    \entry{phishtank}{misc}{}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labeltitlesource}{title}
+      \field{title}{PhishTank}
+      \verb{urlraw}
+      \verb https://phishtank.org/
+      \endverb
+      \verb{url}
+      \verb https://phishtank.org/
+      \endverb
+    \endentry
+    \entry{openphish}{misc}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{OpenPhish}
+      \verb{urlraw}
+      \verb https://openphish.com/
+      \endverb
+      \verb{url}
+      \verb https://openphish.com/
+      \endverb
+    \endentry
+    \entry{apwg_ecx}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=1ca99783977d961947d1903782e92c2f}{%
+           family={{APWG}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{1ca99783977d961947d1903782e92c2f}
+      \strng{fullhash}{1ca99783977d961947d1903782e92c2f}
+      \strng{bibnamehash}{1ca99783977d961947d1903782e92c2f}
+      \strng{authorbibnamehash}{1ca99783977d961947d1903782e92c2f}
+      \strng{authornamehash}{1ca99783977d961947d1903782e92c2f}
+      \strng{authorfullhash}{1ca99783977d961947d1903782e92c2f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{eCrime Exchange (eCX)}
+      \verb{urlraw}
+      \verb https://apwg.org/ecx/
+      \endverb
+      \verb{url}
+      \verb https://apwg.org/ecx/
+      \endverb
+    \endentry
+    \entry{ramesh2015_ch4}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=356237a9d92f343b7336e7f5cef37d96}{%
+           family={Ramesh},
+           familyi={R\bibinitperiod},
+           given={G},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{fullhash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{bibnamehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{authorbibnamehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{authornamehash}{822d50c8385100f38df2ddef9b00262c}
+      \strng{authorfullhash}{822d50c8385100f38df2ddef9b00262c}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Int. J. Computer Applications}
+      \field{number}{13}
+      \field{title}{Phishing URL Detection: A Machine Learning and Web Mining-based Approach}
+      \field{volume}{123}
+      \field{year}{2015}
+    \endentry
+    \entry{mohammad2014}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=43974b3e7da6ac68fb319db29c3bc7ac}{%
+           family={Mohammad},
+           familyi={M\bibinitperiod},
+           given={R\bibnamedelima M},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{8f9b1233183f14162e5e734a32db0763}
+      \strng{fullhash}{8f9b1233183f14162e5e734a32db0763}
+      \strng{bibnamehash}{8f9b1233183f14162e5e734a32db0763}
+      \strng{authorbibnamehash}{8f9b1233183f14162e5e734a32db0763}
+      \strng{authornamehash}{8f9b1233183f14162e5e734a32db0763}
+      \strng{authorfullhash}{8f9b1233183f14162e5e734a32db0763}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neural Computing and Applications}
+      \field{title}{Predicting phishing websites based on self-structuring neural network}
+      \field{volume}{25}
+      \field{year}{2014}
+      \field{pages}{443\bibrangedash 458}
+      \range{pages}{16}
+    \endentry
+    \entry{sahingoz2019}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=e2aca892111d2e080a3cd3ac419631a9}{%
+           family={Sahingoz},
+           familyi={S\bibinitperiod},
+           given={O\bibnamedelima K},
+           giveni={O\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{f6df64e98c8f080a2f3dfe4751c58e8a}
+      \strng{fullhash}{f6df64e98c8f080a2f3dfe4751c58e8a}
+      \strng{bibnamehash}{f6df64e98c8f080a2f3dfe4751c58e8a}
+      \strng{authorbibnamehash}{f6df64e98c8f080a2f3dfe4751c58e8a}
+      \strng{authornamehash}{f6df64e98c8f080a2f3dfe4751c58e8a}
+      \strng{authorfullhash}{f6df64e98c8f080a2f3dfe4751c58e8a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Expert Systems with Applications}
+      \field{title}{Machine learning based phishing detection from URLs}
+      \field{volume}{117}
+      \field{year}{2019}
+      \field{pages}{345\bibrangedash 357}
+      \range{pages}{13}
+    \endentry
+    \entry{chiew2019}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=03b1ce6b432fdb789899cfe1410c83be}{%
+           family={Chiew},
+           familyi={C\bibinitperiod},
+           given={K\bibnamedelima L},
+           giveni={K\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{5cbe98b226bc98418d23927ba92cc5e6}
+      \strng{fullhash}{5cbe98b226bc98418d23927ba92cc5e6}
+      \strng{bibnamehash}{5cbe98b226bc98418d23927ba92cc5e6}
+      \strng{authorbibnamehash}{5cbe98b226bc98418d23927ba92cc5e6}
+      \strng{authornamehash}{5cbe98b226bc98418d23927ba92cc5e6}
+      \strng{authorfullhash}{5cbe98b226bc98418d23927ba92cc5e6}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Information Sciences}
+      \field{title}{A new hybrid ensemble feature selection framework for machine learning-based phishing detection system}
+      \field{volume}{484}
+      \field{year}{2019}
+      \field{pages}{153\bibrangedash 166}
+      \range{pages}{14}
+    \endentry
+    \entry{rao2019}{article}{}
+      \name{author}{2}{}{%
+        {{hash=b196a02789d028078e0edd97314d3aff}{%
+           family={Rao},
+           familyi={R\bibinitperiod},
+           given={R\bibnamedelima S},
+           giveni={R\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=32fa6790ab7c4b9b1c7a1efe4c017fed}{%
+           family={Pais},
+           familyi={P\bibinitperiod},
+           given={A\bibnamedelima R},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{b1980c0027d3314a8a57258a2d87a82f}
+      \strng{fullhash}{b1980c0027d3314a8a57258a2d87a82f}
+      \strng{bibnamehash}{b1980c0027d3314a8a57258a2d87a82f}
+      \strng{authorbibnamehash}{b1980c0027d3314a8a57258a2d87a82f}
+      \strng{authornamehash}{b1980c0027d3314a8a57258a2d87a82f}
+      \strng{authorfullhash}{b1980c0027d3314a8a57258a2d87a82f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Neural Computing and Applications}
+      \field{title}{Detection of phishing websites using an efficient feature-based machine learning framework}
+      \field{volume}{31}
+      \field{year}{2019}
+      \field{pages}{3851\bibrangedash 3873}
+      \range{pages}{23}
+    \endentry
+    \entry{yang2019}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=cf33bcda2a93f993c5124cf26991a0f6}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={P},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{27b6d101378d95dbe1cbdfc7156cd6dc}
+      \strng{fullhash}{27b6d101378d95dbe1cbdfc7156cd6dc}
+      \strng{bibnamehash}{27b6d101378d95dbe1cbdfc7156cd6dc}
+      \strng{authorbibnamehash}{27b6d101378d95dbe1cbdfc7156cd6dc}
+      \strng{authornamehash}{27b6d101378d95dbe1cbdfc7156cd6dc}
+      \strng{authorfullhash}{27b6d101378d95dbe1cbdfc7156cd6dc}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. IJCAI}
+      \field{title}{MTD: A Multi-Task Deep Learning Framework to Predict Drug-Target Interactions}
+      \field{year}{2019}
+    \endentry
+    \entry{somesha2020}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=1c69d586ad0ebc2ff5a04509ab6d41bd}{%
+           family={Somesha},
+           familyi={S\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{67f577b9a9fd7e987d32cff28656cb30}
+      \strng{fullhash}{67f577b9a9fd7e987d32cff28656cb30}
+      \strng{bibnamehash}{67f577b9a9fd7e987d32cff28656cb30}
+      \strng{authorbibnamehash}{67f577b9a9fd7e987d32cff28656cb30}
+      \strng{authornamehash}{67f577b9a9fd7e987d32cff28656cb30}
+      \strng{authorfullhash}{67f577b9a9fd7e987d32cff28656cb30}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. ICCIDS}
+      \field{title}{Classification of Phishing Websites using XGBoost and Deep Neural Networks}
+      \field{year}{2020}
+    \endentry
+    \entry{buber2021}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=d1adc3913e32bf5860840c96bc6f4b5f}{%
+           family={Buber},
+           familyi={B\bibinitperiod},
+           given={E},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{9946ada8b22dcc4b6bb96a3a73d34f57}
+      \strng{fullhash}{9946ada8b22dcc4b6bb96a3a73d34f57}
+      \strng{bibnamehash}{9946ada8b22dcc4b6bb96a3a73d34f57}
+      \strng{authorbibnamehash}{9946ada8b22dcc4b6bb96a3a73d34f57}
+      \strng{authornamehash}{9946ada8b22dcc4b6bb96a3a73d34f57}
+      \strng{authorfullhash}{9946ada8b22dcc4b6bb96a3a73d34f57}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. IDAP}
+      \field{title}{Detecting phishing attacks from URL by using NLP techniques}
+      \field{year}{2021}
+    \endentry
+    \entry{korkmaz2022}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=4b3b2e160ecd6403bdb556cc88261dad}{%
+           family={Korkmaz},
+           familyi={K\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{074e011bef2970ad78ad3f25b9fc75b8}
+      \strng{fullhash}{074e011bef2970ad78ad3f25b9fc75b8}
+      \strng{bibnamehash}{074e011bef2970ad78ad3f25b9fc75b8}
+      \strng{authorbibnamehash}{074e011bef2970ad78ad3f25b9fc75b8}
+      \strng{authornamehash}{074e011bef2970ad78ad3f25b9fc75b8}
+      \strng{authorfullhash}{074e011bef2970ad78ad3f25b9fc75b8}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Multimedia Tools and Applications}
+      \field{title}{Phishing web sites detection using hybrid model based on deep belief network and autoencoder}
+      \field{volume}{81}
+      \field{year}{2022}
+      \field{pages}{24159\bibrangedash 24178}
+      \range{pages}{20}
+    \endentry
+    \entry{aljofey2020}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=16bac870eae47eb2dc4a1e30f1505398}{%
+           family={Aljofey},
+           familyi={A\bibinitperiod},
+           given={A\bibnamedelima S},
+           giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{86145aff7b9a6fce3c07487e70ba0a0b}
+      \strng{fullhash}{86145aff7b9a6fce3c07487e70ba0a0b}
+      \strng{bibnamehash}{86145aff7b9a6fce3c07487e70ba0a0b}
+      \strng{authorbibnamehash}{86145aff7b9a6fce3c07487e70ba0a0b}
+      \strng{authornamehash}{86145aff7b9a6fce3c07487e70ba0a0b}
+      \strng{authorfullhash}{86145aff7b9a6fce3c07487e70ba0a0b}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Electronics}
+      \field{number}{9}
+      \field{title}{An effective phishing detection model based on character level convolutional neural network from URL}
+      \field{volume}{9}
+      \field{year}{2020}
+    \endentry
+    \entry{li2019}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=66d548e0e670e107fc4a80dc0c3825b3}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Y},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{2f060ecac11058276f5d0b5a813eee70}
+      \strng{fullhash}{2f060ecac11058276f5d0b5a813eee70}
+      \strng{bibnamehash}{2f060ecac11058276f5d0b5a813eee70}
+      \strng{authorbibnamehash}{2f060ecac11058276f5d0b5a813eee70}
+      \strng{authornamehash}{2f060ecac11058276f5d0b5a813eee70}
+      \strng{authorfullhash}{2f060ecac11058276f5d0b5a813eee70}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. Trustcom}
+      \field{title}{A convolutional neural network-based approach for phishing website detection}
+      \field{year}{2019}
+    \endentry
+    \entry{hiransha2022}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=be11d62736dec41a06ad16fc8b3990a2}{%
+           family={Hiransha},
+           familyi={H\bibinitperiod},
+           given={A},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{12acd7f25f937f0d72757cbb3d0bd944}
+      \strng{fullhash}{12acd7f25f937f0d72757cbb3d0bd944}
+      \strng{bibnamehash}{12acd7f25f937f0d72757cbb3d0bd944}
+      \strng{authorbibnamehash}{12acd7f25f937f0d72757cbb3d0bd944}
+      \strng{authornamehash}{12acd7f25f937f0d72757cbb3d0bd944}
+      \strng{authorfullhash}{12acd7f25f937f0d72757cbb3d0bd944}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. ICTCS}
+      \field{title}{PhishDef: URL-Based Phishing Detection Using BERT}
+      \field{year}{2022}
+    \endentry
+    \entry{jain2018}{article}{}
+      \name{author}{2}{}{%
+        {{hash=5158eda7f50d354c819ac47226b8fb7b}{%
+           family={Jain},
+           familyi={J\bibinitperiod},
+           given={A\bibnamedelima K},
+           giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=8a39008f4590f630bf28141fa4a7fc87}{%
+           family={Gupta},
+           familyi={G\bibinitperiod},
+           given={B\bibnamedelima B},
+           giveni={B\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{655d0d23322f65524705b1d39a576c24}
+      \strng{fullhash}{655d0d23322f65524705b1d39a576c24}
+      \strng{bibnamehash}{655d0d23322f65524705b1d39a576c24}
+      \strng{authorbibnamehash}{655d0d23322f65524705b1d39a576c24}
+      \strng{authornamehash}{655d0d23322f65524705b1d39a576c24}
+      \strng{authorfullhash}{655d0d23322f65524705b1d39a576c24}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Telecommunication Systems}
+      \field{title}{Towards detection of phishing websites on client-side using machine learning based approach}
+      \field{volume}{68}
+      \field{year}{2018}
+      \field{pages}{687\bibrangedash 700}
+      \range{pages}{14}
+    \endentry
+    \entry{dhamija2006}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=2d457e65c411c5a4679b57597f4917cb}{%
+           family={Dhamija},
+           familyi={D\bibinitperiod},
+           given={R},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{33a8121f2b05014fcde6863768628e8d}
+      \strng{fullhash}{33a8121f2b05014fcde6863768628e8d}
+      \strng{bibnamehash}{33a8121f2b05014fcde6863768628e8d}
+      \strng{authorbibnamehash}{33a8121f2b05014fcde6863768628e8d}
+      \strng{authornamehash}{33a8121f2b05014fcde6863768628e8d}
+      \strng{authorfullhash}{33a8121f2b05014fcde6863768628e8d}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. CHI}
+      \field{title}{Why phishing works}
+      \field{year}{2006}
+    \endentry
+    \entry{lundberg2017}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=17729c98bff4193e66ade748c316e019}{%
+           family={Lundberg},
+           familyi={L\bibinitperiod},
+           given={S\bibnamedelima M},
+           giveni={S\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=9d931b4fd8b21dc3e50b8808fcb7f7c9}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={S-I},
+           giveni={S\bibinithyphendelim I\bibinitperiod}}}%
+      }
+      \strng{namehash}{4a9ed5ad08eee8c6c02937edf304b636}
+      \strng{fullhash}{4a9ed5ad08eee8c6c02937edf304b636}
+      \strng{bibnamehash}{4a9ed5ad08eee8c6c02937edf304b636}
+      \strng{authorbibnamehash}{4a9ed5ad08eee8c6c02937edf304b636}
+      \strng{authornamehash}{4a9ed5ad08eee8c6c02937edf304b636}
+      \strng{authorfullhash}{4a9ed5ad08eee8c6c02937edf304b636}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. NeurIPS}
+      \field{title}{A unified approach to interpreting model predictions}
+      \field{year}{2017}
+    \endentry
+    \entry{ribeiro2016}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=03dfdb9c358f9f035861b380d385ac95}{%
+           family={Ribeiro},
+           familyi={R\bibinitperiod},
+           given={M\bibnamedelima T},
+           giveni={M\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{9413ee6263ec382d5fcf30f6445187a5}
+      \strng{fullhash}{9413ee6263ec382d5fcf30f6445187a5}
+      \strng{bibnamehash}{9413ee6263ec382d5fcf30f6445187a5}
+      \strng{authorbibnamehash}{9413ee6263ec382d5fcf30f6445187a5}
+      \strng{authornamehash}{9413ee6263ec382d5fcf30f6445187a5}
+      \strng{authorfullhash}{9413ee6263ec382d5fcf30f6445187a5}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. KDD}
+      \field{title}{"Why should I trust you?": Explaining the predictions of any classifier}
+      \field{year}{2016}
+    \endentry
+    \entry{daigle2004}{report}{}
+      \name{author}{1}{}{%
+        {{hash=b8966e8e74e0bd60925820bcc02d4223}{%
+           family={Daigle},
+           familyi={D\bibinitperiod},
+           given={L},
+           giveni={L\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {RFC 3912}%
+      }
+      \strng{namehash}{b8966e8e74e0bd60925820bcc02d4223}
+      \strng{fullhash}{b8966e8e74e0bd60925820bcc02d4223}
+      \strng{bibnamehash}{b8966e8e74e0bd60925820bcc02d4223}
+      \strng{authorbibnamehash}{b8966e8e74e0bd60925820bcc02d4223}
+      \strng{authornamehash}{b8966e8e74e0bd60925820bcc02d4223}
+      \strng{authorfullhash}{b8966e8e74e0bd60925820bcc02d4223}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{WHOIS Protocol Specification}
+      \field{type}{techreport}
+      \field{year}{2004}
+      \verb{urlraw}
+      \verb https://www.rfc-editor.org/rfc/rfc3912
+      \endverb
+      \verb{url}
+      \verb https://www.rfc-editor.org/rfc/rfc3912
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
 \endinput
 
