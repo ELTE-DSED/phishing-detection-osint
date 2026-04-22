@@ -1,11 +1,13 @@
 \chapter{Developer Documentation}
 \label{developer-documentation}
 
-\section{Detailed Problem Specification}
+\section{System Design}
+
+\subsection{Detailed Problem Specification}
 The software engineering task involves developing a scalable, high-concurrency threat intelligence platform capable of ingesting diverse modalities (URL, email, text), orchestrating asynchronous analysis pipelines (DNS, WHOIS, NLP, Reputation), executing an ML inference engine, and returning a deterministically weighted threat score and explanation within strict latency constraints.
 
-\section{Logical and Physical Structure}
-\subsection{The Tech Stack}
+\subsection{Logical and Physical Structure}
+\subsubsection{The Tech Stack}
 The physical architecture of PhishGuard is built upon a modern, distributed full-stack paradigm:
 \begin{itemize}
     \item \textbf{Frontend (Vercel):} The user interface is implemented using Next.js (React) and TypeScript, deployed globally on Vercel's Edge Network for optimal performance and CDN caching.
@@ -13,7 +15,7 @@ The physical architecture of PhishGuard is built upon a modern, distributed full
     \item \textbf{Version Control (GitHub):} The entire source code, issue tracking, and CI/CD pipelines are managed via GitHub repositories.
 \end{itemize}
 
-\section{Architectural Overview}\label{architectural-overview}
+\subsection{Architectural Overview}\label{architectural-overview}
 
 The PhishGuard platform is engineered as a modern, decoupled, full-stack
 web application. The architectural design prioritizes low-latency
@@ -39,7 +41,7 @@ gradient-boosted decision trees---do not block the main thread of the
 user interface, thereby guaranteeing a fluid and responsive user
 experience even under heavy analytical load.
 
-\section{High-Level Data Flow}\label{high-level-data-flow}
+\subsection{High-Level Data Flow}\label{high-level-data-flow}
 
 The operational lifecycle of a threat analysis request within the
 PhishGuard architecture follows a deterministic, multi-stage pipeline.
@@ -198,7 +200,7 @@ validation eliminates runtime \texttt{TypeError} and \texttt{KeyError}
 exceptions in the frontend UI, providing a robust, self-documenting API
 contract.
 
-\section{Frontend Architecture}\label{frontend-architecture}
+\subsection{Frontend Architecture}\label{frontend-architecture}
 
 The presentation layer is constructed using Next.js 16 (App Router) and
 React 19, focusing heavily on performance, modern UI/UX paradigms, and
@@ -255,7 +257,7 @@ by the \texttt{motion} library, are employed to provide immediate visual
 feedback during the analysis lifecycle, elegantly bridging the perceived
 latency gap during external network lookups.
 
-\section{Summary}\label{summary-1}
+\subsection{System Design Summary}\label{summary-1}
 
 This chapter detailed the structural engineering of the PhishGuard
 platform. The architecture successfully isolates the Next.js
@@ -330,7 +332,7 @@ exposed, whereas in production environments, generic internal server
 error messages are returned to prevent information disclosure.
 
 
-\section{The Analysis Orchestrator}\label{the-analysis-orchestrator}
+\subsection{The Analysis Orchestrator}\label{the-analysis-orchestrator}
 
 The core computational logic of the application resides within the
 \texttt{backend/api/orchestrator.py} module. This module coordinates the
@@ -466,7 +468,9 @@ likely to be phishing. Do not interact.'').
 Quality Assurance
 
 
-\section{Testing Plan and Results}
+\section{Quality Assurance and Testing}
+
+\subsection{Testing Plan and Results}
 \section{Introduction to the Quality Assurance
 Framework}\label{introduction-to-the-quality-assurance-framework}
 
