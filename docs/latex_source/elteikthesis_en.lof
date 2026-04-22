@@ -2,8 +2,8 @@
 \babel@toc {english}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Figure 2.1: The PhishGuard Next.js Web Application Dashboard\relax }}{18}{figure.caption.2}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Figure 2.2: Threat Analysis Results showing the interactive threat gauge\relax }}{19}{figure.caption.5}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Figure 2.1: The PhishGuard Web Application Dashboard\relax }}{18}{figure.caption.2}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Figure 2.2: Threat Analysis Results showing the interactive threat gauge\relax }}{19}{figure.caption.3}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Figure 3.1: High-Level System Data Flow separating the Next.js Presentation layer, FastAPI Application Orchestrator, ML Pipeline, and Async OSINT\relax }}{22}{figure.caption.7}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Figure 3.2: Sequence Diagram illustrating parallel execution of Structural Features, NLP Analysis, and the strict 15.0s OSINT timeout\relax }}{23}{figure.caption.8}%

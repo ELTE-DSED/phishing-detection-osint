@@ -9,58 +9,41 @@ To protect the user, the application utilizes a hybrid Machine Learning (ML), Op
 
 \section{User Guide and Interface}
 
-The PhishGuard user interface is designed to be highly accessible and visually intuitive. The core user flow involves accessing the dashboard, inputting a suspicious artifact, and reviewing the generated risk report.
+The PhishGuard user interface is designed to be highly accessible and visually intuitive. The core user flow involves accessing the dashboard, inputting a suspicious artifact, and reviewing the generated risk report. No technical expertise or installation is required by the end-user, as the platform is accessed entirely via a standard web browser.
 
-\subsection{Frontend Implementation}\label{frontend-implementation}
+\subsection{Step 1: The Dashboard and Input Submission}\label{dashboard-input}
 
-The user interface for the PhishGuard platform is implemented as a
-modern web application utilizing Next.js 16 utilizing the App Router
-architecture. The frontend application relies on React 19 for
-component-based UI rendering and state management.
+Upon navigating to the PhishGuard application, the user is presented with a clean, distraction-free dashboard (Figure 2.1). The primary interactive element is the central input field. 
 
-\begin{figure}
+To initiate a security scan, the user simply pastes the suspicious content into this field. The system is designed to be modality-agnostic; the user does not need to specify whether the input is a URL, an email address, or a block of text. The application will automatically detect the format upon submission.
+
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\linewidth,height=0.65\textheight,keepaspectratio]{images/dashboard.png}
-\caption{Figure 2.1: The PhishGuard Next.js Web Application Dashboard}
+\caption{Figure 2.1: The PhishGuard Web Application Dashboard}
 \end{figure}
 
-\subsubsection{Component Architecture and
-Styling}\label{component-architecture-and-styling}
+Once the content is pasted, the user clicks the ``Analyze'' button. During the analysis phase, which typically takes between 1 to 5 seconds depending on external network lookups, the interface displays a loading state to assure the user that the request is being processed.
 
-The frontend employs a rigorous component-driven design methodology. The
-visual aesthetic and layout are strictly managed using Tailwind CSS v4,
-a utility-first CSS framework that allows for rapid styling directly
-within the component markup.
+\subsection{Step 2: Interpreting the Threat Analysis Results}\label{interpreting-results}
 
-For complex, interactive UI elements, the project leverages the
-\texttt{shadcn} UI library alongside \texttt{@base-ui/react}. These
-libraries provide accessible, unstyled components that are seamlessly
-integrated with the Tailwind configuration, ensuring a consistent design
-language across the application while adhering to web accessibility
-guidelines.
+When the backend orchestrator completes its evaluation, the interface seamlessly transitions to the Threat Analysis Results view (Figure 2.2). This page is structured to provide an immediate, high-level verdict followed by detailed, transparent metrics.
 
-\subsubsection{Data Visualization and
-Animation}\label{data-visualization-and-animation}
-
-To effectively communicate the complex risk metrics and threat
-intelligence data returned by the backend API, the frontend incorporates
-the \texttt{recharts} library for data visualization. This library
-facilitates the creation of responsive, interactive charts that
-illustrate risk scores, temporal data (such as domain age), and
-historical analysis trends.
-
-User experience is further enhanced through subtle animations
-implemented using the \texttt{motion} (Framer Motion) library. These
-animations provide visual feedback during asynchronous state
-transitions, such as when waiting for the backend API to complete a
-comprehensive URL analysis. Iconography is provided by
-\texttt{lucide-react}, ensuring a modern and lightweight visual
-presentation.
-
-\begin{figure}
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\linewidth,height=0.65\textheight,keepaspectratio]{images/result.png}
-\caption{Figure 2.2: Threat Analysis Results showing the interactive
-threat gauge}
+\caption{Figure 2.2: Threat Analysis Results showing the interactive threat gauge}
 \end{figure}
 
+\subsubsection{The Threat Gauge and Verdict}\label{threat-gauge-verdict}
+
+At the top of the results page, the user will see a large, color-coded Threat Gauge. This is the most critical piece of information for non-technical users. It displays an overall risk percentage (from 0\% to 100\%) and a clear textual verdict:
+\begin{itemize}
+    \item \textbf{Safe (Green):} The content shows no signs of malicious intent or known blacklisting.
+    \item \textbf{Suspicious (Amber):} The content exhibits anomalous characteristics (such as a newly registered domain or unusual routing) but is not definitively malicious. Caution is advised.
+    \item \textbf{Dangerous (Red):} The content is highly likely to be a phishing attempt, confirmed by threat intelligence databases or strong heuristic matches. Do not interact with the original link.
+\end{itemize}
+
+\subsubsection{Detailed Metric Breakdown}\label{detailed-metric-breakdown}
+
+Below the primary gauge, the user can review specific findings that contributed to the final score. This section translates complex technical data into plain-language warnings. For example, it will clearly state if a domain was registered very recently, if the SSL certificate is invalid, or if the URL structure attempts to spoof a known brand. This level of transparency empowers the user to understand \textit{why} a specific verdict was reached, fostering trust in the platform's analysis.
