@@ -6,13 +6,13 @@ sequenceDiagram
     participant ML_Pipe as ML Extractor (URL)
     participant NLP_Pipe as NLP Analyzer (Text)
     participant OSINT as OSINT Orchestrator
-    participant DB as SQLite / Memory Store
+    participant DB as In-Memory History Store
     
-    User->>Browser: Submit URL for Analysis
-    Browser->>API: POST /api/analyze/url {url: "http://..."}
+    User->>Browser: Submit Content for Analysis
+    Browser->>API: POST /api/analyze {content: "...", contentType: "auto"}
     
     activate API
-    API->>API: Detect Modality (URL)
+    API->>API: Detect Content Type (URL/Email/Text)
     
     par Parallel Execution
         API->>ML_Pipe: Extract Structural Features (17)
@@ -22,7 +22,7 @@ sequenceDiagram
         
         API->>NLP_Pipe: Extract Text Intent (spaCy)
         activate NLP_Pipe
-        NLP_Pipe-->>API: Intent Score (15% Weight)
+        NLP_Pipe-->>API: Intent Score (15% or 55% Weight)
         deactivate NLP_Pipe
         
         API->>OSINT: Fetch WHOIS, DNS, Reputation
@@ -36,7 +36,7 @@ sequenceDiagram
     API->>API: Combine 21 Features
     API->>ML_Pipe: XGBoost.predict_proba(features)
     activate ML_Pipe
-    ML_Pipe-->>API: Threat Probability (85% Weight)
+    ML_Pipe-->>API: Threat Probability (85% or 25% Weight)
     deactivate ML_Pipe
     
     API->>API: Synthesize Final Score & Threat Level
@@ -47,7 +47,7 @@ sequenceDiagram
     DB-->>API: UUID Confirmation
     deactivate DB
     
-    API-->>Browser: Return AnalysisReport (JSON)
+    API-->>Browser: Return AnalysisResponse (JSON)
     deactivate API
     
     Browser-->>User: Render Gauge, Metrics & SHAP

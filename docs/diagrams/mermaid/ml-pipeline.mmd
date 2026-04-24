@@ -9,7 +9,7 @@ graph LR
     
     URL --> StructFeat[17 Structural Extractors]:::extract
     URL --> OSINTFeat[4 Dynamic OSINT Extractors]:::extract
-    Text --> NLP[spaCy Intent Classifier]:::extract
+    Text --> NLP[spaCy NLP Analyzer]:::extract
     
     StructFeat --> Combine[21-D Feature Vector]:::extract
     OSINTFeat --> Combine
@@ -19,8 +19,8 @@ graph LR
     
     XGB --> ThreatScore(Base ML Score):::result
     SHAP --> Explanations(SHAP Feature Importance):::result
-    NLP --> TextScore(Contextual Score):::result
+    NLP --> TextScore(Contextual NLP Score):::result
     
-    ThreatScore --> WeightedSum((85/15 Aggregate)):::result
+    ThreatScore --> WeightedSum((Dynamic Weight Aggregate)):::result
     TextScore --> WeightedSum
     WeightedSum --> Final[Final Verdict & Threat Level]:::result

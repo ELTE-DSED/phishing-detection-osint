@@ -1,86 +1,80 @@
 classDiagram
-    class AnalysisRequest {
+    class AnalyzeRequest {
         <<Pydantic>>
-        +str text
-        +str url
-        +str email_content
-        +str type "url" | "text" | "email"
+        +str content
+        +str contentType "auto" | "url" | "email" | "text"
+        +validateContent(v: str) str
     }
 
-    class AnalysisReport {
+    class AnalysisResponse {
         <<Pydantic>>
-        +UUID id
-        +datetime timestamp
-        +str threat_level "safe" | "suspicious" | "dangerous" | "critical"
-        +float score 0.0-1.0
-        +FeatureSet features
-        +OSINTData osint
-        +List~str~ reasons
-        +dict shap_values
+        +str id
+        +str content
+        +str contentType
+        +VerdictResult verdict
+        +FeatureSummary features
+        +OsintSummary osint
+        +AnalysisTiming timing
+    }
+
+    class VerdictResult {
+        <<Pydantic>>
+        +bool isPhishing
+        +str threatLevel "safe" | "suspicious" | "dangerous" | "critical"
+        +float confidenceScore 0.0-1.0
+        +list[str] reasons
+        +str recommendation
+    }
+
+    class FeatureSummary {
+        <<Pydantic>>
+        +dict[str, float] urlFeatures
+        +list[DetectedIndicator] textIndicators
+    }
+
+    class OsintSummary {
+        <<Pydantic>>
+        +dict[str, str] domainInfo
+        +list[str] dnsRecords
+        +float reputationScore
+        +bool isBlacklisted
     }
 
     class FeatureSet {
         <<Pydantic>>
-        +int url_length
-        +int nb_dots
-        +int nb_hyphens
-        +int nb_at
-        +int nb_qm
-        +int nb_and
-        +int nb_or
-        +int nb_eq
-        +int nb_underscore
-        +int nb_tilde
-        +int nb_percent
-        +int nb_slash
-        +int nb_star
-        +int nb_colon
-        +int nb_comma
-        +int nb_semicolumn
-        +int nb_dollar
-        +int nb_space
-        +int nb_www
-        +int nb_com
-        +int nb_dslash
-        +int http_in_path
-        +int https_token
-        +float ratio_digits_url
-        +float ratio_digits_host
-        +int punycode
-        +int port
-        +int tld_in_path
-        +int tld_in_subdomain
-        +int abnormal_subdomain
-        +int nb_subdomains
-        +int prefix_suffix
-        +int random_domain
-        +int shortening_service
-        +int path_extension
-        +int domain_age_days
-        +int domain_registration_length
-        +int domain_age_in_days
-        +int ip_address
+        +int urlLength
+        +int domainLength
+        +int subdomainCount
+        +int pathDepth
+        +bool hasIpAddress
+        +bool hasAtSymbol
+        +bool hasDoubleSlash
+        +bool hasDashInDomain
+        +bool hasUnderscoreInDomain
+        +bool isHttps
+        +bool hasPortNumber
+        +bool hasSuspiciousTld
+        +bool hasEncodedChars
+        +bool hasSuspiciousKeywords
+        +float digitRatio
+        +int specialCharCount
+        +int queryParamCount
+        +int domainAgeDays
+        +bool isNewlyRegistered
+        +bool isYoungDomain
+        +bool hasPrivacyProtection
+        +bool hasValidMx
+        +bool usesCdn
+        +int dnsRecordCount
+        +bool hasValidDns
+        +float reputationScore
+        +int maliciousSourceCount
+        +bool isKnownMalicious
+        +bool hasValidWhois
     }
 
-    class OSINTData {
-        <<Pydantic>>
-        +dict whois
-        +dict dns_records
-        +dict virustotal
-        +dict abuseipdb
-        +bool is_malicious
-    }
-
-    class HistoryEntry {
-        <<Model>>
-        +UUID id
-        +datetime created_at
-        +str input_data
-        +float score
-        +str threat_level
-    }
-
-    AnalysisReport "1" *-- "1" FeatureSet : contains
-    AnalysisReport "1" *-- "1" OSINTData : incorporates
-    AnalysisRequest ..> AnalysisReport : triggers
-    HistoryEntry ..> AnalysisReport : stores
+    AnalyzeRequest ..> AnalysisResponse : initiates
+    AnalysisResponse "1" *-- "1" VerdictResult : contains
+    AnalysisResponse "1" *-- "1" FeatureSummary : contains
+    AnalysisResponse "1" *-- "1" OsintSummary : contains
+    FeatureSummary ..> FeatureSet : derived from

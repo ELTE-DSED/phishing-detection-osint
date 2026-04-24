@@ -15,7 +15,7 @@ graph TD
     subgraph "Application Layer (Render.com)"
         FastAPI[FastAPI Python Server]:::backend
         Orchestrator[Asynchronous Task Orchestrator]:::backend
-        History[In-Memory / SQLite Store]:::backend
+        History[In-Memory HistoryStore]:::backend
         
         FastAPI --> Orchestrator
         FastAPI --> History
@@ -26,12 +26,13 @@ graph TD
         FeatExtract[17 URL Structural Extractors]:::ml
         ML_Model[XGBoost Classifier]:::ml
         SHAP[SHAP Explainer]:::ml
+        Scorer[Final Scoring Engine]:::ml
         
-        Orchestrator -->|Weight 15%| NLP
+        Orchestrator -->|NLP Score| NLP
         Orchestrator --> FeatExtract
-        FeatExtract --> ML_Model
-        NLP --> Scorer[Final Scoring Engine]
-        ML_Model -->|Weight 85%| Scorer
+        FeatExtract -->|Feature Vector| ML_Model
+        NLP --> Scorer
+        ML_Model -->|XGBoost Prob| Scorer
         ML_Model --> SHAP
         SHAP --> Scorer
     end
@@ -51,8 +52,8 @@ graph TD
     %% Connections
     User([End User]) -->|HTTP/HTTPS| NextJS
     NextJS <-->|REST API JSON| FastAPI
-    WHOIS -->|4 Dynamic Features| ML_Model
-    DNS -->|4 Dynamic Features| ML_Model
+    WHOIS -->|Dynamic Features| ML_Model
+    DNS -->|Dynamic Features| ML_Model
     VT -.->|Reputation| Scorer
     AbuseIPDB -.->|Reputation| Scorer
     Scorer --> FastAPI
