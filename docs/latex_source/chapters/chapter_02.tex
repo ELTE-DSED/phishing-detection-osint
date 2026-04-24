@@ -10,7 +10,7 @@ Phishing attacks remain one of the most prevalent cybersecurity threats, exploit
 PhishGuard employs a hybrid architecture combining three analytical methods:
 
 \begin{enumerate}
-\item \textbf{Machine Learning (XGBoost):} A gradient-boosted decision tree model trained on 150,391 URLs with 21 engineered features (17 lexical + 4 OSINT). The model predicts a phishing probability score between 0.0 and 1.0.
+\item \textbf{Machine Learning (XGBoost):} A gradient-boosted decision tree model trained on 23,374 samples (evaluated on 5,009 held-out test samples) with 21 engineered features (17 lexical + 4 OSINT). The model predicts a phishing probability score between 0.0 and 1.0.
 \item \textbf{Open-Source Intelligence (OSINT):} Real-time queries to WHOIS registries, DNS servers, VirusTotal, and AbuseIPDB provide external context about domain age, infrastructure validity, and threat reputation.
 \item \textbf{Natural Language Processing (NLP):} A spaCy-based pipeline detecting social engineering tactics such as urgency, brand impersonation, threat warnings, and credential solicitation within unstructured text.
 \end{enumerate}
@@ -19,18 +19,18 @@ These signals are combined using content-specific weighting: for URL inputs, the
 
 \section{Accessing the Application}
 
-PhishGuard is a web application requiring no installation. The user accesses the platform through a standard web browser (Chrome, Firefox, Safari, or Edge) by navigating to the deployed URL. The interface is responsive, adapting its layout across desktop, tablet, and mobile devices. The application supports both light and dark themes, defaulting to the system preference. The user can toggle the theme via the header dropdown or the Settings page.
+PhishGuard is a web application requiring no installation. The user accesses the platform through a standard web browser (Chrome, Firefox, Safari, or Edge) by navigating to the deployed URL. The interface is responsive, adapting its layout across desktop, tablet, and mobile devices. The application supports light, dark, and system-following themes, defaulting to the operating system preference. The user can switch themes via a three-option dropdown (Light, Dark, System) in the application header, or via the binary toggle on the Settings page.
 
 \section{Using the Program}
 
 \subsection{The Dashboard}
 
-Upon navigating to the application, the user is presented with the Dashboard (Figure \ref{fig:dashboard}). This screen serves as the landing page and provides two primary call-to-action buttons: ``Analyse Now,'' which navigates to the analysis page, and ``How It Works,'' which navigates to the methodology explanation. The Dashboard also displays three capability cards describing the system's detection modes: URL Analysis, OSINT Enrichment, and NLP Detection.
+Upon navigating to the application, the user is presented with the Dashboard (Figure \ref{fig:dashboard}). This screen serves as the landing page and provides two primary call-to-action buttons: ``Analyse Now,'' which navigates to the analysis page, and ``How It Works,'' which navigates to the methodology explanation. The Dashboard also displays three capability cards describing the system's detection modes: URL Analysis, OSINT Enrichment, and NLP Detection. Below the capability cards, a ``System Overview'' card summarises the current scoring weights (e.g., ``text 40\%, URL 25\%, OSINT 35\%''), the number of threat levels (4), and the available input modes (3).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\linewidth,height=0.65\textheight,keepaspectratio]{images/dashboard.png}
-\caption{The PhishGuard Dashboard with capability cards and navigation buttons}
+\caption{The PhishGuard Dashboard with capability cards, navigation buttons, and System Overview}
 \label{fig:dashboard}
 \end{figure}
 
@@ -61,8 +61,12 @@ The Analyse page is the primary interface for submitting content (Figure \ref{fi
 \item Calculating final score
 \item Analysis complete
 \end{enumerate}
-\item \textbf{Cancel if needed} by clicking the ``Cancel'' button that replaces the Analyse button during processing. This aborts the network request.
+The progress indicator is a client-side animation that runs on a timer to provide visual feedback while the single API request is in flight. Navigation to the Results page occurs automatically once the server response is received.
+\item \textbf{Cancel if needed} by clicking the ``Cancel'' button that replaces the Analyse button during processing. This aborts the in-flight API request via an AbortController, terminating the network connection.
+\item \textbf{Clear the form} using the ``Clear'' ghost-variant button that appears when content has been entered. This resets the content, subject, and sender fields.
 \end{enumerate}
+
+If the user navigates to the Analyse page from the History page's ``Re-analyse'' action, the content and input type are automatically pre-populated via URL query parameters (\texttt{/analyze?content=\ldots\&type=\ldots}).
 
 The Analyse page also includes a tips card advising the user to enter full URLs including the protocol (\texttt{https://}), paste complete email bodies, and a link to the Batch Analysis mode for multiple URLs.
 
@@ -78,16 +82,20 @@ For analysing multiple URLs simultaneously, the user navigates to the Batch Anal
 \end{figure}
 
 \begin{itemize}
-\item \textbf{Enter up to 50 URLs} in a multi-line text area, one URL per line.
+\item \textbf{Enter up to 50 URLs} in a multi-line text area, one URL per line. A live counter displays ``N / 50 URLs'' and turns red with ``(max 50)'' when the limit is exceeded.
 \item \textbf{Upload a file} (\texttt{.txt} or \texttt{.csv}) containing URLs by clicking the ``Upload File'' button.
-\item \textbf{Start the analysis} by clicking ``Analyse N URLs.'' The system processes 3 URLs concurrently and displays a progress bar.
-\item \textbf{Review the results table} showing each URL's status, threat level, confidence score, and analysis time.
+\item \textbf{Clear the input} using a ``Clear'' button that resets the URL text area.
+\item \textbf{Start the analysis} by clicking ``Analyse N URLs.'' The system processes 3 URLs concurrently and displays a progress bar. A ``Cancel'' button with a StopCircle icon replaces the Analyse button during processing, aborting pending requests via an AbortController.
+\item \textbf{Review the summary statistics} displayed above the results table as colour-coded badges showing the count of Safe, Suspicious, Dangerous, Critical, and Failed entries.
+\item \textbf{Review the results table} showing each URL's status badge (Pending, Running, Done, or Error), threat level, confidence score, and analysis time.
 \item \textbf{Export the results} as CSV or JSON files using the export buttons above the table.
 \end{itemize}
 
+Upon completion, a success toast notification displays ``Batch analysis complete --- N URLs processed.'' If cancelled, an error toast displays ``Batch analysis cancelled.''
+
 \section{Interpreting the Results}
 
-When the backend completes its evaluation, the application navigates to the Results page (Figure \ref{fig:results-page}). This page provides a comprehensive breakdown of the analysis.
+When the backend completes its evaluation, the application navigates to the Results page (Figure \ref{fig:results-page}). This page provides a comprehensive breakdown of the analysis. It is important to note that the Results page is ephemeral: it reads from an in-memory React context, not from persistent storage. If the user refreshes the page or navigates directly to \texttt{/results} via the URL bar, an empty-state card appears with a ``No Results Yet'' title and a ``Go to Analyse'' button. To revisit past analyses, the user should use the History page (Section \ref{sec:history}), which provides persistent storage.
 
 \begin{figure}[htbp]
 \centering
@@ -96,9 +104,13 @@ When the backend completes its evaluation, the application navigates to the Resu
 \label{fig:results-page}
 \end{figure}
 
+\subsection{Content Preview}
+
+At the top of the results, a Content Preview card displays the analysed content (URLs are shown as clickable external links; text is truncated at 500 characters), the content type badge, the analysis time, and an ``Analysed on'' timestamp. An outline ``New Analysis'' button in the results header allows the user to return to the Analyse page.
+
 \subsection{Verdict Banner}
 
-At the top of the results page, a prominent colour-coded banner displays the final verdict. It shows a large shield icon (green for safe, amber for suspicious, red for dangerous, violet for critical), the classification label (``PHISHING'' or ``SAFE''), the animated confidence score as a percentage, the threat level badge, and a plain-language recommendation. The four threat levels are defined in Table \ref{tab:threat_levels}.
+Below the content preview, a prominent colour-coded banner displays the final verdict. It shows a large shield icon (green for safe, amber for suspicious, red for dangerous, violet for critical), the classification label (``PHISHING'' or ``SAFE''), the animated confidence score as a percentage, the threat level badge, and a plain-language recommendation. The four threat levels are defined in Table \ref{tab:threat_levels}.
 
 \begin{table}[htbp]
 \centering
@@ -118,7 +130,7 @@ Critical & 0.70--1.00 & Violet & Confirmed threat, block and report \\
 
 \subsection{Risk Indicators}
 
-Below the verdict, the ``Risk Indicators'' card lists each factor that contributed to the final score (Figure \ref{fig:risk-indicators}). Each indicator is accompanied by a context-aware icon: a lightning bolt for urgency indicators, a theatre mask for brand impersonation, a key for credential solicitation, a link for URL-related findings, and a globe for OSINT-derived indicators. Examples of risk indicators include:
+The ``Risk Indicators (N)'' card lists each factor that contributed to the final score, with the count displayed in the card header (Figure \ref{fig:risk-indicators}). Each indicator is accompanied by a context-aware icon: a lightning bolt for urgency indicators, a theatre mask for brand impersonation, a key for credential solicitation, a link for URL-related findings, a globe for OSINT-derived indicators, and a fallback alert-triangle icon for any indicators that do not match the preceding categories. Examples of risk indicators include:
 
 \begin{itemize}
 \item ``Domain registered fewer than 30 days ago''
@@ -147,20 +159,20 @@ The OSINT Intelligence section presents the external intelligence gathered about
 \end{figure}
 
 \begin{itemize}
-\item \textbf{Domain Information:} Displays the domain name, domain age (classified as ``Very New'' if under 30 days, ``New'' if under 180 days, or ``Established'' otherwise), registrar name, and WHOIS privacy status (``Protected'' or ``Public''). Each field includes an info tooltip explaining its relevance.
-\item \textbf{DNS Status:} Indicates whether the domain has valid DNS records, shown with a checkmark or cross icon and an explanatory description.
-\item \textbf{Reputation:} Displays a reputation score between 0 and 1 on a colour-coded progress bar (green for Good $\geq$0.7, amber for Fair $\geq$0.4, red for Poor), and a blacklist status badge (``Clean'' or ``Blacklisted'').
+\item \textbf{Domain Information:} Displays the domain name, domain age (classified as ``Very New'' if under 30 days, ``New'' if under 180 days, or ``Established'' otherwise), registrar name, and WHOIS privacy status (``Protected'' or ``Public''). Each field includes an info tooltip explaining its relevance: for example, ``Newly registered domains are more likely to be used for phishing'' (Domain Age) and ``Privacy-protected WHOIS records can hide the true registrant'' (Privacy).
+\item \textbf{DNS Status:} Indicates whether the domain has valid DNS records, shown with a checkmark or cross icon. The tooltip explains: ``DNS records indicate whether the domain resolves to a valid server.''
+\item \textbf{Reputation:} Displays a reputation score between 0 and 1 on a colour-coded progress bar (green for Good $\geq$0.7, amber for Fair $\geq$0.4, red for Poor), and a blacklist status badge (``Clean'' or ``Blacklisted''). The tooltip explains: ``Aggregated reputation from OSINT sources (WHOIS age, DNS, blacklists)'' and ``Checks whether the domain appears on known phishing/malware blacklists.''
 \end{itemize}
 
-If OSINT data could not be retrieved (e.g., due to API rate limits or timeouts), the section displays a card explaining that OSINT data is not available and the analysis was performed using URL and NLP features only.
+If OSINT data could not be retrieved because the input does not contain a recognisable domain, the section displays a card explaining: ``No OSINT enrichment data was collected for this analysis. This can happen when the input does not contain a recognisable domain.''
 
 \subsection{Feature Extraction and Detected Tactics}
 
-The Feature Extraction section displays four animated counters: the number of suspicious URL features detected, text features detected, OSINT risk indicators, and the total risk indicator count. The Detected Tactics card shows colour-coded badges for each social engineering tactic identified by the NLP pipeline. The ten detectable tactics are: urgency, authority impersonation, brand impersonation, credential request, threat warning, emotional manipulation, monetary request, attachment malware, link manipulation, and social proof. Each badge includes a tooltip explaining the tactic.
+The Feature Extraction section displays four animated counters: the number of suspicious URL features detected, text features detected, OSINT risk indicators, and the total risk indicator count. The Detected Tactics card shows colour-coded badges for each social engineering tactic identified by the NLP pipeline, with a destructive count badge in the card header. The ten detectable tactics are: urgency, authority impersonation, brand impersonation, credential request, threat warning, emotional manipulation, monetary request, attachment malware, link manipulation, and social proof. Each badge includes a tooltip explaining the tactic. When no tactics are found, a green positive-state card displays ``No suspicious tactics detected'' with a ShieldCheck icon.
 
 \subsection{Score Visualisation}
 
-The Score Visualisation section provides three interactive charts (Figure \ref{fig:score-viz}):
+The Score Visualisation section provides three interactive charts (Figure \ref{fig:score-viz}), each dynamically imported to reduce the initial JavaScript bundle size:
 
 \begin{figure}[htbp]
 \centering
@@ -177,17 +189,20 @@ The Score Visualisation section provides three interactive charts (Figure \ref{f
 
 \subsection{Share and Export Actions}
 
-The Results page provides four action buttons for sharing the analysis:
+The Results page provides four action buttons for sharing the analysis, each with a tooltip describing its function:
 \begin{itemize}
-\item \textbf{Copy Summary:} Copies a formatted text report to the clipboard containing the content, verdict, threat level, confidence score, recommendation, and risk indicators.
-\item \textbf{Copy JSON:} Copies the raw JSON response from the API.
-\item \textbf{Copy Link:} Copies the current page URL.
-\item \textbf{Print:} Opens the browser print dialog with a print-optimised layout that hides the navigation sidebar and footer.
+\item \textbf{Copy Summary:} Copies a formatted text report to the clipboard containing the content, verdict, threat level, confidence score, recommendation, and risk indicators. Upon success, the button icon changes to a green checkmark and the label changes to ``Copied!'' for 2 seconds, accompanied by a success toast.
+\item \textbf{Copy JSON:} Copies the raw JSON response from the API, with the same visual feedback and toast notification.
+\item \textbf{Copy Link:} Copies the current page URL, with the same visual feedback and toast notification.
+\item \textbf{Print:} Opens the browser print dialog with a print-optimised layout that hides the navigation sidebar, footer, mobile navigation, sheet overlays, and toast notifications, using white backgrounds and black text optimised for paper output.
 \end{itemize}
 
-\section{Analysis History}
+If the browser's Clipboard API is unavailable, a hidden textarea and \texttt{execCommand("copy")} fallback is used to maintain compatibility with older browsers. If clipboard access fails entirely, an error toast displays ``Failed to copy --- Your browser may not support clipboard access.''
 
-The History page (Figure \ref{fig:history-page}) provides a persistent record of all analyses conducted by the user. Data is stored in the browser's local storage and persists across sessions.
+\section{Analysis History}
+\label{sec:history}
+
+The History page (Figure \ref{fig:history-page}) provides a persistent record of all analyses conducted by the user. Data is stored in the browser's local storage and persists across sessions. The page subtitle displays the total count: ``N analysis result(s) stored locally.'' When no analyses have been run yet, a ``No Analyses Yet'' card appears with a ``Start Analysing'' link button. If the auto-clear setting is enabled, entries older than the configured threshold are automatically removed when the History page is loaded.
 
 \begin{figure}[htbp]
 \centering
@@ -198,7 +213,7 @@ The History page (Figure \ref{fig:history-page}) provides a persistent record of
 
 \subsection{Viewing and Searching History}
 
-The History page displays a sortable table with the following columns: content (truncated), type (URL, email, or text), threat level (colour-coded badge), confidence score, and date. A search bar allows filtering by content or domain name. A dropdown filter enables filtering by threat level (All Levels, Safe, Suspicious, Dangerous, or Critical). Pagination controls at the bottom allow adjusting the page size (10, 25, or 50 entries).
+The History page displays a sortable table with the following columns: content (truncated), type (URL, email, or text), threat level (colour-coded badge), confidence score, and date. A search bar allows filtering by content or domain name. A dropdown filter enables filtering by threat level (All Levels, Safe, Suspicious, Dangerous, or Critical). Pagination controls at the bottom include first-page, previous-page, next-page, and last-page buttons, along with a page size selector (10, 25, or 50 entries) and a filtered result count (``N result(s)'') reflecting the current search and filter state.
 
 On mobile devices, the table is replaced by a card-based layout with the same information and action buttons.
 
@@ -207,18 +222,18 @@ On mobile devices, the table is replaced by a card-based layout with the same in
 Each history entry provides three actions via a dropdown menu:
 \begin{itemize}
 \item \textbf{View Results:} Loads the stored analysis response and navigates to the Results page.
-\item \textbf{Re-analyse:} Navigates to the Analyse page with the content and type pre-populated, allowing the user to submit the same content again.
+\item \textbf{Re-analyse:} Navigates to the Analyse page with the content and type pre-populated via URL query parameters, allowing the user to submit the same content again.
 \item \textbf{Delete:} Removes the entry from the history.
 \end{itemize}
 
-The ``Clear All'' button at the top of the page deletes all history entries after a confirmation dialog.
+The ``Clear All'' button at the top of the page deletes all history entries after a confirmation dialog displaying the exact count: ``This will permanently delete all N analysis result(s) from your local storage. This action cannot be undone.''
 
 \subsection{Exporting History}
 
-The Export dropdown provides two options:
+The Export dropdown provides two options, each triggering an info toast notification upon completion:
 \begin{itemize}
-\item \textbf{Export as CSV:} Downloads a \texttt{.csv} file with columns for content, type, threat level, score, and date.
-\item \textbf{Export as JSON:} Downloads a \texttt{.json} file containing the full analysis data for each entry.
+\item \textbf{Export as CSV:} Downloads a \texttt{.csv} file with columns for content, type, threat level, score, and date. An info toast displays ``Exported as CSV.''
+\item \textbf{Export as JSON:} Downloads a \texttt{.json} file containing the full analysis data for each entry. An info toast displays ``Exported as JSON.''
 \end{itemize}
 
 \section{How It Works Page}
@@ -230,13 +245,15 @@ The How It Works page explains the system's methodology to non-technical users. 
 \item \textbf{Text Analysis:} An accordion describing six NLP detection categories: urgency patterns, credential harvesting, brand impersonation, fear and threat tactics, suspicious formatting, and emotional manipulation.
 \item \textbf{URL Feature Analysis:} An accordion describing six URL-based detection categories: suspicious TLDs, IP addresses in URLs, subdomain depth, homograph attacks, URL shorteners, and path and query anomalies.
 \item \textbf{OSINT Enrichment:} An accordion describing six OSINT data sources: WHOIS domain age, registrar reputation, DNS record validation, VirusTotal score, AbuseIPDB reports, and blacklist membership.
-\item \textbf{Scoring Algorithm:} Displays the model metrics (96.5\% accuracy, F1 score 96.4\%, AUC-ROC 99.4\%, PR-AUC 99.5\%) and the weighting formula used for URL inputs: $\text{finalScore} = \text{mlPrediction} \times 0.85 + \text{nlpScore} \times 0.15$.
+\item \textbf{Scoring Algorithm:} Displays the model metrics (96.5\% accuracy, F1 score 96.4\%, AUC-ROC 99.4\%, PR-AUC 99.5\%) trained on 23,374 samples and evaluated on 5,009 held-out test samples. The weighting formula for URL inputs is shown: $\text{finalScore} = \text{mlPrediction} \times 0.85 + \text{nlpScore} \times 0.15$. A colour-coded weight bar visualises the 85\%/15\% split, and a callout box explains why the ML model receives the primary weight for URL inputs, noting that email and text inputs use a different weighted combination.
 \item \textbf{Threat Levels:} Four cards explaining each threat level with its score range and recommended action.
 \end{enumerate}
 
+At the bottom of the page, a ``Ready to Try It?'' call-to-action section provides a ``Start Analysing'' link button back to the Analyse page.
+
 \section{Settings Page}
 
-The Settings page allows the user to configure the application (Figure \ref{fig:settings-page}):
+The Settings page allows the user to configure the application (Figure \ref{fig:settings-page}). All settings changes take effect immediately upon modification --- there is no explicit ``Save'' button. Settings are persisted in the browser's local storage.
 
 \begin{figure}[htbp]
 \centering
@@ -246,13 +263,13 @@ The Settings page allows the user to configure the application (Figure \ref{fig:
 \end{figure}
 
 \begin{itemize}
-\item \textbf{API Configuration:} The Backend URL input field specifies the address of the PhishGuard API server. The ``Test'' button verifies connectivity and displays a status badge (Connected, Failed, or Testing).
-\item \textbf{Display Preferences:} A dark mode toggle switches between light and dark themes. A detail level selector adjusts the verbosity of result displays (Simple, Detailed, or Expert).
-\item \textbf{History Management:} The maximum number of history entries can be set to 10, 25, 50, or 100. An auto-clear option automatically removes entries older than 7, 14, or 30 days. A ``Clear History'' button immediately removes all entries.
-\item \textbf{About:} Displays application metadata including the version (1.0.0), author, supervisor, and university.
+\item \textbf{API Configuration:} The Backend URL input field specifies the address of the PhishGuard API server. Below the input, the default value is displayed: ``Default: \texttt{http://localhost:8000}.'' The ``Test'' button verifies connectivity; while testing, the button displays a spinning loader icon and the text ``Testing\ldots'' and is disabled. The status badge next to the button shows four states: no badge (idle, before any test), ``Testing'' (during the request), ``Connected'' (on success, accompanied by a success toast), or ``Failed'' (on failure, accompanied by an error toast).
+\item \textbf{Display Preferences:} A dark mode toggle switches between light and dark themes on the Settings page, while the header dropdown offers a three-way choice of Light, Dark, or System (following the operating system preference). A detail level selector adjusts the verbosity of result displays (Simple, Detailed, or Expert).
+\item \textbf{History Management:} The maximum number of history entries can be set to 10, 25, 50, or 100. An auto-clear dropdown automatically removes entries older than a configured period: Never (the default), 7 days, 14 days, or 30 days. A ``Clear History'' destructive-variant button immediately removes all entries after a confirmation dialog; the button displays the current count (``N entry/entries stored'') and is disabled when no entries exist. A success toast confirms the action.
+\item \textbf{About:} Displays application metadata including the application name, tagline (``OSINT-Enhanced Phishing Detection''), version (1.0.0), author, supervisor, and university.
 \end{itemize}
 
-A ``Reset to Defaults'' button at the bottom restores all settings to their original values.
+A ``Reset to Defaults'' button at the bottom restores all settings to their original values, accompanied by a warning toast notification confirming the reset.
 
 \section{Additional Features}
 
@@ -279,16 +296,38 @@ The application supports seven keyboard shortcuts for efficient navigation:
 \end{tabular}
 \end{table}
 
-On macOS, the Ctrl key is replaced with the Command key. The shortcuts are disabled when the user is typing in input fields or text areas.
+On macOS, the Ctrl key is replaced with the Command key ($\backslash$cmd). The shortcuts are disabled when the user is typing in input fields, text areas, select elements, or contentEditable fields to prevent conflicts. Pressing ``?'' opens a shortcuts help dialog listing all seven shortcuts with formatted key badges; on macOS, the ``Ctrl'' labels are automatically replaced with the Command symbol ($\backslash$cmd) in the dialog.
 
 \subsection{Responsive Design}
 
 The application adapts its layout based on screen size:
 \begin{itemize}
-\item \textbf{Desktop (1024px and above):} A full sidebar (240px) with icons and labels for navigation.
-\item \textbf{Tablet (768px--1023px):} A collapsed icon-only sidebar rail (56px) with tooltips on hover.
-\item \textbf{Mobile (below 768px):} A fixed bottom navigation bar with touch-optimised targets (minimum 44x48 pixels, meeting WCAG 2.1 AA requirements). Tables are replaced with card-based layouts.
+\item \textbf{Desktop (1024px and above):} A full sidebar (240px) with icons and labels for navigation. The sidebar footer displays ``PhishGuard'' and ``v1.0.0 . ELTE FI.''
+\item \textbf{Tablet (768px--1023px):} A collapsed icon-only sidebar rail (56px) with tooltips on hover. The rail footer shows ``v1.0.0.''
+\item \textbf{Mobile (below 768px):} The sidebar is hidden; tapping the hamburger icon (44x44px touch target) in the header opens a slide-in Sheet drawer from the left containing the full navigation. A fixed bottom navigation bar replaces the sidebar with touch-optimised targets (minimum 44x48 pixels, meeting WCAG 2.1 AA requirements). Tables are replaced with card-based layouts.
 \end{itemize}
+
+An application footer at the bottom of the content area displays ``PhishGuard \textcopyright{} 2026 . Ishaq Muhammad (PXPRGK) . ELTE Faculty of Informatics.''
+
+\subsection{Loading States}
+
+The application provides two types of loading indicators during route transitions:
+\begin{itemize}
+\item \textbf{Full-page spinner:} When loading a route segment for the first time, an animated shield icon with ``Loading\ldots / Preparing your workspace'' text is displayed. The spinner includes \texttt{role="status"} and \texttt{aria-label="Loading page"} for screen reader compatibility.
+\item \textbf{App-shell skeleton:} Within the application shell (sidebar and header visible), route transitions show a skeleton placeholder mimicking the page layout with animated heading and card placeholders.
+\end{itemize}
+
+\subsection{Toast Notifications}
+
+The application uses four types of toast notifications to provide feedback:
+\begin{itemize}
+\item \textbf{Success (green):} Analysis complete, connection successful, history cleared, settings reset, clipboard copied.
+\item \textbf{Error (red):} Analysis failed, connection failed, batch cancelled, clipboard copy failed.
+\item \textbf{Warning (amber):} Settings reset confirmation.
+\item \textbf{Info (blue):} Export actions completed (CSV, JSON).
+\end{itemize}
+
+All toast notifications appear in the bottom-right corner and auto-dismiss after a configurable duration.
 
 \subsection{Error Handling}
 
@@ -297,14 +336,28 @@ The application provides clear feedback when errors occur:
 \item \textbf{Network errors:} A toast notification displays ``Cannot connect to the analysis server. Is the backend running?'' when the API is unreachable.
 \item \textbf{Server errors:} A toast notification displays ``The analysis server encountered an internal error. Please try again.'' for HTTP 500+ responses.
 \item \textbf{Validation errors:} If the input is invalid, a toast notification shows ``Invalid input:'' followed by the specific error message from the API.
-\item \textbf{Error boundaries:} If a page fails to render, a dedicated error page appears with a ``Try Again'' button and a link back to the Dashboard.
-\item \textbf{404 page:} Navigating to a non-existent route displays a custom page with links to the Dashboard and Analyse page.
+\item \textbf{App-shell error boundary:} If a page fails to render within the application shell (sidebar and header remain visible), an error page appears with the error message and three navigation buttons: ``Try Again,'' ``Dashboard,'' and ``Analyse.''
+\item \textbf{Global error boundary:} If a catastrophic error occurs outside the app shell, a full-screen error page appears (no sidebar) with the error message, an error digest hash for debugging, a ``Try Again'' button, and a ``Go to Dashboard'' link.
+\item \textbf{404 page:} Navigating to a non-existent route displays a custom page with a large ``404'' heading, a ShieldOff icon, an explanation message, and two buttons: ``Go to Dashboard'' (primary) and ``Analyse Content'' (outline).
 \end{itemize}
 
 \subsection{Backend Health Indicator}
 
-The application header displays a small coloured dot indicating the backend server status, refreshed every 30 seconds: green for connected, amber for degraded (ML model not loaded), and red for unhealthy.
+The application header displays a small coloured dot indicating the backend server status, refreshed every 30 seconds. Four states are possible: muted grey (``Checking backend\ldots,'' before the first health check completes), green for connected, amber for degraded (ML model not loaded), and red for unhealthy. On screens $\geq$sm, a text label appears alongside the dot; on smaller screens, an \texttt{sr-only} label ensures screen reader compatibility. The health indicator uses \texttt{role="status"} so that screen readers announce status changes.
 
 \subsection{Print Support}
 
-The ``Print'' action on the Results page triggers the browser print dialog with a clean layout that hides the navigation sidebar, footer, and toast notifications, using white backgrounds and black text optimised for paper output.
+The ``Print'' action on the Results page triggers the browser print dialog with a clean layout that hides the navigation sidebar, footer, mobile navigation, Sheet overlays, and toast notifications, resetting card backgrounds and borders for ink-saving output. All colour and background transitions are globally animated over 200 milliseconds for smooth theme switching, and are automatically disabled when the user's operating system preference is set to reduced motion.
+
+\subsection{Accessibility}
+
+The application implements several WCAG 2.1 accessibility features:
+\begin{itemize}
+\item \textbf{Skip-to-main-content link:} The first focusable element on every page is a visually hidden ``Skip to main content'' link that becomes visible when focused via keyboard, allowing screen reader and keyboard users to bypass navigation.
+\item \textbf{\texttt{aria-live="polite"}} on the Results page container, so screen readers announce result changes.
+\item \textbf{\texttt{aria-current="page"}} on all active navigation links (sidebar, mobile nav, and collapsed rail), informing screen readers of the current page.
+\item \textbf{\texttt{role="status"}} on the health indicator and loading spinner for screen reader announcements.
+\item \textbf{\texttt{aria-label}} on all icon-only buttons (mobile menu, row actions, theme toggle, etc.) and \texttt{aria-hidden="true"} on all decorative icons.
+\item \textbf{Keyboard focus-visible rings:} All interactive elements display a visible focus ring (\texttt{focus-visible:ring-2}) when navigated to via keyboard.
+\item \textbf{Reduced motion support:} A CSS media query (\texttt{prefers-reduced-motion: reduce}) disables all transitions and animations. A JavaScript hook (\texttt{useReducedMotion}) allows components to programmatically skip animations when the user prefers reduced motion.
+\end{itemize}
