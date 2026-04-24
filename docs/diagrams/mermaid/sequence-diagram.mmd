@@ -1,53 +1,56 @@
 sequenceDiagram
-    autonumber
-    actor User
-    participant Browser as Next.js Frontend
-    participant API as FastAPI (Orchestrator)
-    participant ML_Pipe as ML Extractor (URL)
-    participant NLP_Pipe as NLP Analyzer (Text)
-    participant OSINT as OSINT Orchestrator
-    participant DB as In-Memory History Store
-    
-    User->>Browser: Submit Content for Analysis
-    Browser->>API: POST /api/analyze {content: "...", contentType: "auto"}
-    
-    activate API
-    API->>API: Detect Content Type (URL/Email/Text)
-    
-    par Parallel Execution
-        API->>ML_Pipe: Extract Structural Features (17)
-        activate ML_Pipe
-        ML_Pipe-->>API: URL Features Return
-        deactivate ML_Pipe
-        
-        API->>NLP_Pipe: Extract Text Intent (spaCy)
-        activate NLP_Pipe
-        NLP_Pipe-->>API: Intent Score (15% or 55% Weight)
-        deactivate NLP_Pipe
-        
-        API->>OSINT: Fetch WHOIS, DNS, Reputation
-        activate OSINT
-        Note over OSINT: Enforce strict 15.0s Timeout
-        OSINT->>OSINT: Async aiohttp requests
-        OSINT-->>API: OSINT Features (4) & Context
-        deactivate OSINT
-    end
-    
-    API->>API: Combine 21 Features
-    API->>ML_Pipe: XGBoost.predict_proba(features)
-    activate ML_Pipe
-    ML_Pipe-->>API: Threat Probability (85% or 25% Weight)
-    deactivate ML_Pipe
-    
-    API->>API: Synthesize Final Score & Threat Level
-    API->>API: Generate SHAP Explanations
-    
-    API->>DB: Store Analysis History
-    activate DB
-    DB-->>API: UUID Confirmation
-    deactivate DB
-    
-    API-->>Browser: Return AnalysisResponse (JSON)
-    deactivate API
-    
-    Browser-->>User: Render Gauge, Metrics & SHAP
+autonumber
+actor User
+participant Browser as Next.js Frontend
+participant API as FastAPI Orchestrator
+participant ML_Extract as FeatureExtractor
+participant NLP as NLP Analyzer spaCy
+participant OSINT as OSINT Gatherers
+participant DB as In-Memory HistoryStore
+
+User->>Browser: Submit Content for Analysis
+Browser->>API: POST /api/analyze content, contentType
+
+activate API
+API->>API: Detect Content Type URL/Email/Text
+API->>API: Extract Domain from Content
+
+par Parallel Execution
+API->>OSINT: asyncio.gather WHOIS, DNS, Reputation
+activate OSINT
+Note over OSINT: asyncio.wait_for timeout 15s
+OSINT-->>API: OsintData whois, dns, reputation
+deactivate OSINT
+
+API->>ML_Extract: extractFeatures url, osintData
+activate ML_Extract
+ML_Extract->>ML_Extract: 17 URL + 12 OSINT features
+ML_Extract-->>API: FeatureSet 21 toModelVector
+deactivate ML_Extract
+
+API->>NLP: analyze content, contentType
+activate NLP
+NLP->>NLP: PhraseMatcher urgency, threat, brand
+NLP-->>API: AnalysisResult confidence, tactics
+deactivate NLP
+end
+
+alt contentType is url
+API->>API: scoreUrl via PhishingScorer
+API->>API: ML 85% + NLP 15%
+else contentType is email or text
+API->>API: NLP 55% + ML 25% + OSINT 20%
+end
+
+API->>API: Determine Threat Level safe/suspicious/dangerous/critical
+API->>API: Build AnalysisResponse
+
+API->>DB: addEntry analysisId, verdict
+activate DB
+DB-->>API: Stored
+deactivate DB
+
+API-->>Browser: AnalysisResponse JSON
+deactivate API
+
+Browser-->>User: Render ThreatGauge, OsintCards, FeatureCards

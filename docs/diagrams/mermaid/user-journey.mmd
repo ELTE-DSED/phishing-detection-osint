@@ -1,21 +1,21 @@
 journey
-    title PhishGuard User Journey: Detecting a Threat
-    section 1. Initial Interaction
-      User visits PhishGuard Homepage: 5: User
-      User selects Input Modality (URL/Email/Text): 5: User
-      User pastes content and clicks 'Analyze': 5: User
-    section 2. Processing (System Feedback)
-      UI displays loading spinner & status text: 4: System
-      Frontend sends POST request to FastAPI: 5: System
-      Backend orchestrates parallel NLP & ML analysis: 5: System
-      Backend OSINT gathering (max 15s timeout): 4: System
-      Backend returns detailed JSON Report: 5: System
-    section 3. Analysis & Interpretation
-      UI renders the Risk Score Gauge (0-100%): 5: User, System
-      User reads the human-friendly "Reasoning": 5: User
-      User expands "Feature Details" (SHAP): 4: User
-      User expands "OSINT Intelligence": 4: User
-    section 4. History & Follow-up
-      User navigates to History Dashboard: 4: User
-      User reviews past scans & threat levels: 4: User
-      User clears history or exports report: 3: User
+title PhishGuard User Journey: Detecting a Threat
+section 1. Initial Interaction
+User visits PhishGuard Homepage: 5: User
+User selects Input Type URL/Email/Text: 5: User
+User pastes content and clicks Analyse: 5: User
+section 2. Processing System Feedback
+UI displays loading spinner and progress bar: 4: System
+Frontend sends POST request to FastAPI: 5: System
+Backend orchestrates parallel NLP and ML analysis: 5: System
+Backend OSINT gathering max 15s timeout: 4: System
+Backend returns AnalysisResponse JSON: 5: System
+section 3. Analysis and Interpretation
+UI renders the ThreatGauge score 0-1: 5: User, System
+User reads the human-friendly Reasons list: 5: User
+User expands Feature Extraction section: 4: User
+User expands OSINT Intelligence cards: 4: User
+section 4. History and Follow-up
+User navigates to History Dashboard: 4: User
+User reviews past scans and threat levels: 4: User
+User exports report as CSV or JSON: 3: User

@@ -1,26 +1,26 @@
 graph LR
-    classDef raw fill:#e2e8f0,stroke:#64748b,stroke-width:2px;
-    classDef extract fill:#bae6fd,stroke:#0284c7,stroke-width:2px;
-    classDef model fill:#fbcfe8,stroke:#db2777,stroke-width:2px;
-    classDef result fill:#bbf7d0,stroke:#16a34a,stroke-width:2px;
+classDef raw fill:#e2e8f0,stroke:#64748b,stroke-width:2px;
+classDef extract fill:#bae6fd,stroke:#0284c7,stroke-width:2px;
+classDef model fill:#fbcfe8,stroke:#db2777,stroke-width:2px;
+classDef result fill:#bbf7d0,stroke:#16a34a,stroke-width:2px;
 
-    RawData[Raw User Input]:::raw --> URL[URL String]:::raw
-    RawData --> Text[Email/Subject Text]:::raw
-    
-    URL --> StructFeat[17 Structural Extractors]:::extract
-    URL --> OSINTFeat[4 Dynamic OSINT Extractors]:::extract
-    Text --> NLP[spaCy NLP Analyzer]:::extract
-    
-    StructFeat --> Combine[21-D Feature Vector]:::extract
-    OSINTFeat --> Combine
-    
-    Combine --> XGB[XGBoost Classifier]:::model
-    XGB --> SHAP[TreeExplainer]:::model
-    
-    XGB --> ThreatScore(Base ML Score):::result
-    SHAP --> Explanations(SHAP Feature Importance):::result
-    NLP --> TextScore(Contextual NLP Score):::result
-    
-    ThreatScore --> WeightedSum((Dynamic Weight Aggregate)):::result
-    TextScore --> WeightedSum
-    WeightedSum --> Final[Final Verdict & Threat Level]:::result
+RawData[Raw User Input]:::raw --> URL[URL String]:::raw
+RawData --> Text[Email or Subject Text]:::raw
+
+URL --> StructFeat[17 Structural Extractors]:::extract
+URL --> OSINTFeat[4 OSINT Feature Extractors]:::extract
+Text --> NLP[spaCy NLP Analyzer]:::extract
+
+StructFeat --> Combine[21-d Feature Vector]:::extract
+OSINTFeat --> Combine
+
+Combine --> XGB[XGBoost Classifier]:::model
+XGB --> SHAP[TreeExplainer SHAP]:::model
+
+XGB --> ThreatScore[Base ML Score]:::result
+SHAP --> Explanations[SHAP Feature Importance]:::result
+NLP --> TextScore[Contextual NLP Score]:::result
+
+ThreatScore --> WeightedSum((Dynamic Weight Aggregate)):::result
+TextScore --> WeightedSum
+WeightedSum --> Final[Final Verdict and Threat Level]:::result

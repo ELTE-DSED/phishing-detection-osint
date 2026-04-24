@@ -1,59 +1,57 @@
 graph TD
-    classDef frontend fill:#3b82f6,stroke:#1e3a8a,stroke-width:2px,color:#fff;
-    classDef backend fill:#10b981,stroke:#064e3b,stroke-width:2px,color:#fff;
-    classDef ml fill:#8b5cf6,stroke:#4c1d95,stroke-width:2px,color:#fff;
-    classDef external fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
+classDef frontend fill:#3b82f6,stroke:#1e3a8a,stroke-width:2px,color:#fff;
+classDef backend fill:#10b981,stroke:#064e3b,stroke-width:2px,color:#fff;
+classDef ml fill:#8b5cf6,stroke:#4c1d95,stroke-width:2px,color:#fff;
+classDef external fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
 
-    subgraph "Presentation Layer (Vercel)"
-        NextJS[Next.js 16 App Router]:::frontend
-        Tailwind[Tailwind CSS v4]:::frontend
-        Shadcn[shadcn/ui]:::frontend
-        NextJS -.-> Tailwind
-        NextJS -.-> Shadcn
-    end
+subgraph "Presentation Layer Vercel"
+NextJS[Next.js 16 App Router]:::frontend
+Tailwind[Tailwind CSS v4]:::frontend
+Shadcn[shadcn/ui]:::frontend
+NextJS -.-> Tailwind
+NextJS -.-> Shadcn
+end
 
-    subgraph "Application Layer (Render.com)"
-        FastAPI[FastAPI Python Server]:::backend
-        Orchestrator[Asynchronous Task Orchestrator]:::backend
-        History[In-Memory HistoryStore]:::backend
-        
-        FastAPI --> Orchestrator
-        FastAPI --> History
-    end
+subgraph "Application Layer Render.com"
+FastAPI[FastAPI Python Server]:::backend
+Orchestrator[AnalysisOrchestrator]:::backend
+History[In-Memory HistoryStore max 100]:::backend
 
-    subgraph "Intelligence & Processing"
-        NLP[spaCy Text Analyzer]:::ml
-        FeatExtract[17 URL Structural Extractors]:::ml
-        ML_Model[XGBoost Classifier]:::ml
-        SHAP[SHAP Explainer]:::ml
-        Scorer[Final Scoring Engine]:::ml
-        
-        Orchestrator -->|NLP Score| NLP
-        Orchestrator --> FeatExtract
-        FeatExtract -->|Feature Vector| ML_Model
-        NLP --> Scorer
-        ML_Model -->|XGBoost Prob| Scorer
-        ML_Model --> SHAP
-        SHAP --> Scorer
-    end
+FastAPI --> Orchestrator
+FastAPI --> History
+end
 
-    subgraph "OSINT Layer (Async Gatherers)"
-        WHOIS[python-whois]:::external
-        DNS[dnspython]:::external
-        VT[VirusTotal API]:::external
-        AbuseIPDB[AbuseIPDB API]:::external
-        
-        Orchestrator -->|Timeout 15s| WHOIS
-        Orchestrator --> DNS
-        Orchestrator --> VT
-        Orchestrator --> AbuseIPDB
-    end
+subgraph "Intelligence and Processing"
+NLP[spaCy NLP Analyzer]:::ml
+FeatExtract[FeatureExtractor 17 URL + 12 OSINT]:::ml
+ML_Model[XGBoost Classifier]:::ml
+SHAP[TreeExplainer SHAP]:::ml
+Scorer[PhishingScorer Weights 25/35/40]:::ml
 
-    %% Connections
-    User([End User]) -->|HTTP/HTTPS| NextJS
-    NextJS <-->|REST API JSON| FastAPI
-    WHOIS -->|Dynamic Features| ML_Model
-    DNS -->|Dynamic Features| ML_Model
-    VT -.->|Reputation| Scorer
-    AbuseIPDB -.->|Reputation| Scorer
-    Scorer --> FastAPI
+Orchestrator --> FeatExtract
+FeatExtract -->|Feature Vector 21d| ML_Model
+Orchestrator -->|Text Content| NLP
+ML_Model -->|Threat Probability| Scorer
+ML_Model --> SHAP
+NLP -->|Confidence Score| Orchestrator
+end
+
+subgraph "OSINT Layer Async Gatherers"
+WHOIS[python-whois]:::external
+DNS[dnspython]:::external
+VT[VirusTotal API v3]:::external
+AbuseIPDB[AbuseIPDB API v2]:::external
+
+Orchestrator -->|asyncio.wait_for 15s| WHOIS
+Orchestrator --> DNS
+Orchestrator --> VT
+Orchestrator --> AbuseIPDB
+WHOIS -->|WhoisResult| FeatExtract
+DNS -->|DnsResult| FeatExtract
+VT -->|ReputationResult| FeatExtract
+AbuseIPDB -->|ReputationResult| FeatExtract
+end
+
+User([End User]) -->|HTTP/HTTPS| NextJS
+NextJS <-->|REST API JSON| FastAPI
+Scorer -->|RiskScore| Orchestrator
