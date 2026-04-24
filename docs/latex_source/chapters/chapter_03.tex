@@ -279,30 +279,17 @@ strategy.
 \section{System Architecture and
 Overview}\label{system-architecture-and-overview}
 
+This section provides additional deployment context. The complete architectural design is detailed in Section \ref{architectural-overview}.
+
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth,height=0.65\textheight,keepaspectratio]{images/user-journey.png}
+[width=0.85\linewidth,height=0.65\textheight,keepaspectratio]{images/user-journey.png}
 \caption{The End-to-End User Journey, illustrating the
 transition from input submission to reviewing Explainable AI (SHAP)
 metrics}
 \end{figure}
 
-The implementation of the PhishGuard application is divided into a
-loosely coupled, service-oriented architecture comprising a
-high-performance backend application programming interface (API) and a
-modern, responsive frontend client. The design heavily emphasizes
-asynchronous execution to mitigate the inherent latency of external
-network calls, threat intelligence lookups, and machine learning
-inference. This division of concerns ensures scalability,
-maintainability, and clear boundaries between data processing and user
-presentation.
-
-The backend is built using FastAPI, a modern, fast (high-performance)
-web framework for building APIs with Python 3.10+. It orchestrates the
-OSINT data gathering, natural language processing (NLP), and the XGBoost
-machine learning predictions. The frontend is an interactive single-page
-application (SPA) implemented using Next.js 16 and React 19, focusing on
-real-time feedback and data visualization.
+The implementation uses FastAPI (Python) for the backend and Next.js 16 with React 19 for the frontend, as described in Section \ref{architectural-overview}.
 
 \subsection{Backend Framework and
 Initialization}\label{backend-framework-and-initialization}
@@ -400,71 +387,17 @@ input content type.
 \subsection{The 15-Second Concurrency
 Window}\label{the-15-second-concurrency-window}
 
-To ensure the API remains responsive under load or when interacting with
-degraded external services, the \texttt{\_collectOsintData} method wraps
-the parallel execution of the WHOIS, DNS, and reputation lookups
-(\texttt{asyncio.gather}) within an \texttt{asyncio.wait\_for} block
-enforced by a hard \texttt{15.0} second global timeout. If the external
-threat intelligence APIs fail to respond within this window, the
-orchestrator gracefully degrades, catching the
-\texttt{asyncio.TimeoutError} and returning an empty \texttt{OsintData}
-structure. This prevents the entire pipeline from hanging indefinitely
-and guarantees a maximum bound on the API's response time.
+The API enforces a strict 15-second timeout on all OSINT queries using \texttt{asyncio.wait\_for}. This prevents external service delays from blocking the response. The implementation details are described in Section \ref{asynchronous-osint-orchestration}.
 
 \subsection{Content-Specific Scoring
 Pipelines}\label{content-specific-scoring-pipelines}
 
-The \texttt{\_combineVerdict} method dynamically adjusts its scoring
-algorithm based on whether the analyzed content is fundamentally a URL
-or a block of text (e.g., an email body).
-
-\begin{enumerate}
-
-\item
-  \textbf{URL-Centric Pipeline:} When analyzing URLs, the system heavily
-  biases towards the XGBoost machine learning model. The ML score (which
-  natively incorporates embedded OSINT features) is assigned a primary
-  weight of 85\% (\texttt{ML\_PRIMARY\_WEIGHT\ =\ 0.85}). The Natural
-  Language Processing analysis of the URL structure or any extracted
-  text is relegated to a supplementary role, contributing the remaining
-  15\% (\texttt{TEXT\_SUPPLEMENT\_WEIGHT\ =\ 0.15}). This prevents
-  ``double-counting'' OSINT penalties that the XGBoost model has already
-  mathematically accounted for.
-\item
-  \textbf{Text-Centric Pipeline:} Conversely, when the system analyzes
-  email bodies or raw text, the structural URL features are less
-  prominent or entirely absent. In these scenarios, the NLP confidence
-  score is elevated to the primary signal, contributing 55\% to the
-  final verdict (\texttt{TEXT\_PRIMARY\_WEIGHT\ =\ 0.55}). The presence
-  of suspicious URL features within the text acts as a secondary
-  indicator (25\% weight via \texttt{URL\_SECONDARY\_WEIGHT}), while raw
-  OSINT penalties derived from extracted domains contribute the final
-  20\% (\texttt{OSINT\_SECONDARY\_WEIGHT\ =\ 0.20}).
-\end{enumerate}
+The scoring algorithm dynamically adjusts weights based on input type. The exact implementation (85/15 for URLs, 55/25/20 for text) is detailed in Section \ref{weighted-verdict-combination}. This ensures the most reliable signal receives primary weight for each content type.
 
 \subsection{The Phishing Threshold and Threat
 Boundaries}\label{the-phishing-threshold-and-threat-boundaries}
 
-Regardless of the pipeline utilized, the final aggregated score is
-normalized between \texttt{0.0} and \texttt{1.0}. The system employs a
-binary classification boundary where any score greater than or equal to
-\texttt{PHISHING\_THRESHOLD\ =\ 0.5} triggers a positive phishing
-classification (\texttt{isPhishing\ =\ True}).
-
-To provide granular, actionable feedback to the end-user via the Next.js
-frontend, this continuous score is further subdivided into discrete
-threat levels: - \textbf{Safe:} Aggregated score strictly less than
-\texttt{0.3} (\texttt{THREAT\_SAFE\_UPPER}). - \textbf{Suspicious:}
-Aggregated score between \texttt{0.3} and \texttt{0.5}
-(\texttt{THREAT\_SUSPICIOUS\_UPPER}). - \textbf{Dangerous:} Aggregated
-score between \texttt{0.5} and \texttt{0.7}
-(\texttt{THREAT\_DANGEROUS\_UPPER}). - \textbf{Critical:} Aggregated
-score \(\ge\) \texttt{0.7}.
-
-These categorizations directly drive the UI state, dictating the
-color-coding (e.g., Tailwind CSS utility classes) and the automated
-recommendations rendered to the user (e.g., ``This content is highly
-likely to be phishing. Do not interact.'').
+The threat level boundaries (Safe < 0.3, Suspicious < 0.5, Dangerous < 0.7, Critical ≥ 0.7) are defined in Section \ref{weighted-verdict-combination}. These drive the color-coded UI recommendations shown to users.
 
 \section{Quality Assurance and Testing}
 

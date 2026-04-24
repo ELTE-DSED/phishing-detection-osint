@@ -17,10 +17,10 @@
 \contentsline {figure}{\numberline {3.3}{\ignorespaces UML Class Diagram defining the strict Pydantic data contracts enforcing backend type safety\relax }}{40}{figure.caption.16}%
 \contentsline {figure}{\numberline {3.4}{\ignorespaces The End-to-End User Journey, illustrating the transition from input submission to reviewing Explainable AI (SHAP) metrics\relax }}{43}{figure.caption.17}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Phishing Attack Taxonomy\relax }}{54}{figure.caption.27}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces OSINT Data Collection and Feature Engineering Pipeline\relax }}{67}{figure.caption.28}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Phishing Attack Taxonomy\relax }}{52}{figure.caption.27}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces OSINT Data Collection and Feature Engineering Pipeline\relax }}{65}{figure.caption.28}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces SHAP Feature Importance Analysis (Beeswarm Plot)\relax }}{75}{figure.caption.29}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces SHAP Feature Importance Analysis (Beeswarm Plot)\relax }}{73}{figure.caption.29}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
