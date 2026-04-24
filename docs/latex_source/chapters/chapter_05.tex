@@ -1,215 +1,293 @@
-\chapter{Feature Engineering and ML
-Model}
-\label{chapter-4-feature-engineering-and-ml-model}
+\chapter{Scoring Engine and Evaluation}
+\label{chapter-7-scoring-and-classification}
 
-\section{Dataset Collection and
-Preprocessing}\label{dataset-collection-and-preprocessing}
+\section{The Orchestration of
+Intelligence}\label{the-orchestration-of-intelligence}
 
-The efficacy of any supervised machine learning classifier is
-fundamentally constrained by the quality and representativeness of its
-training data. For the PhishGuard project, curating a highly reliable
-dataset was a primary objective to ensure the model's generalization
-capabilities against zero-day phishing infrastructure.
+A primary challenge in engineering a multi-modal threat detection
+platform is the synthesis of disparate analytical signals into a
+unified, actionable verdict. PhishGuard achieves this through a
+sophisticated scoring and classification engine that seamlessly bridges
+the continuous probabilistic output of the XGBoost machine learning
+model with discrete, rule-based heuristic indicators.
 
-\subsection{Data Aggregation}\label{data-aggregation}
+This architecture ensures that the system is not only highly accurate
+but also highly transparent, providing Security Operations Center (SOC)
+analysts and end-users with explicit, human-readable explanations for
+every classification.
 
-The initial dataset comprised an aggregation of 150,391 raw URLs. This
-corpus was constructed by combining verified malicious URLs sourced from
-community-driven threat intelligence feeds (such as PhishTank and
-OpenPhish) with legitimate, benign URLs sampled from the Alexa Top 1
-Million and Tranco ranking lists. This massive initial pool ensured a
-diverse representation of both typical corporate domains and highly
-obfuscated phishing links.
+\section{The ML Predictor
+Architecture}\label{the-ml-predictor-architecture}
 
-\subsection{Cleaning and Balancing}\label{cleaning-and-balancing}
+The core inference engine is housed within the
+\texttt{backend/ml/predictor.py} module. To guarantee high-throughput
+and sub-millisecond inference times during production deployment, the
+\texttt{PhishingPredictor} class is implemented utilizing a thread-safe
+Singleton design pattern.
 
-Raw, crowd-sourced data inherently contains noise, dead links, and class
-imbalances. To establish a pristine baseline for the classifier, a
-rigorous data engineering pipeline was executed: 1.
-\textbf{Deduplication:} Identical URLs and redundant subdomains
-resolving to the same infrastructure were purged to prevent data leakage
-between training splits. 2. \textbf{Zero-Variance Filtering:} Features
-that provided no discriminative value across the dataset were
-algorithmically removed. 3. \textbf{Majority Undersampling:} Real-world
-phishing datasets often suffer from severe class imbalance (e.g.,
-significantly more benign sites than active phishing sites). To prevent
-the classifier from developing a bias toward the majority class (which
-artificially inflates accuracy at the expense of recall), the dataset
-underwent strict majority undersampling.
+\subsection{Thread-Safe
+Initialization}\label{thread-safe-initialization}
 
-The culmination of this preprocessing pipeline yielded a highly curated,
-perfectly balanced dataset containing exactly 33,392 feature-engineered
-URLs. This dataset was subsequently partitioned using a strict 70/15/15
-stratified split (Training, Validation, and Testing sets) to ensure the
-target variable distribution remained consistent across all folds.
+During the FastAPI application startup sequence, the
+\texttt{PhishingPredictor} invokes its \texttt{\_\_new\_\_} method,
+locking the execution thread (\texttt{threading.Lock()}) to instantiate
+the XGBoost model exactly once. The model weights are loaded into memory
+from \texttt{models/phishingModel.json}, alongside the strict
+21-dimensional feature schema defined in \texttt{modelMetadata.json}.
+Once initialized, the model state becomes immutable, allowing the
+asynchronous web server to process concurrent inference requests across
+multiple threads without encountering race conditions or requiring
+continuous disk I/O operations.
 
-\section{Feature Engineering
-Pipeline}\label{feature-engineering-pipeline}
+\subsection{Inference Execution}\label{inference-execution}
 
-The architectural philosophy of PhishGuard explicitly rejects the
-``black-box'' deep learning approach of raw character sequence ingestion
-in favor of explicit, mathematically formulated feature engineering. The
-system extracts a highly discriminative, 21-dimensional feature vector
-(\texttt{FeatureSet}) partitioned into two distinct categories, as detailed in Table~\ref{tab:feature_dictionary}.
+When a URL analysis request is routed to the predictor, the
+21-dimensional \texttt{FeatureSet} is cast into a strongly typed
+\texttt{numpy.ndarray} (\texttt{dtype=np.float64}). The
+\texttt{predict()} method invokes the XGBoost \texttt{predict\_proba}
+function, returning a continuous probability bounded between 0.0 and
+1.0, representing the mathematical likelihood that the input belongs to
+the malicious class.
 
-\begin{longtable}{
-  >{\raggedright\arraybackslash\ttfamily}p{0.25\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.50\textwidth}}
-\caption{Feature Dictionary for the 21-Dimensional ML Input Vector} \label{tab:feature_dictionary} \\
-\toprule
-\normalfont\textbf{Feature Name} & \textbf{Category} & \textbf{Description \& Rationale} \\
-\midrule
-\endfirsthead
-\caption[]{Feature Dictionary for the 21-Dimensional ML Input Vector (continued)} \\
-\toprule
-\normalfont\textbf{Feature Name} & \textbf{Category} & \textbf{Description \& Rationale} \\
-\midrule
-\endhead
-\midrule
-\multicolumn{3}{r}{\textit{Continued on next page}} \\
-\endfoot
-\bottomrule
-\endlastfoot
+\section{The Phishing Scorer
+Module}\label{the-phishing-scorer-module}
 
-\multicolumn{3}{c}{\textbf{Lexical and Structural Features (17 Dimensions)}} \\
-\midrule
-urlLength & Length & Total character count of the absolute URL. Phishing URLs are often unusually long to obscure the actual domain. \\
-domainLength & Length & Character count of the primary domain. \\
-pathDepth & Length & The number of hierarchical directories in the URL path. Attackers often bury payloads deep in nested folders. \\
-digitRatio & Composition & Ratio of numerical digits to total characters in the URL. \\
-specialCharCount & Composition & Total count of non-alphanumeric characters (e.g., \texttt{?}, \texttt{\&}, \texttt{=}, \texttt{\%}). \\
-hasEncodedChars & Composition & Boolean indicating the presence of URL-encoded characters (e.g., \texttt{\%20}), often used to obfuscate malicious payloads. \\
-subdomainCount & Structure & The number of subdomains present. Phishers frequently use excessively long subdomains (e.g., \texttt{login.secure.bank.com}). \\
-hasIpAddress & Structure & Boolean indicating if an IPv4/IPv6 address is used instead of a hostname (bypassing DNS entirely). \\
-hasAtSymbol & Structure & Boolean indicating the presence of an \texttt{@} symbol, typically used to spoof credentials in the URI. \\
-hasDoubleSlash & Structure & Boolean indicating if \texttt{//} appears in the path, often used for unauthorized redirection. \\
-hasDashInDomain & Structure & Boolean indicating dashes in the domain name, a common typo-squatting technique. \\
-hasUnderscoreInDomain & Structure & Boolean indicating underscores in the domain name. \\
-isHttps & Protocol & Boolean indicating if the URL utilizes TLS/SSL. \\
-hasPortNumber & Protocol & Boolean indicating if a non-standard port is explicitly defined in the URL. \\
-queryParamCount & Protocol & Total number of HTTP GET query parameters. \\
-hasSuspiciousTld & Categorization & Boolean indicating usage of known high-abuse generic Top-Level Domains (e.g., \texttt{.tk}, \texttt{.ml}, \texttt{.cf}). \\
-hasSuspiciousKeywords & Categorization & Boolean indicating the presence of social engineering triggers in the URL (e.g., \textit{login}, \textit{secure}, \textit{verify}). \\
+While the XGBoost probability serves as the primary ground truth for URL
+inputs, it operates as an opaque numerical value. To resolve the
+black-box interpretability crisis, the \texttt{backend/ml/scorer.py}
+module introduces a parallel heuristic scoring engine that
+reverse-engineers the threat context.
 
-\midrule
-\multicolumn{3}{c}{\textbf{OSINT Infrastructure Features (4 Dimensions)}} \\
-\midrule
-hasValidMx & OSINT & Boolean indicating the presence of valid Mail Exchange records. Phishing domains rarely configure email routing. \\
-usesCdn & OSINT & Boolean detecting if the domain is hidden behind a Content Delivery Network (e.g., Cloudflare) via CNAME analysis. \\
-dnsRecordCount & OSINT & An integer volumetric metric of the domain's overall DNS footprint. \\
-hasValidDns & OSINT & Boolean verifying if the domain successfully resolves to an active A/AAAA record. \\
+\subsection{Explanatory Heuristics}\label{explanatory-heuristics}
 
-\end{longtable}
+Regardless of whether the XGBoost model is active, the
+\texttt{PhishingScorer} executes three discrete heuristic calculators to
+generate the human-readable \texttt{factors} array that will be
+presented to the user: 1. \textbf{\texttt{calculateUrlStructureScore}:}
+Applies deterministic penalty weights to structural anomalies. For
+example, a URL length exceeding 75 characters generates a scaling
+penalty (\texttt{min((urlLength\ -\ 75)\ /\ 100,\ 0.3)}), while the
+presence of raw IP addresses or Suspicious TLDs adds fixed penalties. 2.
+\textbf{\texttt{calculateOsintScore}:} Evaluates the infrastructure
+context. If \texttt{isNewlyRegistered} is true (domain age $<${}
+30 days), a 0.35 penalty is recorded. Detection in third-party
+blacklists adds up to a 0.5 penalty. 3.
+\textbf{\texttt{calculateFeatureScore}:} Analyzes holistic combinations
+that indicate sophisticated evasion, such as a newly registered domain
+combined with the presence of suspicious keywords in the URI string
+(\texttt{score\ +=\ 0.3}).
 
-\subsection{Lexical and Structural Features (17
-Dimensions)}\label{lexical-and-structural-features-17-dimensions}
+\subsection{Graceful Heuristic
+Fallback}\label{graceful-heuristic-fallback}
 
-The \texttt{extractFeatures.py} module parses the raw URL string to
-extract the 17 deterministic structural indicators listed in Table~\ref{tab:feature_dictionary}. These heuristics capture
-the traditional syntactic anomalies favored by attackers, such as structural obfuscation, typo-squatting, and malicious routing configurations.
+In the event of a catastrophic failure where the compiled XGBoost model
+cannot be loaded into memory, the \texttt{PhishingScorer} implements a
+graceful degradation protocol. Instead of halting the application, it
+relies entirely on the heuristic calculators, combining their raw
+outputs using the strict constants defined in the
+\texttt{ScoringWeights} dataclass: - \textbf{URL Structure:} 25\% weight
+- \textbf{OSINT Derived:} 35\% weight - \textbf{Feature Based:} 40\%
+weight
 
-\subsection{OSINT Infrastructure Features (4
-Dimensions)}\label{osint-infrastructure-features-4-dimensions}
+This fallback mechanism ensures the platform remains operational and
+capable of identifying overt threats even during degraded system states.
 
-To resolve the contextual blindness inherent in purely lexical models,
-the feature vector is augmented with 4 dynamically retrieved Open-Source
-Intelligence indicators via the asynchronous OSINT pipeline. As outlined in Table~\ref{tab:feature_dictionary}, these live metrics provide unforgeable proof of the infrastructure's legitimacy and current operational state.
+\section{Risk Level Determination}\label{risk-level-determination}
 
-\section{Model Selection and
-Optimization}\label{model-selection-and-optimization}
-
-\subsection{The XGBoost Algorithm}\label{the-xgboost-algorithm}
-
-Following the extraction of the 21-dimensional feature vector, the
-system employs the eXtreme Gradient Boosting (\texttt{XGBClassifier})
-algorithm. XGBoost was selected over deep neural networks due to its
-supreme performance on structured tabular data, robust handling of
-non-linear feature interactions, and computational efficiency (allowing
-for sub-millisecond CPU inference in a production environment). The
-model utilizes a \texttt{binary:logistic} objective function, outputting
-a continuous probability score bounded between 0.0 and 1.0.
-
-\subsection{Bayesian Hyperparameter Optimization
-(Optuna)}\label{bayesian-hyperparameter-optimization-optuna}
-
-To maximize predictive performance, the model's hyperparameters were not
-manually tuned but rather rigorously optimized using the Optuna
-framework. The optimization pipeline executed 50 independent trials
-(\texttt{nTrials\ =\ 50}) utilizing 5-fold Stratified Cross-Validation
-(\texttt{nCvFolds\ =\ 5}).
-
-The optimization search space targeted critical tree structural
-parameters. The mathematically proven best configuration (Trial 43)
-yielded the following hyperparameters: - \texttt{n\_estimators}: 700
-(Number of boosting rounds) - \texttt{max\_depth}: 7 (Maximum tree
-depth, controlling interaction complexity) - \texttt{learning\_rate}:
-\textasciitilde0.177 (Step size shrinkage) - \texttt{subsample}:
-\textasciitilde0.945 (Row sampling ratio to prevent overfitting) -
-\texttt{colsample\_bytree}: \textasciitilde0.873 (Column sampling ratio
-per tree) - \texttt{gamma}: \textasciitilde0.198 (Minimum loss reduction
-required for partitioning) - \texttt{min\_child\_weight}: 1 - L1/L2
-Regularization: \texttt{reg\_alpha} = \textasciitilde0.00027,
-\texttt{reg\_lambda} = \textasciitilde0.397
-
-This exhaustive 222-second optimization process ensured the model was
-perfectly calibrated to the specific variance of the 33,392 URL dataset.
-
-\section{Model Explainability via
-SHAP}\label{model-explainability-via-shap}
-
-A cornerstone objective of the PhishGuard architecture is resolving the
-``black-box'' interpretability crisis common in machine learning
-cybersecurity tools. To achieve this, the system implements a
-mathematically rigorous explainability framework using SHAP (SHapley
-Additive exPlanations).
-
-The \texttt{shapAnalysis.py} module integrates the
-\texttt{shap.TreeExplainer}, which utilizes cooperative game theory to
-calculate the exact marginal contribution of every single feature to the
-final prediction. Because XGBoost 3.x utilizes a bracketed format for
-its \texttt{base\_score} (e.g., \texttt{{[}5E-1{]}}), a custom
-monkey-patch (\texttt{\_patchShapXgboostCompat}) was engineered to
-ensure seamless compatibility with the SHAP explainer.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.85\linewidth,height=0.65\textheight,keepaspectratio]{images/shap_plot.png}
-\caption{SHAP Feature Importance Analysis (Beeswarm Plot)}
-\label{fig:shap_plot}
-\end{figure}
-
-This SHAP integration allows the backend to decompose a 96\% phishing
-probability into human-readable insights (e.g., exactly how much the
-\texttt{hasValidMx} feature influenced the score), which the Next.js
-frontend dynamically renders as interactive waterfall charts for the
-end-user.
-
-\section{Performance Evaluation}\label{performance-evaluation}
-
-The optimized XGBoost model underwent rigorous evaluation against the
-held-out test split. The empirical results definitively validate the
-efficacy of the 21-dimensional feature engineering pipeline:
+The final continuous score (whether derived from the XGBoost probability
+or the heuristic fallback) is mapped to discrete, actionable categories
+using the strict boundaries defined in the \texttt{RISK\_THRESHOLDS}
+dictionary:
 
 \begin{itemize}
 \item
-  \textbf{Test Accuracy:} 96.45\%
+  \textbf{Safe (Score $<${} 0.20):} The domain exhibits normal
+  structural characteristics, extensive DNS history, and clean
+  reputation metrics.
 \item
-  \textbf{Test F1-Score:} 96.39\%
+  \textbf{Low Risk (Score $<${} 0.40):} Minor anomalies detected,
+  often typical of newly registered legitimate businesses or
+  non-standard tracking URLs.
 \item
-  \textbf{Test Precision:} 97.86\%
+  \textbf{Medium Risk / Suspicious (Score $<${} 0.60):} The domain
+  exhibits multiple characteristics commonly associated with phishing
+  infrastructure, requiring explicit user verification.
 \item
-  \textbf{Test Recall:} 94.97\%
+  \textbf{High Risk (Score $<${} 0.80):} Strong indications of
+  malicious intent, such as obscured IPs, known bad TLDs, or missing MX
+  records on a young domain.
 \item
-  \textbf{Test ROC-AUC:} 99.41\%
+  \textbf{Critical (Score \(\ge\) 0.80):} Definitive malicious
+  classification. The XGBoost model expresses supreme confidence in the
+  threat, or the domain has been explicitly flagged by external threat
+  intelligence APIs.
 \end{itemize}
 
-These metrics indicate an exceptionally high-performing classifier. The
-97.86\% precision rate is particularly critical in a cybersecurity
-context, as it minimizes ``false positives'' (flagging legitimate
-corporate domains as malicious), thereby reducing alert fatigue for
-Security Operations Center (SOC) analysts. The 99.41\% Area Under the
-Receiver Operating Characteristic Curve (ROC-AUC) proves the model's
-supreme capability in distinctly separating the Phishing and Legitimate
-classes based on the synthesized lexical and OSINT features.
+\subsection{Reason Prioritization}\label{reason-prioritization}
+
+To prevent alert fatigue and ensure the user interface remains
+uncluttered, the \texttt{\_prioritizeReasons} method deduplicates and
+sorts the aggregated heuristic factors. It employs a keyword-based
+sorting algorithm, ensuring that highly critical warnings (e.g.,
+``malicious,'' ``ip address,'' ``newly registered'') are prioritized at
+the top of the array, while lower-severity structural warnings are
+pushed down or truncated. The final output is strictly limited to the
+top 10 most relevant reasons.
+
+
+
+\section{Evaluation Methodology}\label{evaluation-methodology}
+
+The efficacy of the PhishGuard machine learning architecture was
+rigorously evaluated using a holdout methodology to prevent data leakage
+and ensure generalized performance on unseen data. The dataset,
+comprising diverse phishing and legitimate Uniform Resource Locators
+(URLs), was systematically split into training and testing partitions.
+
+The primary training corpus consisted of 23,374 samples
+(\texttt{trainSamples:\ 23,374}). To accurately assess the model's
+predictive capability in a simulated real-world environment, a strictly
+held-out test set comprising 5,009 samples
+(\texttt{testSamples:\ 5,009}) was established. This test set maintained
+an near-perfect class balance, containing 2,505 legitimate instances and
+2,504 phishing instances, ensuring that evaluation metrics were not
+artificially skewed by class imbalance.
+
+\section{Hyperparameter
+Optimization}\label{hyperparameter-optimization}
+
+Prior to final evaluation, the XGBoost classifier underwent extensive
+hyperparameter tuning utilizing the Optuna optimization framework. The
+optimization process executed 50 distinct trials (\texttt{nTrials:\ 50})
+employing 5-fold cross-validation (\texttt{nCvFolds:\ 5}) to iteratively
+search the hyperparameter space for the configuration that maximized the
+Area Under the Receiver Operating Characteristic Curve (ROC AUC).
+
+The optimal configuration was identified at Trial 43
+(\texttt{bestTrialNumber:\ 43}), yielding a cross-validated AUC of
+0.9943. The resulting best hyperparameters significantly constrained the
+model's complexity to prevent overfitting while maintaining high
+predictive capacity: - \textbf{Maximum Depth (\texttt{max\_depth}):} 7 -
+\textbf{Number of Estimators (\texttt{n\_estimators}):} 700 -
+\textbf{Learning Rate (\texttt{learning\_rate}):} \textasciitilde0.177 -
+\textbf{Subsample Ratio (\texttt{subsample}):} \textasciitilde0.945 -
+\textbf{Column Subsample by Tree (\texttt{colsample\_bytree}):}
+\textasciitilde0.873 - \textbf{Gamma (\texttt{gamma}):}
+\textasciitilde0.198
+
+\section{Empirical Performance
+Metrics}\label{empirical-performance-metrics}
+
+The fully optimized XGBoost model, utilizing the complete 21-dimensional
+feature vector (17 URL structural features and 4 OSINT-derived
+features), demonstrated exceptional performance on the held-out test set
+of 5,009 samples. 
+
+As summarized in Table~\ref{tab:performance_metrics}, the model achieved an aggregate \textbf{Accuracy of 96.45\%}
+(\texttt{0.96446}), indicating robust overall correctness. However, in
+the context of threat detection, precision and recall offer more nuanced
+insights into operational viability.
+
+\begin{table}[htbp]
+\centering
+\caption{PhishGuard XGBoost Model Performance Metrics (Test Set: N=5,009)}
+\label{tab:performance_metrics}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Metric} & \textbf{Value (\%)} \\
+\midrule
+Accuracy & 96.45\% \\
+Precision & 97.86\% \\
+Recall (Sensitivity) & 94.97\% \\
+F1-Score & 96.39\% \\
+ROC AUC & 99.41\% \\
+PR AUC & 99.48\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The system achieved a \textbf{Precision of 97.86\%} (\texttt{0.97860}),
+demonstrating a low false-positive rate---a critical metric for
+minimizing alert fatigue among end-users. Correspondingly, the
+\textbf{Recall reached 94.97\%} (\texttt{0.94968}), signifying the
+model's strong capability to successfully identify true phishing threats
+within the dataset. The harmonic mean of these two metrics resulted in
+an \textbf{F1-Score of 96.39\%} (\texttt{0.96392}).
+
+Furthermore, the model exhibited outstanding discriminative ability
+across various classification thresholds, achieving a \textbf{ROC AUC of
+99.41\%} (\texttt{0.99408}) and a Precision-Recall Area Under Curve
+(\textbf{PR AUC}) of \textbf{99.48\%} (\texttt{0.99479}).
+
+\subsection{Error Analysis and Confusion
+Matrix}\label{error-analysis-and-confusion-matrix}
+
+A granular analysis of the classification errors on the test set reveals
+the model's operational tendencies. Table~\ref{tab:confusion_matrix} presents the exact distribution of the 5,009 test predictions.
+
+\begin{table}[htbp]
+\centering
+\caption{Confusion Matrix for the Holdout Test Set}
+\label{tab:confusion_matrix}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{c >{\bfseries}c | c c}
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Predicted Class}} \\
+\cline{3-4}
+\multicolumn{2}{c|}{} & \textbf{Legitimate (0)} & \textbf{Phishing (1)} \\
+\cline{2-4}
+\multirow{2}{*}{\rotatebox{90}{\textbf{Actual}}} & \textbf{Legitimate (0)} & 2,453 (TN) & 52 (FP) \\
+& \textbf{Phishing (1)} & 126 (FN) & 2,378 (TP) \\
+\cline{2-4}
+\end{tabular}
+\end{table}
+
+The disparity between False Positives (52) and False Negatives (126)
+underscores the model's high-precision orientation. While the system is
+highly reliable when it issues a warning, a small subset of
+sophisticated phishing URLs successfully evaded the structural and OSINT
+feature checks.
+
+\section{Feature Explainability and SHAP
+Analysis}\label{feature-explainability-and-shap-analysis}
+
+To demystify the XGBoost model's decision-making process and move beyond
+``black-box'' predictions, SHapley Additive exPlanations (SHAP) were
+employed. The SHAP \texttt{TreeExplainer} was utilized to compute the
+marginal contribution of each of the 21 features across the test set.
+
+The SHAP analysis (\texttt{shapAnalysis.py}) revealed a distinct
+hierarchy in feature importance. The presence of HTTPS
+(\texttt{isHttps}) emerged as the most influential single feature
+(accounting for roughly 33.4\% of the global importance), followed
+closely by the validity of the domain's DNS configuration
+(\texttt{hasValidDns}, 12.5\%). Structural anomalies, such as
+\texttt{specialCharCount} (8.5\%) and \texttt{pathDepth} (7.4\%), also
+demonstrated significant predictive power.
+
+\subsection{OSINT Ablation Study}\label{osint-ablation-study}
+
+A critical objective of the PhishGuard architecture was to evaluate the
+supplemental value of Open-Source Intelligence (OSINT) data when
+combined with traditional URL lexical analysis. To quantify this, an
+ablation study was conducted.
+
+The global SHAP contribution analysis (\texttt{ablation\_report.json})
+calculated the mean absolute SHAP values for the two distinct feature
+subsets. The analysis determined that the 17 URL structural features
+account for \textbf{85.64\%} of the model's total predictive influence.
+The 4 dynamic OSINT features (\texttt{usesCdn}, \texttt{dnsRecordCount},
+\texttt{hasValidDns}, \texttt{hasValidMx}) contributed the remaining
+\textbf{14.36\%}.
+
+Interestingly, when the model was retrained exclusively on the 17 URL
+features (excluding all OSINT data), the baseline performance metrics
+exhibited a nominal, fractional increase (Accuracy shifted by
+\textasciitilde+0.53\%). This phenomenon suggests that within this
+specific, balanced dataset, the structural URL anomalies were
+sufficiently profound to classify the targets independently. The
+inclusion of OSINT features, while contributing 14.36\% to the model's
+SHAP explanations and providing critical human-readable context for the
+heuristic Scorer module, acted slightly as a regularizer in the pure ML
+context, mitigating over-reliance on purely lexical characteristics.
 
