@@ -57,7 +57,7 @@ class AnalysisOrchestrator:
     1. Extracting the domain from content
     2. Collecting OSINT data (WHOIS, DNS, Reputation)
     3. Extracting ML features
-    4. Running NLP/LLM analysis on text content
+    4. Running NLP analysis on text content
     5. Combining all results into a final verdict
     
     Example:

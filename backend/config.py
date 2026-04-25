@@ -39,13 +39,9 @@ class Environment(str, Enum):
 
 
 class AnalyzerEngine(str, Enum):
-    """Analyzer engine type enumeration.
-    
-    Supports future LLM integration via simple config change.
-    """
-    
+    """Analyzer engine type enumeration."""
+
     NLP = "nlp"
-    LLM = "llm"
 
 
 class LogLevel(str, Enum):
@@ -71,23 +67,20 @@ class Settings(BaseSettings):
         export LOG_LEVEL=DEBUG
     
     Attributes:
-        environment: Application environment (development/testing/production)
-        analyzerEngine: Analysis engine to use (nlp/llm)
-        logLevel: Logging verbosity level
-        
-        whoisTimeout: WHOIS lookup timeout in seconds
-        dnsTimeout: DNS resolution timeout in seconds
-        httpTimeout: HTTP request timeout in seconds
-        maxRetries: Maximum retry attempts for failed requests
-        
-        virusTotalApiKey: VirusTotal API key (optional)
-        abuseIpDbApiKey: AbuseIPDB API key (optional)
-        
-        corsOrigins: Allowed CORS origins (comma-separated)
-        apiRateLimit: API rate limit per minute
-        
-        cacheEnabled: Enable response caching
-        cacheTtlSeconds: Cache time-to-live in seconds
+    environment: Application environment (development/testing/production)
+    analyzerEngine: Analysis engine to use (nlp)
+    logLevel: Logging verbosity level
+
+    whoisTimeout: WHOIS lookup timeout in seconds
+    dnsTimeout: DNS resolution timeout in seconds
+    maxRetries: Maximum retry attempts for failed requests
+
+    virusTotalApiKey: VirusTotal API key (optional)
+    abuseIpDbApiKey: AbuseIPDB API key (optional)
+
+    corsOrigins: Allowed CORS origins (comma-separated)
+    corsMethods: Allowed CORS HTTP methods (comma-separated)
+    corsHeaders: Allowed CORS headers (comma-separated)
     """
     
     model_config = SettingsConfigDict(
@@ -109,7 +102,7 @@ class Settings(BaseSettings):
     
     analyzerEngine: AnalyzerEngine = Field(
         default=AnalyzerEngine.NLP,
-        description="Analysis engine type (nlp for spaCy, llm for future integration)"
+        description="Analysis engine type (currently only NLP)"
     )
     
     logLevel: LogLevel = Field(
@@ -146,14 +139,7 @@ class Settings(BaseSettings):
         le=60,
         description="Reputation API request timeout in seconds"
     )
-    
-    httpTimeout: int = Field(
-        default=10,
-        ge=1,
-        le=60,
-        description="HTTP request timeout in seconds"
-    )
-    
+
     maxRetries: int = Field(
         default=3,
         ge=0,
@@ -181,12 +167,7 @@ class Settings(BaseSettings):
         default=None,
         description="AbuseIPDB API key for IP reputation"
     )
-    
-    googleSafeBrowsingApiKey: Optional[str] = Field(
-        default=None,
-        description="Google Safe Browsing API key"
-    )
-    
+
     # =========================================================================
     # API Settings
     # =========================================================================
@@ -205,35 +186,7 @@ class Settings(BaseSettings):
         default="Content-Type,Authorization",
         description="Allowed CORS headers (comma-separated)"
     )
-    
-    apiRateLimit: int = Field(
-        default=100,
-        ge=1,
-        le=10000,
-        description="API rate limit per minute"
-    )
-    
-    apiPrefix: str = Field(
-        default="/api",
-        description="API route prefix"
-    )
-    
-    # =========================================================================
-    # Cache Settings
-    # =========================================================================
-    
-    cacheEnabled: bool = Field(
-        default=True,
-        description="Enable response caching"
-    )
-    
-    cacheTtlSeconds: int = Field(
-        default=3600,
-        ge=60,
-        le=86400,
-        description="Cache TTL in seconds (1 hour default)"
-    )
-    
+
     # =========================================================================
     # Analysis Thresholds
     # =========================================================================

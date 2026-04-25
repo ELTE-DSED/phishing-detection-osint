@@ -16,7 +16,7 @@ Usage:
     
     # Quick scoring
     result = scoreUrl("https://suspicious-site.tk/login")
-    print(result.riskLevel)  # RiskLevel.HIGH
+print(result.riskLevel) # RiskLevel.DANGEROUS
     
     # Feature extraction
     features = extractFeatures("https://example.com")

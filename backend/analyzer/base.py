@@ -5,7 +5,7 @@ Analyzer Base Module
 Abstract base class defining the interface for phishing content analyzers.
 
 This module provides a protocol-based design that allows swapping between
-different analyzer implementations (NLP-based, LLM-based, rule-based, etc.)
+different analyzer implementations (NLP-based, rule-based, etc.)
 without changing the API or orchestration logic.
 
 Design Principles:
@@ -40,10 +40,11 @@ class ContentType(str, Enum):
 
 class ThreatLevel(str, Enum):
     """Classification of threat severity."""
-    SAFE = "safe"           # 0.0 - 0.2: No threat detected
-    SUSPICIOUS = "suspicious"  # 0.2 - 0.6: Some suspicious indicators
-    DANGEROUS = "dangerous"    # 0.6 - 0.9: High probability of phishing
-    CRITICAL = "critical"      # 0.9 - 1.0: Confirmed phishing
+
+    SAFE = "safe"          # 0.0 - 0.3: No threat detected
+    SUSPICIOUS = "suspicious"  # 0.3 - 0.5: Some suspicious indicators
+    DANGEROUS = "dangerous"    # 0.5 - 0.7: High probability of phishing
+    CRITICAL = "critical"      # 0.7 - 1.0: Confirmed phishing
 
 
 class PhishingTactic(str, Enum):
@@ -179,7 +180,7 @@ class BaseAnalyzer(ABC):
     """
     Abstract base class for content analyzers.
     
-    All analyzer implementations (NLP, LLM, rule-based, etc.) must
+    All analyzer implementations (NLP, rule-based, etc.) must
     implement this interface to ensure compatibility with the
     orchestration layer.
     
@@ -231,7 +232,7 @@ class BaseAnalyzer(ABC):
         Get analyzer name/identifier.
         
         Returns:
-            Human-readable analyzer name (e.g., "NLP Analyzer", "LLM Analyzer")
+            Human-readable analyzer name (e.g., "NLP Analyzer")
         """
         pass
     
@@ -253,24 +254,27 @@ class BaseAnalyzer(ABC):
 def determineThreatLevel(confidenceScore: float) -> ThreatLevel:
     """
     Determine threat level from confidence score.
-    
+
+    Uses the system-wide unified thresholds:
+    safe < 0.3, suspicious < 0.5, dangerous < 0.7, critical >= 0.7
+
     Args:
-        confidenceScore: Phishing probability (0.0 - 1.0)
-        
+    confidenceScore: Phishing probability (0.0 - 1.0)
+
     Returns:
-        ThreatLevel: Corresponding threat classification
-        
+    ThreatLevel: Corresponding threat classification
+
     Example:
-        >>> determineThreatLevel(0.15)
-        ThreatLevel.SAFE
-        >>> determineThreatLevel(0.85)
-        ThreatLevel.CRITICAL
+    >>> determineThreatLevel(0.15)
+    ThreatLevel.SAFE
+    >>> determineThreatLevel(0.85)
+    ThreatLevel.CRITICAL
     """
-    if confidenceScore < 0.4:
+    if confidenceScore < 0.3:
         return ThreatLevel.SAFE
-    elif confidenceScore < 0.6:
+    elif confidenceScore < 0.5:
         return ThreatLevel.SUSPICIOUS
-    elif confidenceScore < 0.8:
+    elif confidenceScore < 0.7:
         return ThreatLevel.DANGEROUS
     else:
         return ThreatLevel.CRITICAL

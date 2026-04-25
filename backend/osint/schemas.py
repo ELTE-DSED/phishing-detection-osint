@@ -28,12 +28,10 @@ from pydantic import BaseModel, Field, field_validator
 
 class DataSource(str, Enum):
     """OSINT data source enumeration."""
-    
+
     WHOIS = "whois"
     DNS = "dns"
     REPUTATION = "reputation"
-    SSL = "ssl"
-    HTTP_HEADERS = "http_headers"
 
 
 class LookupStatus(str, Enum):
@@ -341,11 +339,9 @@ class DnsResult(OsintResult):
 
 class ReputationSource(str, Enum):
     """External reputation data source."""
-    
+
     VIRUSTOTAL = "virustotal"
     ABUSEIPDB = "abuseipdb"
-    GOOGLE_SAFE_BROWSING = "google_safe_browsing"
-    PHISHTANK = "phishtank"
     INTERNAL = "internal"
 
 

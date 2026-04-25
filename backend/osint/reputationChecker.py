@@ -485,24 +485,24 @@ class DefaultReputationClient:
     
     async def _checkInternal(self, domain: str) -> ReputationCheck:
         """
-        Check against internal blocklist (placeholder).
-        
-        This can be extended to check against custom blocklists,
-        previously detected phishing domains, etc.
-        
+        Check against internal blocklist.
+
+        Returns a check with confidence 0.0 indicating no internal
+        data is available for this domain.  Unlike external APIs,
+        the internal blocklist is empty by default and does not
+        contribute to the aggregate score.
+
         Args:
             domain: Domain to check
-        
+
         Returns:
-            ReputationCheck (currently always clean)
+            ReputationCheck with no data (confidence=0.0, category=no_data)
         """
-        # Placeholder for internal blocklist check
-        # In production, this would query a database of known bad domains
         return ReputationCheck(
             source=ReputationSource.INTERNAL,
             isMalicious=False,
             confidence=0.0,
-            category=None
+            category="no_data"
         )
 
 
