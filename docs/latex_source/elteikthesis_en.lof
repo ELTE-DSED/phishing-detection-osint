@@ -17,8 +17,8 @@
 \contentsline {figure}{\numberline {3.1}{\ignorespaces High-Level System Data Flow separating the Next.js Presentation layer, FastAPI Application Orchestrator, ML Pipeline, and Async OSINT\relax }}{54}{figure.caption.35}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Sequence Diagram illustrating parallel execution of Structural Features, NLP Analysis, and the strict 15.0s OSINT timeout\relax }}{55}{figure.caption.36}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces UML Class Diagram defining the strict Pydantic data contracts enforcing backend type safety\relax }}{58}{figure.caption.37}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces The End-to-End User Journey, illustrating the transition from input submission to reviewing Explainable AI (SHAP) metrics\relax }}{60}{figure.caption.38}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces The End-to-End User Journey, illustrating the transition from input submission to reviewing Explainable AI (SHAP) metrics\relax }}{61}{figure.caption.38}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces SHAP Feature Importance Analysis (Beeswarm Plot)\relax }}{72}{figure.caption.48}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces SHAP Feature Importance Analysis (Beeswarm Plot)\relax }}{73}{figure.caption.48}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
