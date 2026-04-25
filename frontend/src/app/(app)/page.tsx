@@ -17,7 +17,6 @@ import {
 import { Logo } from "@/components/brand";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { LinkButton } from "@/components/ui/linkButton";
 import { PageTransition } from "@/components/ui/pageTransition";
 import { FadeIn } from "@/components/ui/animations";
@@ -124,18 +123,14 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button asChild size="sm">
-                <LinkButton href="/analyze">
-                  <Zap className="mr-1.5 h-4 w-4" />
-                  Analyze
-                </LinkButton>
-              </Button>
-              <Button variant="outline" size="sm" asChild>
-                <LinkButton href="/how-it-works">
-                  How It Works
-                  <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                </LinkButton>
-              </Button>
+              <LinkButton href="/analyze" size="sm">
+                <Zap className="mr-1.5 h-4 w-4" />
+                Analyze
+              </LinkButton>
+              <LinkButton href="/how-it-works" variant="outline" size="sm">
+                How It Works
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </LinkButton>
             </div>
           </section>
         </FadeIn>
@@ -282,12 +277,10 @@ export default function DashboardPage() {
                     Latest analyses and results
                   </p>
                 </div>
-                <Button variant="outline" size="sm" asChild>
-                  <LinkButton href="/history">
-                    View All
-                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                  </LinkButton>
-                </Button>
+                <LinkButton href="/history" variant="outline" size="sm">
+                  View All
+                  <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </LinkButton>
               </div>
               <Card>
                 <CardContent className="p-0">
@@ -372,12 +365,10 @@ export default function DashboardPage() {
                   <p className="text-sm text-muted-foreground mt-1 max-w-sm">
                     Paste a suspicious URL or email to analyze it against our threat intelligence database.
                   </p>
-                  <Button className="mt-4" asChild>
-                    <LinkButton href="/analyze">
-                      <Zap className="mr-1.5 h-4 w-4" />
-                      Start Analysis
-                    </LinkButton>
-                  </Button>
+                  <LinkButton href="/analyze" className="mt-4">
+                    <Zap className="mr-1.5 h-4 w-4" />
+                    Start Analysis
+                  </LinkButton>
                   <p className="text-xs text-muted-foreground mt-4">
                     Try with: <code className="bg-muted px-1.5 py-0.5 rounded text-xs">suspicious-login.tk/verify</code>
                   </p>
@@ -402,17 +393,15 @@ export default function DashboardPage() {
                   </p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" asChild>
-                <a
-                  href="https://github.com/ishaq2321"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5"
-                >
-                  ishaq2321
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </Button>
+              <a
+                href="https://github.com/ishaq2321"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                ishaq2321
+                <ExternalLink className="h-3 w-3" />
+              </a>
             </CardContent>
           </Card>
         </FadeIn>
