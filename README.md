@@ -24,12 +24,14 @@ the final score, supplemented by NLP text analysis at 15%.
 - **XGBoost ML classifier** — 96.45% accuracy, 96.39% F1, 99.41% AUC-ROC
 - **21-feature pipeline** — 17 URL structural + 4 OSINT features
 - **OSINT enrichment** — WHOIS, DNS, VirusTotal, AbuseIPDB
+- **NLP with 10 tactic detectors** — urgency, authority impersonation, brand impersonation, credential request, threat warning, emotional manipulation, monetary request, attachment malware, link manipulation, social proof
 - **Explainable results** — SHAP explanations, detailed reasons & scores
 - **Multiple input modes** — URL, email (with subject/sender), free-text
 - **Batch analysis** — Process up to 50 URLs in parallel
 - **Interactive visualisations** — Score charts, threat gauges, confidence bars
 - **Full-featured UI** — Dark/light theme, keyboard shortcuts, responsive design
-- **754 automated tests** — Backend (593), frontend unit (133), E2E (28)
+- **Configurable results detail** — Simple (verdict only), Detailed (+reasons+OSINT), Expert (+features)
+- **725 automated tests** — Backend (592 pytest), frontend (133 Jest)
 
 ## 🛠️ Tech Stack
 
@@ -41,7 +43,7 @@ the final score, supplemented by NLP text analysis at 15%.
 | NLP         | spaCy 3.7 (en_core_web_sm)                           |
 | ML          | XGBoost 3.2, SHAP 0.49, Optuna 4.7, scikit-learn 1.4 |
 | OSINT       | python-whois, dnspython, aiohttp                     |
-| Testing     | pytest 8, Jest 30, Playwright 1.58                   |
+| Testing     | pytest 8, Jest 30                               |
 | Deployment  | Vercel (frontend), Render.com (backend)              |
 
 ## 📁 Project Structure
@@ -51,17 +53,18 @@ the final score, supplemented by NLP text analysis at 15%.
 ├── .mcp/                 # MCP servers (project manager + code quality)
 ├── backend/              # FastAPI server
 │   ├── api/              # REST endpoints, orchestrator, history store
-│   ├── analyzer/         # NLP analyser (spaCy-based, 6 categories)
+│   ├── analyzer/         # NLP analyser (spaCy-based, 10 tactic categories)
 │   ├── ml/               # Feature extraction, URL analysis, scoring
 │   ├── osint/            # WHOIS, DNS, reputation checking
 │   ├── config.py         # Pydantic settings with .env support
 │   └── main.py           # FastAPI app entry point
 ├── data/                 # Datasets (phishing + legitimate URLs)
 ├── docs/                 # Documentation & research
-│   ├── THESIS_COMPLETE_DOCUMENT.md  # Final Thesis Document
+│   ├── latex_source/     # LaTeX thesis source
+│   ├── diagrams/         # Architecture diagrams (Mermaid)
+│   ├── PhishGuard_Thesis.pdf  # Final compiled thesis
 │   ├── API.md            # API Documentation
 │   ├── INSTALLATION.md   # Local Setup Guide
-│   ├── USER_JOURNEY.md   # User Flow Documentation
 │   └── PRIVACY.md        # Privacy Policy
 ├── frontend/             # Next.js 16 web application
 │   ├── src/
@@ -70,10 +73,9 @@ the final score, supplemented by NLP text analysis at 15%.
 │   │   ├── hooks/        # Custom hooks (health, keyboard, countUp)
 │   │   ├── lib/          # API client, stores, utilities
 │   │   └── types/        # TypeScript type definitions
-│   ├── e2e/              # Playwright E2E tests (28 tests)
 │   ├── __tests__/        # Jest unit tests (133 tests)
 │   └── public/           # Static assets (logo, favicon, PWA icons)
-├── tests/                # Backend tests (593 tests)
+├── tests/                # Backend tests (592 tests)
 │   ├── unit/             # Unit tests for all modules
 │   └── integration/      # Full pipeline integration tests
 └── README.md
@@ -173,7 +175,7 @@ curl -X POST http://localhost:8000/api/analyze/url \
 
 ## 🧪 Running Tests
 
-### Backend Tests (593 tests)
+### Backend Tests (592 tests)
 
 ```bash
 # Run all tests
@@ -190,7 +192,7 @@ python -m pytest tests/integration/ -v
 python -m pytest tests/ --cov=backend --cov-report=html
 ```
 
-### Frontend Unit Tests (133 tests)
+### Frontend Tests (133 tests)
 
 ```bash
 cd frontend
@@ -198,29 +200,13 @@ npm test            # Run all Jest tests
 npm test -- --watch # Watch mode
 ```
 
-### Frontend E2E Tests (28 tests)
-
-```bash
-cd frontend
-
-# Install Playwright browsers (first time only)
-npx playwright install chromium
-
-# Run E2E tests (starts dev server automatically)
-npm run test:e2e
-
-# Run with UI mode (interactive debugging)
-npm run test:e2e:ui
-```
-
 ### All Tests Summary
 
 | Layer        | Framework   | Tests | Command                          |
 |--------------|-------------|-------|----------------------------------|
-| Backend      | pytest      | 593   | `python -m pytest tests/`        |
-| Frontend Unit| Jest        | 133   | `cd frontend && npm test`        |
-| Frontend E2E | Playwright  | 28    | `cd frontend && npm run test:e2e`|
-| **Total**    |             | **754** |                                |
+| Backend      | pytest      | 592   | `python -m pytest tests/`        |
+| Frontend    | Jest        | 133   | `cd frontend && npm test`        |
+| **Total**    |             | **725** |                                |
 
 ## 🏗️ Architecture
 
@@ -235,11 +221,10 @@ npm run test:e2e:ui
 │                                                              │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
 │  │  Text/NLP    │  │  URL Feature │  │  OSINT           │   │
-│  │  Analysis    │  │  Extraction  │  │  Enrichment      │   │
-│  │  (spaCy)     │  │  (21 feats)  │  │  (WHOIS/DNS/     │   │
-│  │              │  │  17 struct + │  │   VirusTotal/     │   │
-│  │  Supplement  │  │  4 OSINT     │  │   AbuseIPDB)     │   │
-│  │  15%         │  │              │  │                   │   │
+│  │  Analysis    │  │  Extraction │  │  Enrichment      │   │
+│  │  (spaCy)     │  │  (21 feats)  │  │  (WHOIS/DNS/    │   │
+│  │  10 tactics  │  │  17 struct + │  │   VirusTotal/    │   │
+│  │  15%         │  │  4 OSINT     │  │   AbuseIPDB)    │   │
 │  └──────┬───────┘  └──────┬───────┘  └──────┬───────────┘   │
 │         │                 │                  │               │
 │  ┌──────▼─────────────────▼──────────────────▼───────────┐   │
