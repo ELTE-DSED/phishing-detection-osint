@@ -91,11 +91,11 @@ export function ReasonsList({ reasons }: ReasonsListProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-2">
-        {reasons.map((reason) => {
+        {reasons.map((reason, index) => {
           const { icon: Icon, colorClass } = resolveReasonMeta(reason);
           return (
             <div
-              key={reason}
+              key={`${reason}-${index}`}
               className="flex items-start gap-3 rounded-lg border px-3 py-2.5"
             >
               <Icon

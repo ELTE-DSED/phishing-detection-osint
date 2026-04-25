@@ -264,12 +264,12 @@ function DetectedTacticsCard({ tactics }: DetectedTacticsCardProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-2">
-          {tactics.map((tactic) => {
+          {tactics.map((tactic, index) => {
             const meta = TACTIC_META[tactic] ?? UNKNOWN_TACTIC;
             const Icon = meta.icon;
 
             return (
-              <Tooltip key={tactic}>
+              <Tooltip key={`${tactic}-${index}`}>
                 <TooltipTrigger
                   render={
                     <button
