@@ -15,7 +15,7 @@ end
 subgraph "Application Layer Render.com"
 FastAPI[FastAPI Python Server]:::backend
 Orchestrator[AnalysisOrchestrator]:::backend
-History[In-Memory HistoryStore max 100]:::backend
+History[In-Memory HistoryStore]:::backend
 
 FastAPI --> Orchestrator
 FastAPI --> History

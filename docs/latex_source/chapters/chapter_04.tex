@@ -380,14 +380,23 @@ system successfully identifies indicators regardless of minor
 punctuation or casing deviations (utilizing the \texttt{attr="LOWER"}
 parameter).
 
-The system initializes six distinct \texttt{PhraseMatcher} pipelines: 1.
+The system initializes ten distinct \texttt{PhraseMatcher} pipelines: 1.
 \texttt{urgencyMatcher}: Detects artificial time pressure. 2.
 \texttt{threatMatcher}: Detects fear-inducing vocabulary. 3.
 \texttt{authorityMatcher}: Detects impersonation of IT or administrative
 personnel. 4. \texttt{brandMatcher}: Detects the unauthorized usage of
 high-value corporate names. 5. \texttt{credentialMatcher}: Detects the
 explicit solicitation of sensitive data. 6. \texttt{actionMatcher}:
-Detects suspicious call-to-action phrasing.
+Detects suspicious call-to-action phrasing. 7. \texttt{emotionalMatcher}:
+Detects emotional manipulation and appeal-to-greed phrases (e.g.,
+``congratulations,'' ``you have been selected''). 8.
+\texttt{monetaryMatcher}: Detects financial lure and money transfer
+requests (e.g., ``wire transfer,'' ``processing fee,'' ``lottery
+winnings''). 9. \texttt{attachmentMatcher}: Detects suspicious file
+attachments and malware delivery attempts (e.g., ``.exe,'' ``.zip,'' ``open
+the attachment''). 10. \texttt{socialProofMatcher}: Detects fake trust
+signals and social proof claims (e.g., ``trusted by millions,'' ``join
+millions of users'').
 
 \section{Tactical Heuristics and Feature
 Extraction}\label{tactical-heuristics-and-feature-extraction}
@@ -423,9 +432,12 @@ Impersonation:} The \texttt{\_detectAuthority} method flags phrases
 commonly abused in Business Email Compromise (BEC) attacks, such as ``IT
 support,'' ``billing department,'' and ``system administrator.'' -
 \textbf{Brand Impersonation:} The \texttt{\_detectBrands} method checks
-the tokenized text against a predefined list of the world's most
-frequently spoofed organizations (e.g., ``PayPal,'' ``Microsoft,''
-``IRS''). Because brand mentions can occur in legitimate contexts, this
+the tokenized text against a predefined list of 17 high-value
+organizations: PayPal, Microsoft, Apple, Amazon, Google, Facebook,
+Instagram, Netflix, LinkedIn, Dropbox, Bank of America, Wells Fargo,
+Chase, IRS, FedEx, DHL, and USPS. Both the URL analyzer (via regex
+patterns) and the NLP analyzer (via phrase matching) detect these
+brands. Because brand mentions can occur in legitimate contexts, this
 specific indicator is assigned a moderate severity weight
 (\texttt{severity=0.5}), requiring corroboration from other malicious
 indicators to definitively flag the text as phishing.
@@ -439,6 +451,42 @@ solicitation of sensitive data. Phrases demanding that a user ``verify
 your account,'' ``update your password,'' or ``confirm your SSN'' are
 flagged as critical risk indicators and assigned a severe penalty weight
 (\texttt{severity=0.85}).
+
+\subsection{Psychological Manipulation and Trust Signals}\label{psychological-manipulation-and-trust-signals}
+
+Modern phishing campaigns increasingly leverage sophisticated
+psychological manipulation tactics beyond simple urgency or threats.
+
+\textbf{Emotional Manipulation:} The \texttt{\_detectEmotionalManipulation}
+method identifies phrases designed to trigger emotional responses or appeal
+to greed. These include congratulatory messages (``you have been selected,''
+``congratulations''), exclusivity claims (``once in a lifetime,'' ``exclusive
+offer''), and fear of missing out tactics (``don't miss out,'' ``limited
+spots''). Such indicators are assigned a \texttt{severity=0.5}.
+
+\textbf{Monetary Requests:} The \texttt{\_detectMonetaryRequests} method
+flags financial lure phrases and direct money transfer requests. This
+includes wire transfer requests (``wire transfer,'' ``send money''), advance
+fee fraud (``processing fee,'' ``advance fee''), lottery and inheritance
+scams (``claim your prize,'' ``unclaimed funds,'' ``beneficiary''), and
+payment demands (``pay now,'' ``outstanding balance''). These receive a
+high \texttt{severity=0.7} due to their direct financial threat.
+
+\textbf{Attachment Malware:} The \texttt{\_detectAttachmentMalware} method
+scans for references to suspicious file attachments. It detects dangerous
+file extensions (\texttt{.exe}, \texttt{.scr}, \texttt{.bat}, \texttt{.vbs},
+\texttt{.js}, \texttt{.zip}, \texttt{.docm}, \texttt{.xlsm}) and attachment
+action phrases (``download the attachment,'' ``open the attachment,'' ``see
+attached''). With \texttt{severity=0.8} for suspicious extensions and
+\texttt{severity=0.65} for attachment actions, these are among the highest
+severity indicators.
+
+\textbf{Social Proof and Trust Signals:} The
+\texttt{\_detectSocialProof} method identifies fake trust signals designed
+to establish false credibility. These include popularity claims (``millions
+of users,'' ``everyone is using''), verification assertions (``verified by,''``certified,'' ``award-winning''), and bandwagon appeals (``join millions,''``most popular''). These indicators receive a lower \texttt{severity=0.4}
+but contribute to the sophistication bonus when combined with other
+tactics.
 
 \subsection{In-Text Link
 Manipulation}\label{in-text-link-manipulation}
@@ -480,7 +528,7 @@ applies a cumulative multiplier
 (\texttt{min(len(tactics)\ *\ 0.1,\ 0.3)}) based on the diversity of the
 unique \texttt{PhishingTactic} enumerations detected.
 
-If the final computed confidence exceeds 0.6, the \texttt{isPhishing}
+If the final computed confidence exceeds 0.5, the \texttt{isPhishing}
 boolean is asserted.
 
 \subsection{Orchestrator

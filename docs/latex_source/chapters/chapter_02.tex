@@ -264,7 +264,12 @@ The Settings page allows the user to configure the application (Figure \ref{fig:
 
 \begin{itemize}
 \item \textbf{API Configuration:} The Backend URL input field specifies the address of the PhishGuard API server. Below the input, the default value is displayed: ``Default: \texttt{http://localhost:8000}.'' The ``Test'' button verifies connectivity; while testing, the button displays a spinning loader icon and the text ``Testing\ldots'' and is disabled. The status badge next to the button shows four states: no badge (idle, before any test), ``Testing'' (during the request), ``Connected'' (on success, accompanied by a success toast), or ``Failed'' (on failure, accompanied by an error toast).
-\item \textbf{Display Preferences:} A dark mode toggle switches between light and dark themes on the Settings page, while the header dropdown offers a three-way choice of Light, Dark, or System (following the operating system preference). A detail level selector adjusts the verbosity of result displays (Simple, Detailed, or Expert).
+\item \textbf{Display Preferences:} A dark mode toggle switches between light and dark themes on the Settings page, while the header dropdown offers a three-way choice of Light, Dark, or System (following the operating system preference). A detail level selector adjusts the verbosity of result displays (Simple, Detailed, or Expert). The three levels control which sections appear on the Results page:
+\begin{itemize}
+    \item \textbf{Simple:} Displays only the verdict banner and score visualisation charts, providing a minimal overview suitable for quick assessments.
+    \item \textbf{Detailed:} Includes all Simple content plus the Risk Indicators list, Content Preview card, and OSINT Intelligence section, offering comprehensive analysis results.
+    \item \textbf{Expert:} Displays all Detailed content plus the Feature Extraction cards showing raw feature counts and detected tactics, intended for technical users and security researchers.
+\end{itemize}
 \item \textbf{History Management:} The maximum number of history entries can be set to 10, 25, 50, or 100. An auto-clear dropdown automatically removes entries older than a configured period: Never (the default), 7 days, 14 days, or 30 days. A ``Clear History'' destructive-variant button immediately removes all entries after a confirmation dialog; the button displays the current count (``N entry/entries stored'') and is disabled when no entries exist. A success toast confirms the action.
 \item \textbf{About:} Displays application metadata including the application name, tagline (``OSINT-Enhanced Phishing Detection''), version (1.0.0), author, supervisor, and university.
 \end{itemize}

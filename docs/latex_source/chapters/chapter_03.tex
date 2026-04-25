@@ -162,15 +162,17 @@ persistent relational database (e.g., PostgreSQL or MySQL). Instead, the
 backend implements a highly efficient, thread-safe, in-memory
 \texttt{HistoryStore} located in \texttt{backend/api/historyStore.py}.
 
-The module utilizes a standard Python \texttt{collections.deque}
+The backend module utilizes a standard Python \texttt{collections.deque}
 structured as a First-In-First-Out (FIFO) queue with a hard limit of 100
-entries (\texttt{MAX\_ENTRIES}). When a user submits an analysis, the
-backend generates a unique UUID, stores the full
-\texttt{AnalysisResponse} object in the deque, and assigns a precise
-timestamp.
+entries (\texttt{MAX\_ENTRIES}) for internal logging purposes. However, the
+user-facing history persistence is implemented in the frontend using the
+browser's localStorage API, which respects the user's configurable maximum
+entry limit (10, 25, 50, or 100 entries as specified in the Settings page).
+When a user submits an analysis, both stores record the full
+\texttt{AnalysisResponse} object with a unique UUID and precise timestamp.
 
 Because FastAPI operates on a single primary event loop, concurrent
-asynchronous mutations to this deque are fundamentally thread-safe
+asynchronous mutations to the backend deque are fundamentally thread-safe
 without requiring complex locking mechanisms (like
 \texttt{asyncio.Lock}). This design allows users to review their recent
 analysis history via paginated API calls instantly, without the latency,
@@ -422,7 +424,7 @@ Next.js frontend.
 Methodology}\label{backend-testing-methodology}
 
 The backend testing architecture is constructed upon the \texttt{pytest}
-framework, comprising 754 distinct tests (593 backend \texttt{pytest} unit/integration tests, 133 frontend \texttt{Jest} tests, and 28 E2E \texttt{Cypress} tests) distributed
+framework, comprising 725 distinct tests (592 backend \texttt{pytest} unit/integration tests and 133 frontend \texttt{Jest} tests) distributed
 across the \texttt{tests/unit/} and \texttt{tests/integration/}
 directories. Given the asynchronous nature of the FastAPI orchestrator
 and the underlying Open-Source Intelligence (OSINT) network calls, the

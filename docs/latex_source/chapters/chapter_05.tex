@@ -101,26 +101,24 @@ dictionary:
 
 \begin{itemize}
 \item
-  \textbf{Safe (Score $<${} 0.20):} The domain exhibits normal
+  \textbf{Safe (Score $<${} 0.30):} The domain exhibits normal
   structural characteristics, extensive DNS history, and clean
-  reputation metrics.
+  reputation metrics. No action required.
 \item
-  \textbf{Low Risk (Score $<${} 0.40):} Minor anomalies detected,
-  often typical of newly registered legitimate businesses or
-  non-standard tracking URLs.
+  \textbf{Suspicious (Score $<${} 0.50):} The domain exhibits some
+  characteristics commonly associated with phishing infrastructure,
+  requiring user caution and verification. Minor anomalies may include
+  newly registered domains or non-standard configurations.
 \item
-  \textbf{Medium Risk / Suspicious (Score $<${} 0.60):} The domain
-  exhibits multiple characteristics commonly associated with phishing
-  infrastructure, requiring explicit user verification.
+  \textbf{Dangerous (Score $<${} 0.70):} Strong indications of
+  malicious intent, such as obscured IPs, known bad TLDs, missing MX
+  records on a young domain, or multiple risk indicators. The system
+  recommends not interacting with the content.
 \item
-  \textbf{High Risk (Score $<${} 0.80):} Strong indications of
-  malicious intent, such as obscured IPs, known bad TLDs, or missing MX
-  records on a young domain.
-\item
-  \textbf{Critical (Score \(\ge\) 0.80):} Definitive malicious
-  classification. The XGBoost model expresses supreme confidence in the
+  \textbf{Critical (Score $\ge$ 0.70):} Definitive malicious
+  classification. The XGBoost model expresses high confidence in the
   threat, or the domain has been explicitly flagged by external threat
-  intelligence APIs.
+  intelligence APIs. Immediate blocking and reporting recommended.
 \end{itemize}
 
 \subsection{Reason Prioritization}\label{reason-prioritization}
