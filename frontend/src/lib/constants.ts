@@ -5,12 +5,24 @@
  * of the codebase stays clean and DRY.
  */
 
-/** Default backend API base URL (overridden by `NEXT_PUBLIC_API_URL`). */
-export const DEFAULT_API_URL = "http://localhost:8000";
+/** Default backend API base URL (production Render deployment). */
+export const DEFAULT_API_URL = "https://phishguard-api-upl2.onrender.com";
 
 /** Resolved API base URL. */
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL;
+
+/** Application links for documentation. */
+export const APP_LINKS = {
+  /** GitHub repository. */
+  github: "https://github.com/ishaq2321/phishing-detection-osint",
+  /** Frontend web application (Vercel). */
+  frontend: "https://project-4soy4.vercel.app",
+  /** Backend API (Render). */
+  backend: "https://phishguard-api-upl2.onrender.com",
+  /** API documentation (Swagger UI). */
+  apiDocs: "https://phishguard-api-upl2.onrender.com/docs",
+} as const;
 
 /* ------------------------------------------------------------------ */
 /*  Threat-level presentation                                         */
