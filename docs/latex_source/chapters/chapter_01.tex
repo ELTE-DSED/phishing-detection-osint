@@ -246,14 +246,16 @@ Recall, F1-Score), performance benchmarking (latency, throughput), and
 ensuring code quality via a massive automated test suite covering unit,
 integration, and end-to-end (E2E) layers.
 
+\setlength{\tabcolsep}{4pt}
+\small
 \begin{longtable}{
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.35\textwidth}
-  >{\raggedright\arraybackslash}p{0.35\textwidth}
-  >{\raggedright\arraybackslash}p{0.10\textwidth}}
+>{\raggedright\arraybackslash}p{0.08\textwidth}
+>{\raggedright\arraybackslash}p{0.33\textwidth}
+>{\raggedright\arraybackslash}p{0.33\textwidth}
+>{\raggedright\arraybackslash}p{0.14\textwidth}}
 \caption{Summary of Research Objectives} \\
 \toprule
-Objective ID & Description & Success Criteria & Status \\
+ID & Description & Success Criteria & Status \\
 \midrule
 
 RO1 & Multi-layered analysis architecture & Modular design with
@@ -273,6 +275,8 @@ ablation study, performance benchmarks & Achieved (754 tests) \\
 
 \bottomrule
 \end{longtable}
+\normalsize
+\setlength{\tabcolsep}{6pt}
 
 \section{Contributions}\label{contributions}
 
@@ -437,11 +441,13 @@ Attacks}\label{taxonomy-of-phishing-attacks}
 Phishing attacks can be classified along multiple dimensions based on
 attack vector, targeting strategy, and technical sophistication.
 
+\setlength{\tabcolsep}{4pt}
+\small
 \begin{longtable}{
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.35\textwidth}
-  >{\raggedright\arraybackslash}p{0.30\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}}
+>{\raggedright\arraybackslash}p{0.13\textwidth}
+>{\raggedright\arraybackslash}p{0.35\textwidth}
+>{\raggedright\arraybackslash}p{0.32\textwidth}
+>{\raggedright\arraybackslash}p{0.12\textwidth}}
 \caption{Types of Phishing Attacks} \\
 \toprule
 Type & Description & Example & Target Scope \\
@@ -468,15 +474,17 @@ altered payment link & Narrow (previous recipients) \\
 \textbf{Angler Phishing} & Fake customer support accounts on social
 media platforms & Fake ``@PayPalSupport'' account on Twitter responding
 to complaints & Moderate (social media users) \\
-\textbf{Search Engine Phishing} & Fake websites optimized to appear in
+\textbf{Search Engine} & Fake websites optimized to appear in
 search results for common queries & Fake ``Amazon login'' page ranking
 in Google for ``amazon sign in'' & Broad (search engine users) \\
-\textbf{Man-in-the-Middle (MITM) Phishing} & Intercepting communications
+\textbf{MITM Phishing} & Intercepting communications
 between victim and legitimate site & Fake WiFi hotspot capturing login
 credentials & Narrow (public WiFi users) \\
 
 \bottomrule
 \end{longtable}
+\normalsize
+\setlength{\tabcolsep}{6pt}
 
 \begin{figure}
 \centering
@@ -649,13 +657,14 @@ or affiliates may use brand logos legally
 \subsubsection{Comparison and
 Limitations}\label{comparison-and-limitations}
 
+\setlength{\tabcolsep}{4pt}
 \begin{longtable}{
-  >{\raggedright\arraybackslash}p{0.16\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}
-  >{\raggedright\arraybackslash}p{0.18\textwidth}}
+>{\raggedright\arraybackslash}p{0.14\textwidth}
+>{\raggedright\arraybackslash}p{0.13\textwidth}
+>{\raggedright\arraybackslash}p{0.13\textwidth}
+>{\raggedright\arraybackslash}p{0.14\textwidth}
+>{\raggedright\arraybackslash}p{0.13\textwidth}
+>{\raggedright\arraybackslash}p{0.22\textwidth}}
 \caption{Comparison of Traditional Phishing Detection
 Methods} \\
 \toprule
@@ -671,6 +680,7 @@ Moderate (similarity score) \\
 
 \bottomrule
 \end{longtable}
+\setlength{\tabcolsep}{6pt}
 
 \textbf{Overarching Limitations:} All traditional methods share common
 weaknesses: 1. \textbf{Reactive or Brittle:} Blacklists are reactive;
@@ -732,44 +742,46 @@ Comparison}\label{ml-algorithm-comparison}
 Researchers have evaluated numerous classification algorithms for
 phishing detection:
 
+\setlength{\tabcolsep}{3pt}
+\small
 \begin{longtable}{
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.06\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}
-  >{\raggedright\arraybackslash}p{0.12\textwidth}
-  >{\raggedright\arraybackslash}p{0.09\textwidth}
-  >{\raggedright\arraybackslash}p{0.09\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}}
+>{\raggedright\arraybackslash}p{0.13\textwidth}
+>{\raggedright\arraybackslash}p{0.06\textwidth}
+>{\raggedright\arraybackslash}p{0.12\textwidth}
+>{\raggedright\arraybackslash}p{0.10\textwidth}
+>{\raggedright\arraybackslash}p{0.09\textwidth}
+>{\raggedright\arraybackslash}p{0.09\textwidth}
+>{\raggedright\arraybackslash}p{0.09\textwidth}
+>{\raggedright\arraybackslash}p{0.14\textwidth}}
 \caption{Machine Learning Algorithms for Phishing Detection
 - Literature Review} \\
 \toprule
-Study & Year & Algorithm & Features & Dataset Size & Accuracy & AUC-ROC & Notes \\
+Study & Year & Algorithm & Features & Dataset & Acc. & AUC & Notes \\
 \midrule
 
-Mohammad et al.~\cite{mohammad2014} & 2014 & Neural Network & 15 URL features &
-14,000 URLs & 91.2\% & N/A & Self-structuring ANN \\
-Sahingoz et al.~\cite{sahingoz2019} & 2019 & Random Forest & 37 URL features &
-73,575 URLs & 97.98\% & N/A & NLP + URL features \\
-Chiew et al.~\cite{chiew2019} & 2019 & Hybrid Ensemble & 48 features & 14,000
+Mohammad et al.~\cite{mohammad2014} & 2014 & Neural Network & 15 URL & 14k
+URLs & 91.2\% & N/A & Self-structuring ANN \\
+Sahingoz et al.~\cite{sahingoz2019} & 2019 & Random Forest & 37 URL & 73k
+URLs & 97.98\% & N/A & NLP + URL features \\
+Chiew et al.~\cite{chiew2019} & 2019 & Hybrid Ensemble & 48 feat. & 14k
 URLs & 98.11\% & 99.26\% & Combined content + URL \\
-Rao \& Pais \cite{rao2019} & 2019 & Random Forest & 19 URL features & 11,055
-URLs & 96.76\% & 98.40\% & Feature selection via chi-square \\
-Yang et al.~\cite{yang2019} & 2019 & LightGBM & 24 URL features & 50,000 URLs &
+Rao \& Pais \cite{rao2019} & 2019 & Random Forest & 19 URL & 11k
+URLs & 96.76\% & 98.40\% & Feature selection chi-square \\
+Yang et al.~\cite{yang2019} & 2019 & LightGBM & 24 URL & 50k URLs &
 97.30\% & 99.10\% & Gradient boosting \\
-Somesha et al.~\cite{somesha2020} & 2020 & XGBoost & 30 hybrid features & 11,430
+Somesha et al.~\cite{somesha2020} & 2020 & XGBoost & 30 hybrid & 11k
 URLs & 96.68\% & N/A & URL + content + third-party \\
-Buber et al.~\cite{buber2021} & 2021 & Deep Neural Net & 111 features & 88,647
+Buber et al.~\cite{buber2021} & 2021 & Deep Neural Net & 111 feat. & 88k
 URLs & 97.16\% & 99.43\% & Exhaustive feature set \\
-Korkmaz et al.~\cite{korkmaz2022} & 2022 & XGBoost & 20 URL features & 20,000 URLs
+Korkmaz et al.~\cite{korkmaz2022} & 2022 & XGBoost & 20 URL & 20k URLs
 & 98.40\% & 99.70\% & Reduced feature set \\
-\textbf{This Work (PhishGuard)} & \textbf{2026} & \textbf{XGBoost} &
-\textbf{21 features (17 URL + 4 OSINT)} & \textbf{150,391 URLs} &
-\textbf{96.45\%} & \textbf{99.41\%} & \textbf{OSINT-enhanced,
-Optuna-optimized} \\
+\textbf{This Work} & \textbf{2026} & \textbf{XGBoost} &
+\textbf{21 feat.} & \textbf{150k} &
+\textbf{96.45\%} & \textbf{99.41\%} & \textbf{OSINT + Optuna} \\
 
 \bottomrule
 \end{longtable}
+\normalsize
 
 \textbf{Key Observations:} - \textbf{Ensemble Methods Dominate:} Random
 Forest, XGBoost, and LightGBM consistently achieve $>$96\%
@@ -859,11 +871,13 @@ infrastructure, and reputation.
 
 \textbf{Key OSINT Data Sources for Phishing Detection:}
 
+\setlength{\tabcolsep}{3pt}
+\small
 \begin{longtable}{
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.25\textwidth}
-  >{\raggedright\arraybackslash}p{0.35\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}}
+>{\raggedright\arraybackslash}p{0.16\textwidth}
+>{\raggedright\arraybackslash}p{0.22\textwidth}
+>{\raggedright\arraybackslash}p{0.38\textwidth}
+>{\raggedright\arraybackslash}p{0.18\textwidth}}
 \caption{OSINT Data Sources and Their Utility} \\
 \toprule
 OSINT Source & Data Provided & Relevance to Phishing Detection & Access Method \\
@@ -871,33 +885,34 @@ OSINT Source & Data Provided & Relevance to Phishing Detection & Access Method \
 
 \textbf{WHOIS} & Domain registration date, registrar, registrant
 contact, expiration date & Young domains ($<$30 days) are often
-phishing; privacy protection hides identity & \texttt{whois} command,
-python-whois library \\
+phishing; privacy protection hides identity & \texttt{whois} CLI,
+python-whois \\
 \textbf{DNS Records} & A (IP address), MX (mail servers), NS (name
 servers), TXT (SPF, DMARC), CNAME & Missing MX records, suspicious IPs,
-lack of email authentication & \texttt{dig} command, dnspython
-library \\
-\textbf{SSL/TLS Certificates} & Certificate issuer, validity period,
-subject alternative names (SANs) & Self-signed or mismatched
-certificates indicate phishing & OpenSSL, Certificate Transparency
-logs \\
-\textbf{VirusTotal} & Multi-engine malware/phishing detection (70+
-antivirus scanners) & Aggregate reputation score from multiple vendors &
+lack of email authentication & \texttt{dig} CLI,
+dnspython \\
+\textbf{SSL/TLS} & Certificate issuer, validity period,
+SANs & Self-signed or mismatched
+certificates indicate phishing & OpenSSL, CT logs \\
+\textbf{VirusTotal} & Multi-engine scan
+(70+ AVs) & Aggregate reputation from multiple vendors &
 VirusTotal API v3 \\
-\textbf{AbuseIPDB} & IP address abuse confidence score, blacklist status
-& Identifies hosting on known malicious infrastructure & AbuseIPDB
+\textbf{AbuseIPDB} & IP abuse score,
+blacklists & Identifies known malicious hosting & AbuseIPDB
 API \\
-\textbf{Google Safe Browsing} & Binary classification (safe/unsafe) &
+\textbf{Safe Browsing} & Binary classification (safe/unsafe) &
 Community-verified blacklist & Safe Browsing API v4 \\
-\textbf{Alexa/Tranco Rank} & Website popularity ranking & Legitimate
+\textbf{Tranco Rank} & Website popularity ranking & Legitimate
 sites have established traffic; phishing sites rank low/absent & Tranco
 API \\
 \textbf{Passive DNS} & Historical DNS resolution records & Tracks domain
-IP changes, identifies fast-flux networks & Passive DNS databases
-(Farsight, PassiveTotal) \\
+IP changes, identifies fast-flux networks & Farsight,
+PassiveTotal DB \\
 
 \bottomrule
 \end{longtable}
+\normalsize
+\setlength{\tabcolsep}{6pt}
 
 \subsubsection{WHOIS Domain Registration
 Data}\label{whois-domain-registration-data}
@@ -1111,13 +1126,15 @@ generalization but are underutilized in the literature.
 This thesis addresses the identified gaps through the following design
 choices:
 
+\setlength{\tabcolsep}{3pt}
+\footnotesize
 \begin{longtable}{
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}
-  >{\raggedright\arraybackslash}p{0.15\textwidth}}
+>{\raggedright\arraybackslash}p{0.19\textwidth}
+>{\raggedright\arraybackslash}p{0.12\textwidth}
+>{\raggedright\arraybackslash}p{0.12\textwidth}
+>{\raggedright\arraybackslash}p{0.12\textwidth}
+>{\raggedright\arraybackslash}p{0.12\textwidth}
+>{\raggedright\arraybackslash}p{0.19\textwidth}}
 \caption{Feature Comparison with Existing Solutions} \\
 \toprule
 Feature / Capability & Blacklists (e.g., PhishTank) & Heuristic Systems & Academic ML Studies {[}9-16{]} & Deep Learning {[}17-21{]} & \textbf{PhishGuard (This Work)} \\
@@ -1142,6 +1159,7 @@ model) \\
 
 \bottomrule
 \end{longtable}
+\normalsize
 
 \textbf{PhishGuard's Unique Contributions:} 1. \textbf{OSINT-Enhanced
 ML:} Integrates 4 real-time OSINT features (WHOIS, DNS, reputation) with

@@ -229,14 +229,12 @@ the model's operational tendencies. Table~\ref{tab:confusion_matrix} presents th
 \caption{Confusion Matrix for the Holdout Test Set}
 \label{tab:confusion_matrix}
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{c >{\bfseries}c | c c}
+\begin{tabular}{cc|cc}
 \multicolumn{2}{c}{} & \multicolumn{2}{c}{\textbf{Predicted Class}} \\
-\cline{3-4}
 \multicolumn{2}{c|}{} & \textbf{Legitimate (0)} & \textbf{Phishing (1)} \\
-\cline{2-4}
-\multirow{2}{*}{\rotatebox{90}{\textbf{Actual}}} & \textbf{Legitimate (0)} & 2,453 (TN) & 52 (FP) \\
+\hline
+\multirow{2}{*}{\textbf{Actual}} & \textbf{Legitimate (0)} & 2,453 (TN) & 52 (FP) \\
 & \textbf{Phishing (1)} & 126 (FN) & 2,378 (TP) \\
-\cline{2-4}
 \end{tabular}
 \end{table}
 
